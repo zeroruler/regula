@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Less from '../../demos/rams/Less.astro';
+import Checklist from '../../demos/rams/Checklist.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const formulas = (await getCollection('formulas', (f) => f.data.topic === '좋은 디자인')).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="좋은 디자인 · 원리와 공식 · Regula" current="principles" description="Dieter Rams의 좋은 디자인 10원칙을 UI 점검 질문으로 바꾸고, 덜어내기 실습과 점검표로 써 보는 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === '좋은 디자인' ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>덜, 그러나 더 낫게</h1>
+    <p>Dieter Rams가 Braun에서 일하며 1970년대 후반부터 정리한 좋은 디자인의 10원칙입니다. 숫자로 잴 수는 없어서, 원칙마다 화면을 앞에 두고 물을 수 있는 질문 하나로 바꿨어요. 질문은 원문이 아니라 Regula의 해석입니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 덜어내기</span>
+      <h2>장식을 빼도 남는 것</h2>
+      <p>열 번째 원칙이 나머지를 묶습니다. 카드 하나에 흔히 붙는 장식 여덟 가지를 켜고 끄며, 무엇이 위계를 실제로 만들고 있었는지 확인해 봅니다.</p>
+    </header>
+    <Less />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 점검표</span>
+      <h2>지금 만드는 화면에 물어보기</h2>
+      <p>화면 하나를 정해 두고 질문마다 "예"라고 답할 수 있으면 체크합니다. 체크는 이 브라우저에만 남아요.</p>
+    </header>
+    <Checklist items={formulas} />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">원칙</span>
+      <h2>좋은 디자인 10원칙</h2>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

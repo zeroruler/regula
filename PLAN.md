@@ -136,10 +136,10 @@ regula/
 ## 7. 로드맵
 
 ### v0.2 — 저장소로 옮기기
-- [ ] GitHub 저장소 생성 (로컬 git과 Astro 초기화는 완료)
+- [x] GitHub 저장소 생성 (github.com/zeroruler/regula, public)
 - [x] `regula.html`의 섹션을 컴포넌트 + 콘텐츠 파일로 분리
 - [x] 기존 공식 11개, 패턴 9개, 레퍼런스 24개를 `.md`로 이전
-- [ ] GitHub Pages 배포
+- [x] GitHub Pages 배포 (zeroruler.github.io/regula, main에 push하면 자동 배포)
 - [x] 레퍼런스 "봤음" 체크는 localStorage 유지 (키를 slug로 바꿔 순서가 바뀌어도 유지)
 - [x] 레퍼런스 상세 페이지: 내 정리 · Regula에서 쓴 곳 · 원문
   - 자유 라이선스 저장소(awesome-design-systems 3곳)는 README를 가져와 사이트 안에서 보고 거를 수 있음

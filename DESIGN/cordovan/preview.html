@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cordovan 미리보기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --key:#7C2B3B; --key-hover:#67222F; --key-active:#541B26;
+  --key-soft:#F8ECEE; --key-soft-border:#EFD8DC; --key-text:#7C2B3B; --key-on:#FFFFFF;
+  --bg:#F6F4F4; --surface:#FFFFFF; --surface-sunken:#EDEAEA;
+  --border:#E8E4E4; --border-strong:#D8D3D3;
+  --ink:#171215; --ink-secondary:#5E5458; --ink-tertiary:#736A6D;
+  --danger:#C2381F;  --danger-soft:#FCEDE9;  --danger-soft-text:#A32D17;
+  --success:#1F6E4A; --success-soft:#E7F2EC; --success-soft-text:#1B5E3F;
+  --warning:#8F6100; --warning-soft:#FBF0DC; --warning-soft-text:#7A5300;
+  --chart-1:#7C2B3B; --chart-2:#2C5D8F; --chart-3:#C08A2E; --chart-4:#3F7D6E; --chart-5:#8B8489;
+  --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-xl:20px;
+  --shadow-1:0 1px 2px rgba(23,18,21,.06);
+  --shadow-2:0 4px 12px rgba(23,18,21,.07);
+  --shadow-3:0 10px 28px rgba(23,18,21,.10);
+  --shadow-4:0 24px 60px rgba(23,18,21,.16);
+  --focus-ring:0 0 0 3px rgba(124,43,59,.22);
+  --material-bg:rgba(255,255,255,.72); --material-blur:saturate(180%) blur(20px);
+  --material-border:rgba(23,18,21,.08);
+  --font-display:"Bricolage Grotesque","Wanted Sans Variable","Wanted Sans",sans-serif;
+  --font-sans:"Wanted Sans Variable","Wanted Sans",-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:"Martian Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.32,.72,0,1); --dur-fast:140ms; --dur-base:260ms; --dur-slow:420ms;
+  --container:1200px;
+}
+[data-theme="dark"]{
+  --bg:#0E0C0D; --surface:#1A1719; --surface-sunken:#241F22;
+  --border:#2E282B; --border-strong:#423B3F;
+  --ink:#F5F1F2; --ink-secondary:#ADA3A7; --ink-tertiary:#8E8388;
+  --key:#D4667B; --key-hover:#E07A8D; --key-text:#D4667B;
+  --key-soft:#33191F; --key-soft-border:#4A252E; --key-on:#171215;
+  --material-bg:rgba(26,23,25,.72); --material-border:rgba(245,241,242,.10);
+  --danger:#E8674A;  --danger-soft:#3A1B14;  --danger-soft-text:#F0A491;
+  --success:#3E9E6E; --success-soft:#122E20; --success-soft-text:#8CCBA9;
+  --warning:#C99433; --warning-soft:#332400; --warning-soft-text:#DDB160;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--font-sans);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  transition:background var(--dur-base) var(--ease),color var(--dur-base) var(--ease);
+}
+:focus-visible{outline:none;box-shadow:var(--focus-ring);border-radius:var(--radius-sm)}
+.wrap{max-width:var(--container);margin:0 auto;padding:0 32px}
+.label{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;line-height:1.3;color:var(--ink-tertiary)}
+
+/* header */
+header{position:sticky;top:0;z-index:100;height:60px;
+  background:var(--material-bg);backdrop-filter:var(--material-blur);
+  -webkit-backdrop-filter:var(--material-blur);border-bottom:1px solid var(--material-border)}
+.hd{max-width:var(--container);margin:0 auto;height:100%;padding:0 32px;display:flex;align-items:center;gap:28px}
+.logo{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.03em}
+.logo em{font-style:normal;color:var(--key)}
+nav{display:flex;gap:22px;margin-left:auto}
+nav a{font-size:15px;font-weight:500;color:var(--ink-secondary);text-decoration:none;
+  padding:19px 0;transition:color var(--dur-fast) var(--ease)}
+nav a:hover{color:var(--ink)}
+nav a.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--key)}
+.tgl{background:transparent;border:1px solid var(--border-strong);color:var(--ink-secondary);
+  border-radius:var(--radius-md);height:32px;padding:0 12px;cursor:pointer;
+  font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;transition:all var(--dur-fast) var(--ease)}
+.tgl:hover{background:var(--surface-sunken);color:var(--ink)}
+
+/* buttons */
+.btn{font-family:var(--font-sans);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  height:40px;padding:0 20px;border-radius:var(--radius-md);border:none;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn-lg{height:48px;padding:0 26px;font-size:16px}
+.btn-primary{background:var(--key);color:var(--key-on)}
+.btn-primary:hover{background:var(--key-hover)}
+.btn-secondary{background:var(--surface);color:var(--ink);border:1px solid var(--border-strong)}
+.btn-secondary:hover{background:var(--surface-sunken)}
+.btn-ghost{background:transparent;color:var(--ink-secondary)}
+.btn-ghost:hover{background:var(--surface-sunken)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn-danger:hover{background:var(--danger-soft)}
+
+/* hero — 배경은 surface, 페이지 나머지는 bg */
+.hero{background:var(--surface);border-bottom:1px solid var(--border);padding:128px 0 112px}
+.hero .label{margin-bottom:20px}
+.hero h1{font-family:var(--font-display);font-size:56px;font-weight:700;
+  line-height:1.02;letter-spacing:-.04em;margin-bottom:22px;max-width:16ch}
+.hero p{font-size:18px;line-height:1.7;color:var(--ink-secondary);max-width:52ch;margin-bottom:36px}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap}
+
+/* metric strip */
+.strip{background:var(--surface);border-bottom:1px solid var(--border)}
+.strip-in{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.mt{padding:28px 0 30px;border-left:1px solid var(--border);padding-left:24px}
+.mt:first-child{border-left:none;padding-left:0}
+.mt .label{margin-bottom:10px}
+.mt .val{font-family:var(--font-mono);font-size:32px;font-weight:700;letter-spacing:-.05em;
+  line-height:1;font-variant-numeric:tabular-nums}
+.mt .delta{font-size:13px;font-weight:600;margin-top:9px}
+.up{color:var(--success)} .down{color:var(--danger)}
+
+/* sections */
+section{padding:96px 0}
+.sec-head{margin-bottom:40px}
+.sec-head .label{margin-bottom:12px}
+.sec-head h2{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.2;max-width:20ch}
+.sec-head p{color:var(--ink-secondary);max-width:60ch;margin-top:10px}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.card{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px}
+.card.link{cursor:pointer;transition:box-shadow var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.card.link:hover{box-shadow:var(--shadow-2);transform:translateY(-2px)}
+.card .label{margin-bottom:12px}
+.card h3{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+.card p{font-size:15px;color:var(--ink-secondary)}
+.icon{font-family:var(--font-mono);font-size:20px;color:var(--ink-tertiary);
+  margin-bottom:16px;display:block}
+
+.badge{display:inline-block;border-radius:9999px;padding:3px 10px;
+  font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.b-key{background:var(--key-soft);color:var(--key-text)}
+.b-success{background:var(--success-soft);color:var(--success-soft-text)}
+.b-warning{background:var(--warning-soft);color:var(--warning-soft-text)}
+.b-neutral{background:var(--surface-sunken);color:var(--ink-secondary)}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-tertiary);text-align:left;
+  padding:0 0 10px;border-bottom:1px solid var(--border-strong);white-space:nowrap}
+td{padding:14px 0;border-bottom:1px solid var(--border);color:var(--ink-secondary)}
+td:first-child{color:var(--ink);font-weight:600;letter-spacing:-.01em}
+td.num{font-family:var(--font-mono);font-size:13px;font-variant-numeric:tabular-nums;text-align:right}
+td.t{font-family:var(--font-mono);font-size:11px;color:var(--ink-tertiary);letter-spacing:.02em}
+
+/* chart */
+.bars{display:flex;align-items:flex-end;gap:12px;height:150px;margin:24px 0 10px}
+.bar{flex:1;background:var(--chart-1);border-radius:4px 4px 0 0;
+  transition:opacity var(--dur-fast) var(--ease)}
+.bar:hover{opacity:.75}
+.bar-x{display:flex;gap:12px}
+.bar-x span{flex:1;text-align:center}
+
+/* form */
+.field{margin-bottom:18px}
+.field label{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.field input{width:100%;height:40px;padding:0 12px;font-family:var(--font-sans);font-size:16px;
+  background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);
+  border-radius:var(--radius-md);
+  transition:border-color var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease)}
+.field input::placeholder{color:var(--ink-tertiary)}
+.field input:focus{outline:none;border-color:var(--key);box-shadow:var(--focus-ring)}
+.field input.err{border-color:var(--danger)}
+.field .msg{font-size:13px;color:var(--danger);margin-top:6px}
+
+/* skeleton + empty */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.sk{background:var(--surface-sunken);border-radius:var(--radius-sm);height:14px;
+  animation:pulse 1.6s var(--ease) infinite}
+.empty{text-align:center;padding:64px 24px}
+.empty .icon{font-size:30px;margin-bottom:14px}
+.empty h3{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+.empty p{font-size:14px;color:var(--ink-secondary);max-width:34ch;margin:0 auto 22px}
+
+/* callout — 화면당 하나의 key-soft */
+.callout{background:var(--key-soft);border:1px solid var(--key-soft-border);
+  border-radius:var(--radius-lg);padding:24px 28px;display:flex;gap:24px;
+  align-items:center;flex-wrap:wrap}
+.callout .label{color:var(--key-text);margin-bottom:6px}
+.callout h3{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.callout .btn{margin-left:auto}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 0}
+.ft{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer p{font-size:13px;color:var(--ink-tertiary)}
+
+@media(max-width:1024px){
+  .grid3{grid-template-columns:1fr 1fr}
+  .strip-in{grid-template-columns:1fr 1fr;row-gap:8px}
+  .mt:nth-child(3){border-left:none;padding-left:0}
+}
+@media(max-width:640px){
+  .wrap,.hd{padding:0 20px}
+  nav{display:none}
+  section{padding:56px 0}
+  .hero{padding:64px 0 56px}
+  .hero h1{font-size:36px}
+  .sec-head h2{font-size:24px}
+  .grid3,.grid2{grid-template-columns:1fr}
+  .strip-in{grid-template-columns:1fr 1fr}
+  .mt{padding-left:0;border-left:none}
+  .mt .val{font-size:26px}
+  .btn{width:100%}
+  .callout .btn{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div class="logo">Cordovan<em>.</em></div>
+    <nav>
+      <a href="#" class="on">개요</a>
+      <a href="#">지표</a>
+      <a href="#">보고서</a>
+      <a href="#">설정</a>
+    </nav>
+    <button class="tgl" id="tgl" aria-label="테마 바꾸기">Dark</button>
+  </div>
+</header>
+
+<!-- HERO — 이 화면의 유일한 Primary -->
+<div class="hero">
+  <div class="wrap">
+    <div class="label">Q3 Report · 2026</div>
+    <h1>Quiet canvas, one deliberate mark.</h1>
+    <p>흰 여백과 잉크빛 활자가 화면을 끌고 갑니다. 색은 눌러야 할 곳 단 한 군데에만 켜집니다.</p>
+    <div class="row">
+      <button class="btn btn-primary btn-lg">보고서 열기</button>
+      <button class="btn btn-ghost btn-lg">개요 보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- METRIC STRIP -->
+<div class="strip">
+  <div class="wrap">
+    <div class="strip-in">
+      <div class="mt">
+        <div class="label">Monthly Revenue</div>
+        <div class="val">₩48.2M</div>
+        <div class="delta up">↑ 12.4% vs 전월</div>
+      </div>
+      <div class="mt">
+        <div class="label">Conversion</div>
+        <div class="val">42.8%</div>
+        <div class="delta up">↑ 3.1% vs 전월</div>
+      </div>
+      <div class="mt">
+        <div class="label">Active Users</div>
+        <div class="val">12,480</div>
+        <div class="delta up">↑ 6.7% vs 전월</div>
+      </div>
+      <div class="mt">
+        <div class="label">Churn</div>
+        <div class="val">2.6%</div>
+        <div class="delta down">↓ 0.4% vs 전월</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARDS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label">What it does</div>
+      <h2>필요한 것만 남기고 전부 걷어냅니다</h2>
+      <p>기능을 늘리는 대신 화면에서 결정할 것을 줄였습니다.</p>
+    </div>
+    <div class="grid3">
+      <div class="card link">
+        <span class="icon">[/]</span>
+        <div class="label">Speed</div>
+        <h3>세 번이면 끝납니다</h3>
+        <p>가져오기부터 공유까지 클릭 세 번. 중간 단계를 없앴습니다.</p>
+      </div>
+      <div class="card link">
+        <span class="icon">[=]</span>
+        <div class="label">Clarity</div>
+        <h3>상태가 늘 보입니다 <span class="badge b-success" style="vertical-align:3px;margin-left:4px">Live</span></h3>
+        <p>진행·완료·실패를 형태로 구분합니다. 색만으로 알리지 않습니다.</p>
+      </div>
+      <div class="card link">
+        <span class="icon">[○]</span>
+        <div class="label">Contrast</div>
+        <h3>다크 모드가 기본입니다</h3>
+        <p>토큰 한 벌로 두 모드를 모두 통과합니다. 우측 상단에서 바꿔 보십시오.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHART + TABLE -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="grid2">
+      <div class="card">
+        <div class="label">Weekly Sessions</div>
+        <div style="font-family:var(--font-mono);font-size:26px;font-weight:700;letter-spacing:-.05em;margin-top:4px">12,480</div>
+        <div class="bars">
+          <div class="bar" style="height:46%"></div>
+          <div class="bar" style="height:62%"></div>
+          <div class="bar" style="height:38%"></div>
+          <div class="bar" style="height:78%"></div>
+          <div class="bar" style="height:56%"></div>
+          <div class="bar" style="height:92%"></div>
+          <div class="bar" style="height:70%"></div>
+        </div>
+        <div class="bar-x label"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+      </div>
+      <div class="card">
+        <div class="label" style="margin-bottom:16px">Recent Reports</div>
+        <table>
+          <tr><th>이름</th><th>상태</th><th style="text-align:right">크기</th><th style="text-align:right">수정</th></tr>
+          <tr>
+            <td>분기 매출 요약</td>
+            <td><span class="badge b-success">Done</span></td>
+            <td class="num">2.4 MB</td>
+            <td class="t" style="text-align:right">14:02</td>
+          </tr>
+          <tr>
+            <td>사용자 코호트</td>
+            <td><span class="badge b-key">Active</span></td>
+            <td class="num">8.1 MB</td>
+            <td class="t" style="text-align:right">11:47</td>
+          </tr>
+          <tr>
+            <td>이탈 분석</td>
+            <td><span class="badge b-warning">Pending</span></td>
+            <td class="num">1.2 MB</td>
+            <td class="t" style="text-align:right">09:15</td>
+          </tr>
+          <tr style="border-bottom:none">
+            <td>채널별 유입</td>
+            <td><span class="badge b-neutral">Draft</span></td>
+            <td class="num">—</td>
+            <td class="t" style="text-align:right">어제</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM + STATES -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="grid2">
+      <div class="card">
+        <div class="label" style="margin-bottom:18px">Account</div>
+        <div class="field">
+          <label for="n">이름</label>
+          <input id="n" type="text" placeholder="홍길동">
+        </div>
+        <div class="field">
+          <label for="e">이메일</label>
+          <input id="e" class="err" type="text" value="name.example.com">
+          <div class="msg">이메일 형식이 올바르지 않습니다. @를 포함해 주십시오.</div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+          <button class="btn btn-secondary">저장</button>
+          <button class="btn btn-ghost">취소</button>
+          <button class="btn btn-danger" style="margin-left:auto">계정 삭제</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div class="card">
+          <div class="label" style="margin-bottom:16px">Loading</div>
+          <div class="sk" style="width:72%;margin-bottom:10px"></div>
+          <div class="sk" style="width:90%;margin-bottom:10px"></div>
+          <div class="sk" style="width:58%"></div>
+        </div>
+        <div class="card empty" style="flex:1">
+          <span class="icon">[ ]</span>
+          <h3>첫 보고서를 만듭니다</h3>
+          <p>보고서를 만들면 지표가 여기에 쌓입니다.</p>
+          <button class="btn btn-secondary">보고서 만들기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALLOUT -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="callout">
+      <div>
+        <div class="label">Next step</div>
+        <h3>팀을 초대하고 보고서를 공유합니다</h3>
+      </div>
+      <button class="btn btn-primary">팀 초대</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap ft">
+    <p>Cordovan Design System · 옥스블러드 #7C2B3B</p>
+    <p class="label">v1.0 · 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('tgl');
+  var r=document.documentElement;
+  b.addEventListener('click',function(){
+    var d=r.getAttribute('data-theme')==='dark';
+    r.setAttribute('data-theme',d?'light':'dark');
+    b.textContent=d?'Dark':'Light';
+  });
+})();
+</script>
+</body>
+</html>

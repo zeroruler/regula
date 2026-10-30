@@ -220,3 +220,30 @@ nav.toc .toc-group{padding-top:14px}
 @media (max-width:980px){
   nav.toc small,nav.toc .toc-group{display:none}
 }
+
+/* 페이지 양식 */
+.strip{display:flex;height:28px;border:1px solid var(--rule);max-width:420px}
+.strip i{flex:1}
+.tplrows{border-top:1px solid var(--ink)}
+.tplrow{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--rule);align-items:start;text-decoration:none}
+.tplrow:hover{background:none}
+.tplrow:hover h3{background:linear-gradient(transparent 62%,var(--mark) 62% 90%,transparent 90%)}
+.tplrow .strip{height:44px}
+.tplrow h3{font-size:22px;display:inline}
+.tplrow .label{display:block;margin-bottom:4px}
+.tplrow p{margin:6px 0 0;color:var(--ink-2);font-size:14.5px;max-width:62ch}
+.tplrow .sig{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:8px}
+.todo{margin-top:32px}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
+.rules ol,.rules ul{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--ink-2);font-size:14.5px}
+.tokgroup{margin-top:28px}
+.tokgroup h3{font-family:var(--body);font-size:16px;font-weight:600;margin-bottom:10px}
+.tokgroup h3 small{display:block;font-weight:400;font-size:13px;color:var(--ink-3);margin-top:2px}
+.compare table.tokens{min-width:600px}
+.tokens td{font-size:13px;color:var(--ink-2)}
+.tokens td:first-child{font-weight:400}
+.tokens code{font-family:var(--mono);font-size:12px;color:var(--ink);overflow-wrap:anywhere}
+.tokens .sw{display:inline-block;width:14px;height:14px;border:1px solid var(--rule);vertical-align:-2px;margin-right:6px}
+@media (max-width:640px){
+  .tplrow,.rules{grid-template-columns:minmax(0,1fr);gap:12px}
+}

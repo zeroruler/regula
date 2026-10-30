@@ -54,4 +54,25 @@ const references = defineCollection({
   }),
 });
 
-export const collections = { formulas, patterns, references };
+// 직접 만든 디자인 시스템과 페이지 양식 (PLAN §4 페이지 양식)
+const templates = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/templates' }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number(),
+    kind: z.string(),
+    concept: z.string(),
+    // 토큰의 원본: DESIGN/<design>/DESIGN.md, 또는 tokens_from에 적은 CSS 파일
+    design: z.string().optional(),
+    tokens_from: z.string().optional(),
+    // 미리보기로 띄울 페이지 (사이트 기준 경로). 없으면 DESIGN/<design>/preview.html
+    preview: z.string().optional(),
+    used_in: z.array(z.string()).default([]),
+    signatures: z.array(z.string()).min(1),
+    avoid: z.array(z.string()).default([]),
+    // 목록에 보여 줄 대표 색 토큰 이름
+    swatch: z.array(z.string()),
+  }),
+});
+
+export const collections = { formulas, patterns, references, templates };

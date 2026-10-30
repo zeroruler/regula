@@ -11,17 +11,20 @@ import GoldenRatio from '../demos/GoldenRatio.astro';
 import TypeScale from '../demos/TypeScale.astro';
 import Contrast from '../demos/Contrast.astro';
 import Spacing from '../demos/Spacing.astro';
+import { loadTemplate } from '../lib/templates';
+import { href } from '../lib/url';
 
 const formulas = (await getCollection('formulas')).sort((a, b) => a.data.order - b.data.order);
 // 같은 카테고리 안에서는 방해 정도 순으로 놓는다 (PLAN §4)
 const feedback = (await getCollection('patterns', (p) => p.data.category === '알림'))
   .sort((a, b) => a.data.intrusiveness - b.data.intrusiveness);
 const references = (await getCollection('references')).sort((a, b) => a.data.order - b.data.order);
+const templates = (await getCollection('templates')).sort((a, b) => a.data.order - b.data.order);
 const refTitles = Object.fromEntries(references.map((r) => [r.id, r.data.title]));
 ---
 <Base title="Regula">
   <Fragment slot="toc">
-    <span class="label">Regula · v0.2</span>
+    <span class="label">Regula · v0.3</span>
     <a href="#principles">원리와 공식</a>
     <a href="#tools">계산 도구</a>
     <a href="#patterns">UI 패턴</a>
@@ -91,35 +94,32 @@ const refTitles = Object.fromEntries(references.map((r) => [r.id, r.data.title])
     <header>
       <span class="label">§ 4 페이지 양식</span>
       <h2>다시 쓸 수 있는 디자인 양식</h2>
-      <p>직접 만든 디자인 시스템과 페이지별 양식을 등록하는 곳입니다. 첫 항목은 Lecto에 쓴 Cordovan이에요.</p>
+      <p>직접 만든 디자인 시스템과 페이지별 양식을 등록하는 곳입니다. 이름을 누르면 시그니처, 미리보기, 실제 토큰 전체를 볼 수 있어요.</p>
     </header>
-    <div class="templates">
-      <div class="tpl">
-        <span class="label">No.1 · Lecto에서 사용 중</span>
-        <h3>Cordovan</h3>
-        <div class="cordovan" aria-hidden="true">
-          <div style="background:#FFFFFF;color:#555">여백</div>
-          <div style="background:#1B1A19;color:#ddd">잉크</div>
-          <div style="background:#6B1E24;color:#f1d9d9">옥스블러드</div>
-        </div>
-        <ul>
-          <li>흰 여백을 넓게 쓰고, 글자는 잉크색으로</li>
-          <li>강조는 옥스블러드 한 가지만</li>
-          <li>라벨은 모노스페이스</li>
-          <li>카드·박스를 남발하는 AI스러운 레이아웃을 피함</li>
-        </ul>
-        <p class="label" style="margin:0">색은 대략적인 표시예요 · DESIGN.md의 실제 토큰으로 교체 예정</p>
-      </div>
-      <div class="tpl">
-        <span class="label">채워 나갈 양식</span>
-        <div class="slots">
-          <div class="slot"><span>Regula (이 페이지)</span><span>토큰 정리 예정</span></div>
-          <div class="slot"><span>랜딩 페이지</span><span>비어 있음</span></div>
-          <div class="slot"><span>로그인 · 회원가입</span><span>비어 있음</span></div>
-          <div class="slot"><span>설정 화면</span><span>비어 있음</span></div>
-          <div class="slot"><span>대시보드</span><span>비어 있음</span></div>
-          <div class="slot"><span>글 · 블로그 본문</span><span>비어 있음</span></div>
-        </div>
+    <div class="tplrows">
+      {templates.map((t) => {
+        const { strip } = loadTemplate(t);
+        return (
+          <a class="tplrow" href={href(`templates/${t.id}/`)}>
+            <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>
+            <div>
+              <span class="label">No.{t.data.order} · {t.data.kind}{t.data.used_in.length > 0 && ` · ${t.data.used_in.join(', ')}`}</span>
+              <h3>{t.data.name}</h3>
+              <p>{t.data.concept}</p>
+              <div class="sig">{t.data.signatures.map((x) => x.split(' — ')[0]).join(' · ')}</div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+    <div class="tpl todo">
+      <span class="label">채워 나갈 양식</span>
+      <div class="slots">
+        <div class="slot"><span>랜딩 페이지</span><span>비어 있음</span></div>
+        <div class="slot"><span>로그인 · 회원가입</span><span>비어 있음</span></div>
+        <div class="slot"><span>설정 화면</span><span>비어 있음</span></div>
+        <div class="slot"><span>대시보드</span><span>비어 있음</span></div>
+        <div class="slot"><span>글 · 블로그 본문</span><span>비어 있음</span></div>
       </div>
     </div>
   </section>
@@ -147,9 +147,10 @@ const refTitles = Object.fromEntries(references.map((r) => [r.id, r.data.title])
       <h2>쌓아 온 것, 쌓을 것</h2>
     </header>
     <div class="log">
+      <div class="e"><span>2026-10-30</span><span>v0.3 페이지 양식에 Cordovan · Chamomile · Terrazzo · Regula 등록. 토큰은 각 DESIGN.md에서 빌드할 때 바로 읽어 오고, 미리보기 화면을 사이트 안에서 띄움.</span></div>
       <div class="e"><span>2026-10-30</span><span>v0.2 Astro로 옮김. 공식·패턴·레퍼런스를 파일 하나씩으로 나누고, 레퍼런스마다 상세 페이지(내 정리 · 원문 미리보기 · 쓰인 곳)를 붙임. 자유 라이선스 저장소 3곳은 README를 가져와 사이트 안에서 봄.</span></div>
       <div class="e"><span>2026-10-30</span><span>v0.1 시작. 황금비·타입 스케일·간격·대비 공식, 알림 패턴 9가지, Cordovan 양식, 레퍼런스 목록 정리.</span></div>
-      <div class="e"><span>다음</span><span>Cordovan 실제 토큰 옮기기 · 색 이론 섹션(색상환, 60-30-10 실습) · 게슈탈트 법칙 도해 · 버튼과 입력창 패턴 추가</span></div>
+      <div class="e"><span>다음</span><span>로그인·설정 화면 양식 · 색 이론 섹션(색상환, 60-30-10 실습) · 게슈탈트 법칙 도해 · 버튼과 입력창 패턴 추가</span></div>
     </div>
   </section>
   <SeenSync />

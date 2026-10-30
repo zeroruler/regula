@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cordovan 디자인 시스템</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --key:#7C2B3B; --key-hover:#67222F; --key-active:#541B26;
+  --key-soft:#F8ECEE; --key-soft-border:#EFD8DC; --key-text:#7C2B3B; --key-on:#FFFFFF;
+  --bg:#F6F4F4; --surface:#FFFFFF; --surface-sunken:#EDEAEA;
+  --border:#E8E4E4; --border-strong:#D8D3D3;
+  --ink:#171215; --ink-secondary:#5E5458; --ink-tertiary:#736A6D;
+  --danger:#C2381F;  --danger-soft:#FCEDE9;  --danger-soft-text:#A32D17;
+  --success:#1F6E4A; --success-soft:#E7F2EC; --success-soft-text:#1B5E3F;
+  --warning:#8F6100; --warning-soft:#FBF0DC; --warning-soft-text:#7A5300;
+  --info:#2C5D8F;    --info-soft:#E9EFF6;    --info-soft-text:#24507C;
+  --chart-1:#7C2B3B; --chart-2:#2C5D8F; --chart-3:#C08A2E; --chart-4:#3F7D6E; --chart-5:#8B8489;
+  --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-xl:20px;
+  --shadow-1:0 1px 2px rgba(23,18,21,.06);
+  --shadow-2:0 4px 12px rgba(23,18,21,.07);
+  --shadow-3:0 10px 28px rgba(23,18,21,.10);
+  --shadow-4:0 24px 60px rgba(23,18,21,.16);
+  --focus-ring:0 0 0 3px rgba(124,43,59,.22);
+  --material-bg:rgba(255,255,255,.72); --material-blur:saturate(180%) blur(20px);
+  --material-border:rgba(23,18,21,.08);
+  --z-header:100; --z-dropdown:200; --z-backdrop:300; --z-modal:400; --z-toast:500; --z-tooltip:600;
+  --font-display:"Bricolage Grotesque","Wanted Sans Variable","Wanted Sans",sans-serif;
+  --font-sans:"Wanted Sans Variable","Wanted Sans",-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:"Martian Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.32,.72,0,1); --dur-fast:140ms; --dur-base:260ms; --dur-slow:420ms;
+  --container:1200px;
+}
+[data-theme="dark"]{
+  --bg:#0E0C0D; --surface:#1A1719; --surface-sunken:#241F22;
+  --border:#2E282B; --border-strong:#423B3F;
+  --ink:#F5F1F2; --ink-secondary:#ADA3A7; --ink-tertiary:#8E8388;
+  --key:#D4667B; --key-hover:#E07A8D; --key-text:#D4667B;
+  --key-soft:#33191F; --key-soft-border:#4A252E; --key-on:#171215;
+  --material-bg:rgba(26,23,25,.72); --material-border:rgba(245,241,242,.10);
+  --danger:#E8674A;  --danger-soft:#3A1B14;  --danger-soft-text:#F0A491;
+  --success:#3E9E6E; --success-soft:#122E20; --success-soft-text:#8CCBA9;
+  --warning:#C99433; --warning-soft:#332400; --warning-soft-text:#DDB160;
+  --info:#6FA3D8;    --info-soft:#14243A;    --info-soft-text:#9DBEDE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  background:var(--surface);color:var(--ink);
+  font-family:var(--font-sans);font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  transition:background var(--dur-base) var(--ease),color var(--dur-base) var(--ease);
+}
+:focus-visible{outline:none;box-shadow:var(--focus-ring);border-radius:var(--radius-sm)}
+
+/* ---------- 시그니처: 모노 라벨 ---------- */
+.label{
+  font-family:var(--font-mono);font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;line-height:1.3;
+  color:var(--ink-tertiary);
+}
+
+/* ---------- 헤더 (머티리얼) ---------- */
+header{
+  position:sticky;top:0;z-index:var(--z-header);height:60px;
+  background:var(--material-bg);backdrop-filter:var(--material-blur);
+  -webkit-backdrop-filter:var(--material-blur);
+  border-bottom:1px solid var(--material-border);
+}
+.hd{max-width:var(--container);margin:0 auto;height:100%;padding:0 32px;
+  display:flex;align-items:center;gap:28px}
+.logo{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.03em}
+.logo em{font-style:normal;color:var(--key)}
+nav{display:flex;gap:20px;margin-left:auto}
+nav a{
+  font-size:14px;font-weight:500;color:var(--ink-secondary);text-decoration:none;
+  transition:color var(--dur-fast) var(--ease);
+}
+nav a:hover{color:var(--ink)}
+.tgl{
+  background:transparent;border:1px solid var(--border-strong);color:var(--ink-secondary);
+  border-radius:var(--radius-md);height:32px;padding:0 12px;cursor:pointer;
+  font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;transition:all var(--dur-fast) var(--ease);
+}
+.tgl:hover{background:var(--surface-sunken);color:var(--ink)}
+
+/* ---------- 레이아웃 ---------- */
+.wrap{max-width:var(--container);margin:0 auto;padding:0 32px}
+section{padding:96px 0 0}
+section:last-of-type{padding-bottom:128px}
+.sec-hd{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-num{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--key)}
+h2{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.2}
+.sec-desc{font-size:16px;color:var(--ink-secondary);max-width:62ch;margin-bottom:32px}
+h3{font-size:22px;font-weight:600;letter-spacing:-.02em;margin:40px 0 14px}
+h4{font-size:18px;font-weight:600;letter-spacing:-.01em;margin:28px 0 10px}
+p{color:var(--ink-secondary);max-width:70ch}
+ul{margin:12px 0 12px 20px;color:var(--ink-secondary)}
+li{margin-bottom:6px}
+strong{color:var(--ink);font-weight:600}
+code{font-family:var(--font-mono);font-size:12px;background:var(--surface-sunken);
+  padding:2px 6px;border-radius:var(--radius-sm);color:var(--ink)}
+hr{border:none;border-top:1px solid var(--border);margin:0}
+
+/* ---------- 히어로 ---------- */
+.hero{padding:112px 0 24px}
+.hero .label{margin-bottom:20px}
+.hero h1{
+  font-family:var(--font-display);font-size:56px;font-weight:700;
+  line-height:1.02;letter-spacing:-.04em;margin-bottom:20px;
+}
+.hero p{font-size:18px;line-height:1.7;max-width:56ch}
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.sig-item{border-top:2px solid var(--ink);padding-top:14px}
+.sig-item .label{color:var(--key);margin-bottom:8px}
+.sig-item h4{margin:0 0 6px;font-size:18px}
+.sig-item p{font-size:14px;line-height:1.55}
+
+/* ---------- 카드 / 그리드 ---------- */
+.card{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+/* ---------- 스와치 ---------- */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:16px 0}
+.sw{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.sw-c{height:56px;border-bottom:1px solid var(--border)}
+.sw-t{padding:8px 10px 10px}
+.sw-n{font-size:13px;font-weight:600;letter-spacing:-.01em;display:block}
+.sw-h{font-family:var(--font-mono);font-size:10px;color:var(--ink-tertiary);letter-spacing:.02em}
+
+/* ---------- 표 ---------- */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{
+  font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-tertiary);text-align:left;
+  padding:8px 12px;border-bottom:1px solid var(--border-strong);white-space:nowrap;
+}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--ink-secondary);vertical-align:top}
+td strong{color:var(--ink)}
+.tbl-scroll{overflow-x:auto}
+
+/* ---------- 컴포넌트 데모 ---------- */
+.demo{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:28px;margin:16px 0}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{
+  font-family:var(--font-sans);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  height:40px;padding:0 20px;border-radius:var(--radius-md);border:none;cursor:pointer;
+  transition:background var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--key);color:var(--key-on)}
+.btn-primary:hover{background:var(--key-hover)}
+.btn-secondary{background:var(--surface);color:var(--ink);border:1px solid var(--border-strong)}
+.btn-secondary:hover{background:var(--surface-sunken)}
+.btn-ghost{background:transparent;color:var(--ink-secondary)}
+.btn-ghost:hover{background:var(--surface-sunken)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn-danger:hover{background:var(--danger-soft)}
+.btn:disabled{background:var(--surface-sunken);color:var(--ink-tertiary);
+  border:1px solid var(--border);cursor:not-allowed;transform:none}
+.badge{
+  display:inline-block;border-radius:9999px;padding:3px 10px;
+  font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+}
+.b-key{background:var(--key-soft);color:var(--key-text)}
+.b-success{background:var(--success-soft);color:var(--success-soft-text)}
+.b-danger{background:var(--danger-soft);color:var(--danger-soft-text)}
+.b-warning{background:var(--warning-soft);color:var(--warning-soft-text)}
+.b-neutral{background:var(--surface-sunken);color:var(--ink-secondary)}
+.field{margin-bottom:16px;max-width:340px}
+.field label{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.field input{
+  width:100%;height:40px;padding:0 12px;font-family:var(--font-sans);font-size:16px;
+  background:var(--surface);color:var(--ink);
+  border:1px solid var(--border-strong);border-radius:var(--radius-md);
+  transition:border-color var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease);
+}
+.field input::placeholder{color:var(--ink-tertiary)}
+.field input:focus{outline:none;border-color:var(--key);box-shadow:var(--focus-ring)}
+.field input.err{border-color:var(--danger)}
+.field .msg{font-size:13px;color:var(--danger);margin-top:6px}
+
+/* ---------- 타이포 견본 ---------- */
+.type-row{display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid var(--border)}
+.type-meta{flex:0 0 190px}
+.type-meta .label{color:var(--ink-tertiary)}
+.type-meta span{font-family:var(--font-mono);font-size:10px;color:var(--ink-tertiary);
+  display:block;margin-top:3px;letter-spacing:.02em}
+.type-spec{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-display{font-family:var(--font-display);font-size:44px;font-weight:700;letter-spacing:-.04em;line-height:1.02}
+.t-h1{font-family:var(--font-display);font-size:34px;font-weight:700;letter-spacing:-.035em;line-height:1.08}
+.t-h2{font-size:30px;font-weight:700;letter-spacing:-.03em}
+.t-h3{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.t-body{font-size:16px;font-weight:400}
+.t-small{font-size:14px;color:var(--ink-secondary)}
+.t-metric{font-family:var(--font-mono);font-size:32px;font-weight:700;letter-spacing:-.05em;line-height:1}
+
+/* ---------- 지표 카드 ---------- */
+.metric .label{margin-bottom:10px}
+.metric .val{font-family:var(--font-mono);font-size:32px;font-weight:700;
+  letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.metric .delta{font-size:13px;font-weight:600;margin-top:8px}
+.up{color:var(--success)} .down{color:var(--danger)}
+
+/* ---------- 차트 ---------- */
+.bars{display:flex;align-items:flex-end;gap:14px;height:120px;margin:20px 0 10px}
+.bar{flex:1;background:var(--chart-1);border-radius:4px 4px 0 0}
+.bar-x{display:flex;gap:14px}
+.bar-x span{flex:1;text-align:center}
+
+/* ---------- 스켈레톤 ---------- */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.sk{background:var(--surface-sunken);border-radius:var(--radius-sm);
+  height:14px;animation:pulse 1.6s var(--ease) infinite}
+
+/* ---------- 규칙 박스 ---------- */
+.rule{border-left:2px solid var(--key);padding:2px 0 2px 16px;margin:20px 0}
+.rule .label{color:var(--key);margin-bottom:6px}
+.rule p{font-size:15px}
+.dont{border-left-color:var(--ink-tertiary)}
+.dont .label{color:var(--ink-tertiary)}
+
+footer{border-top:1px solid var(--border);padding:32px 0 64px;margin-top:0}
+footer p{font-size:13px;color:var(--ink-tertiary)}
+
+@media(max-width:1024px){.grid3,.sig{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){
+  .wrap,.hd{padding:0 20px}
+  nav{display:none}
+  section{padding-top:56px}
+  .hero{padding-top:64px}
+  .hero h1{font-size:36px}
+  h2{font-size:24px}
+  .grid2,.grid3,.sig{grid-template-columns:1fr}
+  .type-row{flex-direction:column;gap:8px}
+  .type-meta{flex:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div class="logo">Cordovan<em>.</em></div>
+    <nav>
+      <a href="#tokens">Tokens</a>
+      <a href="#type">Type</a>
+      <a href="#components">Components</a>
+      <a href="#layout">Layout</a>
+      <a href="#quick">Rules</a>
+    </nav>
+    <button class="tgl" id="tgl" aria-label="테마 바꾸기">Dark</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="label">Design System · v1.0</div>
+    <h1>Quiet canvas,<br>one deliberate mark.</h1>
+    <p>화면의 95%는 흰 여백과 잉크빛 활자입니다. 색은 눌러야 할 곳 단 한 군데에만 켜집니다.</p>
+    <div class="rule" style="margin-top:32px;max-width:70ch">
+      <div class="label">Material Note</div>
+      <p><strong>코도반은 결과 모공이 보이지 않는 가죽입니다.</strong> 값이 나가는 이유가 질감이 아니라 매끈함과 색의 깊이에 있습니다. 그래서 이 시스템은 평평합니다 — 가죽 무늬를 그리지 않는 것이 이 재질에 충실한 방식이고, 질감을 얹는 순간 재질에서 멀어집니다.</p>
+    </div>
+    <div class="sig">
+      <div class="sig-item">
+        <div class="label">Signature 01</div>
+        <h4>한 화면 한 색</h4>
+        <p>옥스블러드로 채운 요소는 화면당 하나. 그래서 눌러야 할 곳이 즉시 보입니다.</p>
+      </div>
+      <div class="sig-item">
+        <div class="label">Signature 02</div>
+        <h4>초광폭 모노 라벨</h4>
+        <p>머리말·지표 이름·표 헤더는 전부 대문자 모노. 계기판 같은 인상을 만듭니다.</p>
+      </div>
+      <div class="sig-item">
+        <div class="label">Signature 03</div>
+        <h4>반투명 머티리얼</h4>
+        <p>고정 헤더와 시트는 뒤가 비칩니다. 깊이를 그림자가 아니라 재질로 만듭니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 TOKENS -->
+  <section id="tokens">
+    <div class="sec-hd"><span class="sec-num">01</span><h2>Design Tokens</h2></div>
+    <p class="sec-desc">모든 값의 원본. 여기 없는 색·크기·폰트는 만들지 않습니다.</p>
+
+    <h3>Key — 옥스블러드</h3>
+    <p>인터랙티브 전용입니다. 장식으로 쓰지 않습니다.</p>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-c" style="background:#7C2B3B"></div><div class="sw-t"><span class="sw-n">key</span><span class="sw-h">#7C2B3B</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#67222F"></div><div class="sw-t"><span class="sw-n">key-hover</span><span class="sw-h">#67222F</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#541B26"></div><div class="sw-t"><span class="sw-n">key-active</span><span class="sw-h">#541B26</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#F8ECEE"></div><div class="sw-t"><span class="sw-n">key-soft</span><span class="sw-h">#F8ECEE</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#EFD8DC"></div><div class="sw-t"><span class="sw-n">key-soft-border</span><span class="sw-h">#EFD8DC</span></div></div>
+    </div>
+
+    <h3>Neutral — 그래파이트</h3>
+    <p>화면의 95%를 차지합니다. 순흑은 쓰지 않고, 잉크에 와인빛을 한 방울 섞었습니다.</p>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-c" style="background:#F6F4F4"></div><div class="sw-t"><span class="sw-n">bg</span><span class="sw-h">#F6F4F4</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#FFFFFF"></div><div class="sw-t"><span class="sw-n">surface</span><span class="sw-h">#FFFFFF</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#EDEAEA"></div><div class="sw-t"><span class="sw-n">surface-sunken</span><span class="sw-h">#EDEAEA</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#E8E4E4"></div><div class="sw-t"><span class="sw-n">border</span><span class="sw-h">#E8E4E4</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#D8D3D3"></div><div class="sw-t"><span class="sw-n">border-strong</span><span class="sw-h">#D8D3D3</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#171215"></div><div class="sw-t"><span class="sw-n">ink</span><span class="sw-h">#171215</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#5E5458"></div><div class="sw-t"><span class="sw-n">ink-secondary</span><span class="sw-h">#5E5458</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#736A6D"></div><div class="sw-t"><span class="sw-n">ink-tertiary</span><span class="sw-h">#736A6D</span></div></div>
+    </div>
+
+    <h3>Semantic</h3>
+    <p>키 컬러와 헷갈리지 않는 색만 골랐습니다. danger는 주황기를 넣어 옥스블러드에서 멀리 떨어뜨렸습니다.</p>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-c" style="background:#C2381F"></div><div class="sw-t"><span class="sw-n">danger</span><span class="sw-h">#C2381F</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#1F6E4A"></div><div class="sw-t"><span class="sw-n">success</span><span class="sw-h">#1F6E4A</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#8F6100"></div><div class="sw-t"><span class="sw-n">warning</span><span class="sw-h">#8F6100</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#2C5D8F"></div><div class="sw-t"><span class="sw-n">info</span><span class="sw-h">#2C5D8F</span></div></div>
+    </div>
+
+    <h3>Chart</h3>
+    <p>사용 순서가 고정입니다. 버튼·링크·아이콘에는 쓰지 않습니다. 다섯 색 모두 염료·무두질·에이징 계열 이름입니다.</p>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-c" style="background:#7C2B3B"></div><div class="sw-t"><span class="sw-n">chart-1 Oxblood</span><span class="sw-h">#7C2B3B</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#2C5D8F"></div><div class="sw-t"><span class="sw-n">chart-2 Indigo</span><span class="sw-h">#2C5D8F</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#C08A2E"></div><div class="sw-t"><span class="sw-n">chart-3 Whiskey</span><span class="sw-h">#C08A2E</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#3F7D6E"></div><div class="sw-t"><span class="sw-n">chart-4 Verdigris</span><span class="sw-h">#3F7D6E</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#8B8489"></div><div class="sw-t"><span class="sw-n">chart-5 Ash</span><span class="sw-h">#8B8489</span></div></div>
+    </div>
+
+    <h3>Radius · Shadow · Motion</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>토큰</th><th>값</th><th>쓰는 곳</th></tr>
+      <tr><td><code>--radius-sm</code></td><td>6px</td><td>체크박스, 작은 태그</td></tr>
+      <tr><td><code>--radius-md</code></td><td>10px</td><td>버튼, 입력창 — 기본값</td></tr>
+      <tr><td><code>--radius-lg</code></td><td>14px</td><td>카드, 드롭다운, 이미지</td></tr>
+      <tr><td><code>--radius-xl</code></td><td>20px</td><td>모달, 시트, 큰 패널</td></tr>
+      <tr><td><code>--shadow-1~4</code></td><td>잉크 기반 4단계</td><td>1 카드 · 2 hover · 3 드롭다운 · 4 모달</td></tr>
+      <tr><td><code>--focus-ring</code></td><td>3px rgba(124,43,59,.22)</td><td>모든 인터랙티브 요소 — 예외 없음</td></tr>
+      <tr><td><code>--material-blur</code></td><td>saturate(180%) blur(20px)</td><td>고정 헤더, 시트, 드로어</td></tr>
+      <tr><td><code>--ease</code></td><td>cubic-bezier(.32,.72,0,1)</td><td>빠르게 출발해 길게 안착</td></tr>
+      <tr><td><code>--dur-fast / base / slow</code></td><td>140 / 260 / 420ms</td><td>hover · 모달 · 페이지 전환</td></tr>
+    </table></div>
+  </section>
+
+  <!-- 02 COLOR -->
+  <section id="color">
+    <div class="sec-hd"><span class="sec-num">02</span><h2>Color Rules</h2></div>
+    <p class="sec-desc">색 규칙은 한 문장으로 요약됩니다 — 눌러야 할 곳 하나에만 색을 켠다.</p>
+
+    <div class="rule">
+      <div class="label">Rule 01</div>
+      <p><strong>한 화면 한 색.</strong> <code>--key</code>로 채운 요소는 한 화면에 하나. 두 번째 액션부터는 Secondary·Ghost로 내립니다. 링크·활성 탭·포커스 링은 개수에 포함하지 않습니다 — 규칙의 대상은 <strong>면으로 채운 것</strong>뿐입니다.</p>
+    </div>
+    <div class="rule">
+      <div class="label">Rule 02</div>
+      <p><strong>key와 danger를 나란히 두지 않습니다.</strong> 둘 다 붉은 계열이라 채워진 면으로 공존하면 구분이 무너집니다. 파괴적 동작은 언제나 테두리형입니다 — 색이 아니라 형태로 구분합니다.</p>
+    </div>
+    <div class="rule dont">
+      <div class="label">Never</div>
+      <p>순흑 <code>#000000</code> · 그라데이션(배경·버튼·오버레이) · <strong>질감(가죽결·노이즈·종이결·박음질)</strong> · 차트 색을 UI에 전용 · 채워진 빨강 오류 배경.</p>
+    </div>
+
+    <h3>배경은 둘 중 하나</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="label" style="margin-bottom:10px">App</div>
+        <p style="font-size:15px">카드가 얹히는 앱 화면은 <code>--bg</code>(#F6F4F4)를 바닥으로 씁니다.</p>
+      </div>
+      <div class="card">
+        <div class="label" style="margin-bottom:10px">Document</div>
+        <p style="font-size:15px">글이 중심인 문서 페이지는 <code>--surface</code>(흰색)를 배경으로 씁니다. 이 문서가 그렇습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 TYPE -->
+  <section id="type">
+    <div class="sec-hd"><span class="sec-num">03</span><h2>Typography</h2></div>
+    <p class="sec-desc">라틴은 Bricolage Grotesque, 한글은 Wanted Sans, 라벨은 Martian Mono가 받습니다. 한 줄 안에서 브라우저가 글자마다 갈라 씁니다.</p>
+
+    <div class="type-row">
+      <div class="type-meta"><div class="label">Display</div><span>display · 56 · 700 · -.04em</span></div>
+      <div class="type-spec t-display">Quiet by default</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">H1</div><span>display · 40 · 700 · -.035em</span></div>
+      <div class="type-spec t-h1">조용한 화면, 한 번의 액션</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">H2</div><span>sans · 30 · 700 · -.03em</span></div>
+      <div class="type-spec t-h2">밀도는 자간에서 나옵니다</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">H3</div><span>sans · 22 · 600 · -.02em</span></div>
+      <div class="type-spec t-h3">카드와 섹션의 제목</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">Body</div><span>sans · 16 · 400 · 1.65</span></div>
+      <div class="type-spec t-body">본문은 16px 아래로 내려가지 않습니다.</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">Small</div><span>sans · 14 · 400 · 1.55</span></div>
+      <div class="type-spec t-small">보조 설명과 도움말에만 씁니다.</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">Label</div><span>mono · 11 · 600 · +.1em · UPPER</span></div>
+      <div class="type-spec label" style="color:var(--ink)">Monthly Active Users</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="label">Metric</div><span>mono · 32 · 700 · -.05em</span></div>
+      <div class="type-spec t-metric">42.8%</div>
+    </div>
+
+    <h3>모노 라벨 규칙 — 시그니처</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="label" style="color:var(--key);margin-bottom:10px">Use</div>
+        <ul style="margin-left:18px">
+          <li>섹션 머리말(overline)</li>
+          <li>지표·통계 이름, 표 헤더</li>
+          <li>타임스탬프 · ID · 버전 번호</li>
+          <li>차트 축 라벨, 큰 숫자(Metric)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="label" style="margin-bottom:10px">Never</div>
+        <ul style="margin-left:18px">
+          <li>본문 · 버튼 라벨 · 내비게이션 링크 · 제목</li>
+          <li>두 단어를 넘는 문장</li>
+          <li>소문자 모노 라벨</li>
+          <li><strong>한글</strong> — 한글 라벨은 sans 12px/600/+.06em로 대체</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="label">Density</div>
+      <p><strong>제목의 음수 자간이 이 시스템의 밀도입니다.</strong> 22px 이상 제목에는 표의 자간 값을 반드시 적용합니다. 자간 0인 큰 제목은 이 시스템이 아닙니다. 굵기는 400·600·700 세 개만 씁니다.</p>
+    </div>
+  </section>
+
+  <!-- 04 COMPONENTS -->
+  <section id="components">
+    <div class="sec-hd"><span class="sec-num">04</span><h2>Components</h2></div>
+    <p class="sec-desc">모든 인터랙티브 요소는 hover 한 단계, active 두 단계, focus는 링, disabled는 가라앉힙니다.</p>
+
+    <h3>Buttons</h3>
+    <div class="demo">
+      <div class="row">
+        <button class="btn btn-primary">보고서 열기</button>
+        <button class="btn btn-secondary">취소</button>
+        <button class="btn btn-ghost">더 보기</button>
+        <button class="btn btn-danger">삭제</button>
+        <button class="btn btn-secondary" disabled>비활성</button>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="label">Form over color</div>
+      <p><strong>Danger는 절대 채우지 않습니다.</strong> 채워진 색면은 "진행", 빨간 테두리는 "파괴적 행동"입니다. 색맹 사용자에게 옥스블러드와 빨강은 거의 같은 색이므로, 형태로 갈라야 합니다.</p>
+    </div>
+    <div class="tbl-scroll"><table>
+      <tr><th>종류</th><th>배경</th><th>텍스트</th><th>테두리</th><th>용도</th></tr>
+      <tr><td><strong>Primary</strong></td><td><code>--key</code></td><td><code>--key-on</code></td><td>—</td><td>화면의 핵심 동작 <strong>하나</strong></td></tr>
+      <tr><td><strong>Secondary</strong></td><td><code>--surface</code></td><td><code>--ink</code></td><td>1px <code>--border-strong</code></td><td>일반 동작</td></tr>
+      <tr><td><strong>Ghost</strong></td><td>투명</td><td><code>--ink-secondary</code></td><td>—</td><td>툴바, 3순위</td></tr>
+      <tr><td><strong>Danger</strong></td><td>투명</td><td><code>--danger</code></td><td>1px <code>--danger</code></td><td>파괴적 동작 — 확인 모달 필수</td></tr>
+    </table></div>
+
+    <h3>Badges</h3>
+    <div class="demo">
+      <div class="row">
+        <span class="badge b-key">Active</span>
+        <span class="badge b-success">Done</span>
+        <span class="badge b-warning">Pending</span>
+        <span class="badge b-danger">Failed</span>
+        <span class="badge b-neutral">Draft</span>
+      </div>
+    </div>
+
+    <h3>Inputs</h3>
+    <div class="demo">
+      <div class="field">
+        <label for="e1">이메일</label>
+        <input id="e1" type="text" placeholder="name@example.com">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="e2">이메일</label>
+        <input id="e2" class="err" type="text" value="name.example.com">
+        <div class="msg">이메일 형식이 올바르지 않습니다. @를 포함해 주십시오.</div>
+      </div>
+    </div>
+
+    <h3>지표 카드</h3>
+    <div class="grid3">
+      <div class="card metric">
+        <div class="label">Monthly Revenue</div>
+        <div class="val">₩48.2M</div>
+        <div class="delta up">↑ 12.4% vs 전월</div>
+      </div>
+      <div class="card metric">
+        <div class="label">Conversion</div>
+        <div class="val">42.8%</div>
+        <div class="delta up">↑ 3.1% vs 전월</div>
+      </div>
+      <div class="card metric">
+        <div class="label">Churn</div>
+        <div class="val">2.6%</div>
+        <div class="delta down">↓ 0.4% vs 전월</div>
+      </div>
+    </div>
+
+    <h3>Navigation · Material</h3>
+    <p>고정 헤더는 <code>--material-bg</code> + <code>backdrop-filter</code>로 뒤가 비칩니다. 이 페이지 상단이 그 예입니다. <strong>투명하게 두는 것과 다릅니다</strong> — 비치되 읽혀야 합니다.</p>
+
+    <h3>Icons</h3>
+    <p><strong>Phosphor Icons, Regular 굵기만.</strong> 16/20/24px, 색은 주변 텍스트를 따릅니다. 아이콘에 <code>--key</code>를 칠하지 않습니다 — Rule 01의 개수를 잡아먹습니다.</p>
+  </section>
+
+  <!-- 05 FEEDBACK -->
+  <section id="feedback">
+    <div class="sec-hd"><span class="sec-num">05</span><h2>Feedback Patterns</h2></div>
+    <p class="sec-desc">기다림·빈 화면·오류를 다루는 방식. 1초 미만이면 아무것도 표시하지 않습니다.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="label" style="margin-bottom:14px">Skeleton</div>
+        <div class="sk" style="width:70%;margin-bottom:10px"></div>
+        <div class="sk" style="width:90%;margin-bottom:10px"></div>
+        <div class="sk" style="width:60%"></div>
+        <p style="font-size:14px;margin-top:16px">콘텐츠와 같은 자리·크기·radius로, 투명도 1→.55→1을 1.6초 반복합니다. shimmer는 쓰지 않습니다.</p>
+      </div>
+      <div class="card" style="text-align:center;padding:48px 24px">
+        <div style="font-family:var(--font-mono);font-size:28px;color:var(--ink-tertiary);margin-bottom:14px">[ ]</div>
+        <h4 style="margin:0 0 6px">첫 프로젝트를 만듭니다</h4>
+        <p style="font-size:14px;margin:0 auto 20px;max-width:34ch">프로젝트를 만들면 지표가 여기에 쌓입니다.</p>
+        <button class="btn btn-primary">프로젝트 만들기</button>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="label">Empty State</div>
+      <p>순서 고정: 아이콘 40px → 제목 22px/600 (가능성을 말할 것) → 설명 14px 1~2줄 → 버튼 1개. 중앙 정렬, 상하 패딩 64px 이상.</p>
+    </div>
+  </section>
+
+  <!-- 06 IMAGERY -->
+  <section id="imagery">
+    <div class="sec-hd"><span class="sec-num">06</span><h2>Imagery &amp; Charts</h2></div>
+    <p class="sec-desc">사진은 대비를 살리고 채도를 낮게. 차트는 흰 카드 안에, 축 라벨은 모노로.</p>
+
+    <div class="card" style="max-width:560px">
+      <div class="label" style="margin-bottom:4px">Weekly Sessions</div>
+      <div class="t-metric" style="font-size:26px">12,480</div>
+      <div class="bars">
+        <div class="bar" style="height:46%"></div>
+        <div class="bar" style="height:62%"></div>
+        <div class="bar" style="height:38%"></div>
+        <div class="bar" style="height:78%"></div>
+        <div class="bar" style="height:56%"></div>
+        <div class="bar" style="height:92%"></div>
+        <div class="bar" style="height:70%"></div>
+      </div>
+      <div class="bar-x label"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+    </div>
+
+    <ul style="margin-top:24px">
+      <li>시리즈가 하나면 <code>--chart-1</code>만 씁니다. 범주 6개 이상이면 상위 4 + "기타"(<code>--chart-5</code>)</li>
+      <li>증감은 상승 <code>--success</code> / 하락 <code>--danger</code>, 히트맵은 <code>--key-soft</code> → <code>--key</code> 농도 변화</li>
+      <li>가로 그리드선만, 축 라벨·범례는 <strong>모노 대문자 11px</strong> + tabular-nums</li>
+      <li>막대 상단 radius 4px, 간격은 막대 폭의 50% 이상. 파이는 5조각 이하만</li>
+      <li>일러스트는 평면 라인 + 단색 면, 색 3개까지. 3D·그라데이션 금지</li>
+    </ul>
+  </section>
+
+  <!-- 07 LAYOUT -->
+  <section id="layout">
+    <div class="sec-hd"><span class="sec-num">07</span><h2>Layout &amp; Responsive</h2></div>
+    <p class="sec-desc">4px 배수만 씁니다. 섹션 사이 여백이 이 시스템에서 가장 큰 값입니다.</p>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>구간</th><th>폭</th><th>열</th><th>여백</th><th>섹션 간격</th></tr>
+      <tr><td><strong>Mobile</strong></td><td>&lt;640px</td><td>1열</td><td>20px</td><td>56px</td></tr>
+      <tr><td><strong>Tablet</strong></td><td>640–1024px</td><td>2열</td><td>24px</td><td>96px</td></tr>
+      <tr><td><strong>Desktop</strong></td><td>≥1024px</td><td>3열</td><td>32px</td><td>96–128px</td></tr>
+    </table></div>
+
+    <ul>
+      <li>간격 스케일: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, 128</li>
+      <li>최대 폭 1200px, 본문 중심 페이지 720px, 카드 그리드 gap 24px</li>
+      <li>타이포 축소: Display 56→36 / H1 40→30 / H2 30→24 / Metric 32→26. <strong>본문 16px은 모든 화면 유지</strong></li>
+      <li><strong>음수 자간은 모바일에서도 유지합니다.</strong> 크기만 줄이고 밀도는 그대로</li>
+      <li>모노 라벨은 모바일에서도 11px. 더 줄이면 읽히지 않습니다</li>
+      <li>터치 타깃 최소 44×44px</li>
+    </ul>
+    <div class="rule dont">
+      <div class="label">Before drawing a line</div>
+      <p>구분선보다 여백이 먼저입니다. 선을 긋기 전에 여백을 2배로 늘려 보십시오. 여백이 좁으면 활자의 밀도가 답답함으로 바뀝니다.</p>
+    </div>
+  </section>
+
+  <!-- 08 MOTION -->
+  <section id="motion">
+    <div class="sec-hd"><span class="sec-num">08</span><h2>Motion · Voice · Accessibility</h2></div>
+    <p class="sec-desc">움직임은 짧게, 문장은 더 짧게.</p>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">Motion</div>
+        <ul style="margin-left:18px;font-size:14px">
+          <li>등장: 아래서 8px 올라오며 fade-in</li>
+          <li>퇴장: fade-out만, 등장의 ½ 시간</li>
+          <li>시트는 올라온 경로 그대로 내려감</li>
+          <li>무한 반복·바운스 금지</li>
+          <li><code>prefers-reduced-motion</code> 시 전부 비활성</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">Voice</div>
+        <ul style="margin-left:18px;font-size:14px">
+          <li><strong>합니다체, 짧게</strong></li>
+          <li><span style="color:var(--ink-tertiary);text-decoration:line-through">저장되었어요</span> → <strong>저장했습니다</strong></li>
+          <li>버튼은 명사·동사 원형 2~4글자</li>
+          <li>문장 하나에 정보 하나</li>
+          <li>느낌표·이모지 금지</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">A11y</div>
+        <ul style="margin-left:18px;font-size:14px">
+          <li>본문 4.5:1, 24px+ 3:1</li>
+          <li>상태는 색이 아니라 형태·아이콘으로</li>
+          <li>Tab만으로 전 기능 도달</li>
+          <li>머티리얼 위 텍스트도 4.5:1 확인</li>
+          <li><code>lang="ko"</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 QUICK -->
+  <section id="quick">
+    <div class="sec-hd"><span class="sec-num">09</span><h2>Quick Decision Rules</h2></div>
+    <p class="sec-desc">판단이 애매할 때 이 순서로 해결합니다.</p>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>고민</th><th>답</th></tr>
+      <tr><td><strong>색</strong></td><td>가장 중요한 동작 하나 → <code>--key</code>. 나머지 전부 → 뉴트럴</td></tr>
+      <tr><td><strong>이미 key를 썼는데 또 필요하면</strong></td><td>둘 중 덜 중요한 쪽을 Secondary로 내린다. 예외 없음</td></tr>
+      <tr><td><strong>폰트</strong></td><td>제목 display, 나머지 sans, mono는 라벨 자리에만</td></tr>
+      <tr><td><strong>굵기</strong></td><td>읽는 글 400 / 누르는 것·소제목 600 / 제목 700</td></tr>
+      <tr><td><strong>자간</strong></td><td>22px+ 제목은 음수, 모노 라벨 +.1em, 본문 0</td></tr>
+      <tr><td><strong>간격</strong></td><td>4px 배수 중 큰 쪽</td></tr>
+      <tr><td><strong>모서리</strong></td><td>작은 것 6 / 누르는 것 10 / 담는 것 14 / 띄우는 것 20px</td></tr>
+      <tr><td><strong>그림자</strong></td><td>테두리 → <code>--shadow-1</code> 순. 화면에 고정되면 그림자 대신 머티리얼</td></tr>
+      <tr><td><strong>삭제 버튼</strong></td><td>언제나 테두리형. 채우지 않는다</td></tr>
+      <tr><td><strong>차트 색</strong></td><td>1개면 chart-1만 / 여러 개면 순서대로 / 6개+면 상위 4 + 기타</td></tr>
+      <tr><td><strong>겹침</strong></td><td>z-index 6단계 중 하나 — 새 값 발명 금지</td></tr>
+    </table></div>
+  </section>
+
+  <hr style="margin-top:96px">
+  <footer>
+    <p>Cordovan Design System · 옥스블러드 #7C2B3B · Bricolage Grotesque + Wanted Sans + Martian Mono</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('tgl');
+  var r=document.documentElement;
+  b.addEventListener('click',function(){
+    var d=r.getAttribute('data-theme')==='dark';
+    r.setAttribute('data-theme',d?'light':'dark');
+    b.textContent=d?'Dark':'Light';
+  });
+})();
+</script>
+</body>
+</html>

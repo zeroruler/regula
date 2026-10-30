@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terrazzo 디자인 시스템</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Archivo+Black&family=Gothic+A1:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#151515; --stroke:2px;
+  --shadow-sm:3px 3px 0 var(--ink); --shadow:4px 4px 0 var(--ink); --shadow-lg:6px 6px 0 var(--ink);
+  --shadow-lift-sm:6px 6px 0 var(--ink); --shadow-lift:8px 8px 0 var(--ink);
+  --radius:0; --radius-pill:9999px;
+  --canvas:#FFFDF7; --paper:#FFFFFF; --paper-sunken:#F2EFE7;
+  --ink-2:#3A3A3A; --ink-3:#6B6B6B;
+  --red:#DE2F27;   --on-red:#FFFFFF;
+  --yellow:#F5C518; --on-yellow:#151515;
+  --blue:#2B4CE0;  --on-blue:#FFFFFF;
+  --teal:#17B3B0;  --on-teal:#151515;
+  --pink:#F573A9;  --on-pink:#151515;
+  --green:#12A05F; --on-green:#151515;
+  --chart-1:#DE2F27; --chart-2:#2B4CE0; --chart-3:#F5C518;
+  --chart-4:#17B3B0; --chart-5:#F573A9; --chart-6:#151515;
+  --z-pattern:0; --z-header:100; --z-dropdown:200; --z-backdrop:300; --z-modal:400; --z-toast:500;
+  --font-display:"Archivo Black","Black Han Sans",sans-serif;
+  --font-sans:"Gothic A1",-apple-system,BlinkMacSystemFont,sans-serif;
+  --ease:cubic-bezier(.2,0,.2,1); --ease-pop:cubic-bezier(.34,1.56,.64,1);
+  --dur-fast:120ms; --dur-pop:240ms; --dur-base:200ms;
+  --container:1160px;
+}
+[data-theme="dark"]{
+  --ink:#F5F1E8; --canvas:#141414; --paper:#1E1E1E; --paper-sunken:#2A2A2A;
+  --ink-2:#A8A49C; --ink-3:#989490;
+  --blue:#4767F0; --chart-2:#4767F0; --chart-6:#F5F1E8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{
+  background:var(--canvas);color:var(--ink);font-family:var(--font-sans);
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+/* ---------- 칩 라벨 (이 시스템의 라벨) ---------- */
+.chip{
+  display:inline-block;background:var(--ink);color:var(--paper);
+  font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+  line-height:1.2;padding:4px 10px;border-radius:0;
+}
+.chip-inv{background:var(--paper);color:var(--ink)}
+
+/* ---------- 헤더 ---------- */
+header{
+  position:sticky;top:0;z-index:var(--z-header);height:68px;
+  background:var(--paper);border-bottom:var(--stroke) solid var(--ink);
+}
+.hd{max-width:var(--container);margin:0 auto;height:100%;padding:0 32px;
+  display:flex;align-items:center;gap:24px}
+.logo{font-family:var(--font-display);font-size:20px;letter-spacing:-.02em}
+nav{display:flex;gap:18px;margin-left:auto}
+nav a{font-size:15px;font-weight:700;color:var(--ink-2);text-decoration:none;
+  padding:2px 6px;transition:color var(--dur-fast) var(--ease)}
+nav a:hover{color:var(--ink);background:var(--yellow)}
+.tgl{
+  font-family:var(--font-sans);font-size:12px;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;background:var(--paper);color:var(--ink);
+  border:var(--stroke) solid var(--ink);box-shadow:var(--shadow-sm);
+  height:36px;padding:0 12px;cursor:pointer;border-radius:0;
+}
+
+/* ---------- 레이아웃 ---------- */
+.wrap{max-width:var(--container);margin:0 auto;padding:0 32px}
+section{padding:80px 0 0}
+section:last-of-type{padding-bottom:96px}
+.sec-hd{margin-bottom:28px}
+.sec-hd .chip{margin-bottom:14px}
+h2{font-family:var(--font-display);font-size:32px;letter-spacing:-.01em;line-height:1.15}
+.sec-desc{font-size:16px;color:var(--ink-2);max-width:62ch;margin-top:10px}
+h3{font-size:22px;font-weight:900;letter-spacing:-.01em;margin:36px 0 12px}
+h4{font-size:18px;font-weight:700;margin:24px 0 8px}
+p{color:var(--ink-2);max-width:70ch}
+ul{margin:10px 0 10px 20px;color:var(--ink-2)}
+li{margin-bottom:6px}
+strong{color:var(--ink);font-weight:900}
+code{font-family:var(--font-sans);font-weight:700;font-size:14px;
+  background:var(--paper-sunken);padding:1px 6px;border:1px solid var(--ink-3)}
+
+/* ---------- 히어로 ---------- */
+.hero{position:relative;overflow:hidden;padding:88px 0 72px}
+.hero-in{position:relative;z-index:1}
+.hero .chip{margin-bottom:20px}
+.hero h1{font-family:var(--font-display);font-size:64px;line-height:1.0;
+  letter-spacing:-.02em;margin-bottom:20px;max-width:15ch}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero p{font-size:18px;max-width:52ch}
+.pattern-layer{position:absolute;inset:0;z-index:var(--z-pattern);pointer-events:none}
+.shape{position:absolute;border:var(--stroke) solid var(--ink);z-index:var(--z-pattern);pointer-events:none}
+.s1{width:120px;height:120px;border-radius:50%;background:var(--yellow);right:-30px;top:26px}
+.s2{width:84px;height:84px;background:var(--teal);right:130px;bottom:24px;transform:rotate(15deg)}
+.s3{width:56px;height:56px;border-radius:50%;background:var(--pink);right:210px;top:36px}
+
+/* 밀도 */
+[data-density="half"] .pattern-layer,[data-density="quiet"] .pattern-layer,
+[data-density="half"] .shape,[data-density="quiet"] .shape{display:none}
+[data-density="quiet"] .band{background:var(--paper-sunken)!important}
+[data-density="quiet"] .blk{background:var(--paper)!important;color:var(--ink)!important}
+[data-density="quiet"] .blk .chip{background:var(--ink)!important;color:var(--paper)!important}
+
+/* 밀도 스위처 */
+.dens{display:flex;gap:0;border:var(--stroke) solid var(--ink);box-shadow:var(--shadow);
+  width:max-content;margin:28px 0 0;background:var(--paper)}
+.dens button{
+  font-family:var(--font-sans);font-size:13px;font-weight:900;letter-spacing:.06em;
+  text-transform:uppercase;background:transparent;color:var(--ink);border:none;
+  border-right:var(--stroke) solid var(--ink);padding:10px 16px;cursor:pointer;
+}
+.dens button:last-child{border-right:none}
+.dens button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* ---------- 카드 / 그리드 ---------- */
+.card{background:var(--paper);border:var(--stroke) solid var(--ink);
+  box-shadow:var(--shadow);padding:24px;border-radius:0}
+.card .band{height:8px;margin:-24px -24px 18px;border-bottom:var(--stroke) solid var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+/* 색 블록 */
+.blk{border:var(--stroke) solid var(--ink);box-shadow:var(--shadow-lg);padding:24px}
+
+/* ---------- 스와치 ---------- */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin:16px 0}
+.sw{border:var(--stroke) solid var(--ink);box-shadow:var(--shadow-sm);background:var(--paper)}
+.sw-c{height:72px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:22px;border-bottom:var(--stroke) solid var(--ink)}
+.sw-t{padding:8px 10px 10px}
+.sw-n{font-size:13px;font-weight:900;display:block;line-height:1.3;color:var(--ink)}
+.sw-h{font-size:12px;font-weight:700;color:var(--ink-3)}
+
+/* ---------- 표 ---------- */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px;
+  border:var(--stroke) solid var(--ink);background:var(--paper)}
+th{background:var(--ink);color:var(--paper);font-size:12px;font-weight:900;
+  letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:9px 12px;white-space:nowrap}
+td{padding:11px 12px;border-top:var(--stroke) solid var(--ink);color:var(--ink-2);vertical-align:top}
+td strong{color:var(--ink)}
+.tbl-scroll{overflow-x:auto}
+
+/* ---------- 컴포넌트 데모 ---------- */
+.demo{background:var(--paper-sunken);border:var(--stroke) solid var(--ink);padding:28px;margin:16px 0}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn{
+  font-family:var(--font-sans);font-size:15px;font-weight:900;
+  height:44px;padding:0 22px;border:var(--stroke) solid var(--ink);
+  box-shadow:var(--shadow-sm);cursor:pointer;border-radius:0;
+}
+.btn-primary{background:var(--red);color:var(--on-red)}
+.btn-neutral{background:var(--paper);color:var(--ink)}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-quiet{background:transparent;border:none;box-shadow:none;color:var(--ink);
+  text-decoration:underline;text-underline-offset:4px;padding:0 6px}
+.btn:disabled{background:var(--paper-sunken);color:var(--ink-3);box-shadow:none;
+  cursor:not-allowed;transform:none}
+.badge{display:inline-block;border-radius:var(--radius-pill);padding:3px 12px;
+  border:var(--stroke) solid var(--ink);font-size:12px;font-weight:900}
+.field{margin-bottom:20px;max-width:360px}
+.field label{display:block;font-size:14px;font-weight:900;color:var(--ink);margin-bottom:8px}
+.field input{
+  width:100%;height:44px;padding:0 14px;font-family:var(--font-sans);font-size:16px;font-weight:400;
+  background:var(--paper);color:var(--ink);border:var(--stroke) solid var(--ink);
+  box-shadow:var(--shadow);border-radius:0;
+}
+.field input::placeholder{color:var(--ink-3)}
+.field input.err{border-color:var(--red)}
+.field .msg{font-size:13px;font-weight:700;color:var(--red);margin-top:8px}
+
+/* ---------- 타이포 견본 ---------- */
+.type-row{display:flex;align-items:baseline;gap:20px;padding:16px 0;
+  border-bottom:var(--stroke) solid var(--ink)}
+.type-meta{flex:0 0 180px}
+.type-meta .chip{margin-bottom:4px}
+.type-meta span{font-size:12px;font-weight:700;color:var(--ink-3);display:block}
+.type-spec{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-display{font-family:var(--font-display);font-size:52px;line-height:1;letter-spacing:-.02em}
+.t-h1{font-family:var(--font-display);font-size:40px;line-height:1.05;letter-spacing:-.02em}
+.t-h2{font-family:var(--font-display);font-size:32px;line-height:1.15}
+.t-h3{font-size:22px;font-weight:900}
+.t-body{font-size:16px;font-weight:400}
+.t-metric{font-family:var(--font-display);font-size:40px;line-height:1}
+
+/* ---------- 패턴 견본 ---------- */
+.pat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px;margin:16px 0}
+.pat{border:var(--stroke) solid var(--ink);box-shadow:var(--shadow-sm);background:var(--paper)}
+.pat-v{height:104px;border-bottom:var(--stroke) solid var(--ink);position:relative;overflow:hidden}
+.pat-t{padding:9px 12px 12px}
+.pat-n{font-size:14px;font-weight:900;display:block}
+.pat-d{font-size:13px;color:var(--ink-3)}
+
+/* ---------- 차트 ---------- */
+.bars{display:flex;align-items:flex-end;gap:16px;height:150px;margin:20px 0 10px}
+.bar{flex:1;border:var(--stroke) solid var(--ink);border-bottom:none}
+.bar-x{display:flex;gap:16px}
+.bar-x span{flex:1;text-align:center;font-size:13px;font-weight:700;color:var(--ink-3)}
+
+/* ---------- 스켈레톤 ---------- */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.sk{background:var(--paper-sunken);border:var(--stroke) solid var(--ink);
+  height:18px;animation:pulse 1.4s var(--ease) infinite}
+
+/* ---------- 규칙 박스 ---------- */
+.rule{border:var(--stroke) solid var(--ink);border-left-width:10px;padding:14px 18px;margin:20px 0;
+  background:var(--paper)}
+.rule .chip{margin-bottom:8px}
+.rule p{font-size:15px}
+
+footer{border-top:var(--stroke) solid var(--ink);padding:28px 0 56px;margin-top:80px}
+footer p{font-size:13px;font-weight:700;color:var(--ink-3)}
+
+@media(max-width:1024px){.grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){
+  :root{--shadow-sm:2px 2px 0 var(--ink);--shadow:3px 3px 0 var(--ink);--shadow-lg:4px 4px 0 var(--ink)}
+  .wrap,.hd{padding:0 20px}
+  nav{display:none}
+  section{padding-top:48px}
+  .hero{padding:48px 0 40px}
+  .hero h1{font-size:38px}
+  h2{font-size:24px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .type-row{flex-direction:column;gap:8px}
+  .type-meta{flex:none}
+  .s1,.s2,.s3{display:none}
+}
+
+/* ---------- 모션: 뜸 → 눌림. 강도는 장식 밀도를 따른다 (§8) ---------- */
+.btn,.tgl{transition:box-shadow var(--dur-pop) var(--ease-pop),transform var(--dur-pop) var(--ease-pop)}
+.btn:hover,.tgl:hover{box-shadow:var(--shadow-lift-sm);transform:translate(-2px,-3px)}
+.btn:active,.tgl:active{box-shadow:0 0 0 var(--ink);transform:translate(3px,3px);
+  transition-duration:var(--dur-fast)}
+.btn-quiet:hover,.btn-quiet:active{box-shadow:none;transform:none}
+.btn:disabled,.btn:disabled:hover{box-shadow:none;transform:none}
+
+.card{transition:box-shadow var(--dur-pop) var(--ease-pop),transform var(--dur-pop) var(--ease-pop)}
+[data-density="full"] .card:hover,[data-density="half"] .card:hover{
+  box-shadow:var(--shadow-lift);transform:translate(-3px,-4px)}
+
+/* full 에서만: 붙여놓은 스티커처럼 살짝 기울고, 손대면 펴진다 */
+[data-density="full"] .grid3{gap:32px}
+[data-density="full"] .grid3 > .card:nth-child(odd){transform:rotate(-2deg)}
+[data-density="full"] .grid3 > .card:nth-child(even){transform:rotate(2deg)}
+[data-density="full"] .grid3 > .card:hover{transform:rotate(0deg) translate(-3px,-4px)}
+
+/* full 에서만: 도형이 아주 느리게 뜬다 */
+@keyframes drift-a{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(5deg)}}
+@keyframes drift-b{0%,100%{transform:translateY(0) rotate(15deg)}50%{transform:translateY(9px) rotate(8deg)}}
+@keyframes drift-c{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+[data-density="full"] .s1{animation:drift-a 9s ease-in-out infinite}
+[data-density="full"] .s2{animation:drift-b 7s ease-in-out infinite}
+[data-density="full"] .s3{animation:drift-c 6s ease-in-out infinite}
+
+/* quiet: 뜸 없이 눌림만 */
+[data-density="quiet"] .btn:hover,[data-density="quiet"] .card:hover{
+  box-shadow:var(--shadow-sm);transform:none}
+[data-density="quiet"] .card:hover{box-shadow:var(--shadow)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  [data-density="full"] .grid3 > .card:nth-child(odd),
+  [data-density="full"] .grid3 > .card:nth-child(even){transform:none!important}
+}
+</style>
+</head>
+<body data-density="full">
+
+<!-- SVG 패턴 정의 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="p-zig" width="40" height="20" patternUnits="userSpaceOnUse">
+      <path d="M0 16 L10 4 L20 16 L30 4 L40 16" fill="none" stroke="currentColor" stroke-width="2"/>
+    </pattern>
+    <pattern id="p-dot" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="3" fill="currentColor"/>
+    </pattern>
+    <pattern id="p-ter" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="14" r="5" fill="var(--red)"/>
+      <rect x="34" y="8" width="10" height="10" fill="var(--blue)" transform="rotate(15 39 13)"/>
+      <circle cx="46" cy="42" r="4" fill="var(--yellow)"/>
+      <rect x="8" y="38" width="9" height="9" fill="var(--teal)" transform="rotate(-15 12 42)"/>
+      <circle cx="28" cy="30" r="3" fill="var(--pink)"/>
+    </pattern>
+    <pattern id="p-wav" width="48" height="20" patternUnits="userSpaceOnUse">
+      <path d="M0 10 Q12 0 24 10 T48 10" fill="none" stroke="currentColor" stroke-width="2"/>
+    </pattern>
+    <pattern id="p-hatch" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M0 8 L8 0" stroke="currentColor" stroke-width="2"/>
+    </pattern>
+  </defs>
+</svg>
+
+<header>
+  <div class="hd">
+    <div class="logo">TERRAZZO</div>
+    <nav>
+      <a href="#tokens">Tokens</a>
+      <a href="#color">Color</a>
+      <a href="#type">Type</a>
+      <a href="#components">Components</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#quick">Rules</a>
+    </nav>
+    <button class="tgl" id="tgl" aria-label="테마 바꾸기">Dark</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="pattern-layer" aria-hidden="true" style="color:var(--ink);opacity:.14">
+    <svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#p-dot)"/></svg>
+  </div>
+  <div class="shape s1"></div>
+  <div class="shape s3"></div>
+  <div class="shape s2"></div>
+  <div class="wrap hero-in">
+    <span class="chip">Design System · v1.0</span>
+    <h1>소란은 여백에,<br><em>글자는 조용히</em></h1>
+    <p>원색 조각을 검은 선으로 오려 붙인 화면. 도형과 패턴은 바깥 레이어에만 두고, 글이 얹히는 면은 흰 종이로 남깁니다.</p>
+    <div class="dens" role="group" aria-label="장식 밀도">
+      <button data-d="full" aria-pressed="true">Full</button>
+      <button data-d="half" aria-pressed="false">Half</button>
+      <button data-d="quiet" aria-pressed="false">Quiet</button>
+    </div>
+    <p style="font-size:14px;margin-top:12px;color:var(--ink-3)">↑ 눌러 보십시오. 이 문서 전체의 장식 밀도가 바뀝니다.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 01 TOKENS -->
+  <section id="tokens">
+    <div class="sec-hd"><span class="chip">01</span><h2>Design Tokens</h2>
+      <p class="sec-desc">모든 값의 원본. 이 시스템의 뼈대는 색이 아니라 <strong>2px 검은 선</strong>입니다.</p></div>
+
+    <h3>Palette — 색 위의 글자색은 짝이 정해져 있습니다</h3>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-c" style="background:#DE2F27;color:#FFFFFF">가나 Ag</div>
+        <div class="sw-t"><span class="sw-n">red · 흰 글씨</span><span class="sw-h">#DE2F27 · 4.62:1</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#F5C518;color:#151515">가나 Ag</div>
+        <div class="sw-t"><span class="sw-n">yellow · 검은 글씨</span><span class="sw-h">#F5C518 · 11.2:1</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#2B4CE0;color:#FFFFFF">가나 Ag</div>
+        <div class="sw-t"><span class="sw-n">blue · 흰 글씨</span><span class="sw-h">#2B4CE0 · 6.54:1</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#17B3B0;color:#151515">가나 Ag</div>
+        <div class="sw-t"><span class="sw-n">teal · 검은 글씨</span><span class="sw-h">#17B3B0 · 7.05:1</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#F573A9;color:#151515">가나 Ag</div>
+        <div class="sw-t"><span class="sw-n">pink · 검은 글씨</span><span class="sw-h">#F573A9 · 6.88:1</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#12A05F;color:#151515">가나 Ag</div>
+        <div class="sw-t"><span class="sw-n">green · 검은 글씨</span><span class="sw-h">#12A05F · 5.41:1</span></div></div>
+    </div>
+
+    <h3>Surface · Text</h3>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-c" style="background:#FFFDF7"></div>
+        <div class="sw-t"><span class="sw-n">canvas</span><span class="sw-h">#FFFDF7</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#FFFFFF"></div>
+        <div class="sw-t"><span class="sw-n">paper</span><span class="sw-h">#FFFFFF</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#F2EFE7"></div>
+        <div class="sw-t"><span class="sw-n">paper-sunken</span><span class="sw-h">#F2EFE7</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#151515"></div>
+        <div class="sw-t"><span class="sw-n">ink</span><span class="sw-h">#151515</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#3A3A3A"></div>
+        <div class="sw-t"><span class="sw-n">ink-2 본문</span><span class="sw-h">#3A3A3A</span></div></div>
+      <div class="sw"><div class="sw-c" style="background:#6B6B6B"></div>
+        <div class="sw-t"><span class="sw-n">ink-3 보조</span><span class="sw-h">#6B6B6B</span></div></div>
+    </div>
+
+    <h3>Structure</h3>
+    <div class="tbl-scroll"><table>
+      <tr><th>토큰</th><th>값</th><th>쓰는 곳</th></tr>
+      <tr><td><code>--stroke</code></td><td>2px</td><td>모든 테두리. 1px도 3px도 쓰지 않는다</td></tr>
+      <tr><td><code>--shadow-sm</code></td><td>3px 3px 0</td><td>버튼, 뱃지</td></tr>
+      <tr><td><code>--shadow</code></td><td>4px 4px 0</td><td>카드, 입력창</td></tr>
+      <tr><td><code>--shadow-lg</code></td><td>6px 6px 0</td><td>히어로 블록, 모달</td></tr>
+      <tr><td><code>--radius</code></td><td>0</td><td>기본값. 칩·뱃지만 pill</td></tr>
+      <tr><td><code>--dur-fast / base</code></td><td>120 / 200ms</td><td>버튼 눌림 · 모달 등장</td></tr>
+    </table></div>
+    <div class="rule">
+      <span class="chip">Never</span>
+      <p><strong>흐릿한 그림자는 이 시스템에 존재하지 않습니다.</strong> <code>blur</code>가 들어간 그림자, 그라데이션, 반투명 면(백드롭 제외)은 전부 금지입니다. 멤피스는 단색 면과 선으로만 이루어집니다.</p>
+    </div>
+  </section>
+
+  <!-- 02 COLOR -->
+  <section id="color">
+    <div class="sec-hd"><span class="chip">02</span><h2>Color Rules</h2>
+      <p class="sec-desc">무엇을 만들든 <strong>장식 밀도</strong>부터 고르고 시작합니다.</p></div>
+
+    <div class="tbl-scroll"><table>
+      <tr><th>단계</th><th>쓰는 곳</th><th>켜지는 것</th></tr>
+      <tr><td><strong>full</strong></td><td>랜딩, 이벤트, 포트폴리오</td><td>패턴 레이어 + 떠다니는 도형 + 색 블록 전부</td></tr>
+      <tr><td><strong>half</strong></td><td>일반 서비스 화면</td><td>윤곽선·하드 섀도우 + 색 블록. 패턴과 도형 없음</td></tr>
+      <tr><td><strong>quiet</strong></td><td>대시보드, 문서, 긴 폼</td><td>윤곽선만. 색은 화면에서 강조 1곳</td></tr>
+    </table></div>
+
+    <h3>한 블록 한 색</h3>
+    <div class="grid3">
+      <div class="card"><div class="band" style="background:var(--red)"></div>
+        <span class="chip">01</span>
+        <h4 style="margin:10px 0 6px">색은 하나만</h4>
+        <p style="font-size:15px">블록마다 팔레트에서 색을 하나씩 가져갑니다. 내부는 검정과 흰색뿐입니다.</p></div>
+      <div class="card"><div class="band" style="background:var(--blue)"></div>
+        <span class="chip">02</span>
+        <h4 style="margin:10px 0 6px">옆과 겹치지 않게</h4>
+        <p style="font-size:15px">인접한 블록에 같은 색을 연속으로 쓰지 않고 순서대로 돌립니다.</p></div>
+      <div class="card"><div class="band" style="background:var(--teal)"></div>
+        <span class="chip">03</span>
+        <h4 style="margin:10px 0 6px">띠 아니면 전체</h4>
+        <p style="font-size:15px">상단 띠와 전체 배경색 중 하나만 씁니다. 둘을 같이 쓰지 않습니다.</p></div>
+    </div>
+
+    <div class="rule">
+      <span class="chip">Rule</span>
+      <p><strong>팔레트 색을 흰 배경 위 본문 텍스트로 쓰지 않습니다.</strong> 노랑은 흰 배경에서 1.63:1, 청록은 2.59:1, 핑크는 2.66:1로 3:1도 못 넘깁니다. 색은 <strong>면</strong>으로 쓰고 글자는 검정으로 씁니다. 예외는 24px 이상 제목의 빨강·파랑뿐입니다.</p>
+    </div>
+
+    <div class="blk" style="background:var(--yellow);color:var(--on-yellow);margin-top:24px">
+      <span class="chip chip-inv">색 블록 예시</span>
+      <h3 style="margin:14px 0 6px;color:var(--on-yellow)">노랑 위에는 검은 글씨만</h3>
+      <p style="color:var(--on-yellow);max-width:56ch">색 블록 안의 칩은 배경을 흰색으로 뒤집습니다. <code>--on-yellow</code> 값이 이미 정해져 있으므로 글자색을 고를 일이 없습니다.</p>
+    </div>
+  </section>
+
+  <!-- 03 TYPE -->
+  <section id="type">
+    <div class="sec-hd"><span class="chip">03</span><h2>Typography</h2>
+      <p class="sec-desc">라틴은 Archivo Black, 한글은 검은고딕, 본문은 Gothic A1이 받습니다. 한 줄 안에서 브라우저가 글자마다 갈라 씁니다.</p></div>
+
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">Display</span><span>display · 64 · 1.0</span></div>
+      <div class="type-spec t-display">Loud Quiet</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">H1</span><span>display · 44 · 1.05</span></div>
+      <div class="type-spec t-h1">소란은 여백에</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">H2</span><span>display · 32 · 1.15</span></div>
+      <div class="type-spec t-h2">오려 붙인 화면</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">H3</span><span>sans · 22 · 900</span></div>
+      <div class="type-spec t-h3">카드와 섹션의 제목</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">Body</span><span>sans · 16 · 400 · 1.7</span></div>
+      <div class="type-spec t-body">본문은 16px 아래로 내려가지 않습니다.</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">Chip</span><span>sans · 12 · 900 · +.12em</span></div>
+      <div class="type-spec"><span class="chip">Section Label</span></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><span class="chip">Metric</span><span>display · 40</span></div>
+      <div class="type-spec t-metric">12,480</div>
+    </div>
+
+    <div class="rule">
+      <span class="chip">Weight</span>
+      <p><strong>검은고딕과 Archivo Black은 굵기가 하나뿐입니다.</strong> 제목의 무게는 굵기가 아니라 크기로 만듭니다. 가짜 굵기(<code>font-weight: bold</code>로 억지로 굵게)를 걸면 획이 뭉개집니다. 그리고 <strong>16px 이하에 검은고딕을 쓰지 않습니다</strong> — 속공간이 막혀 읽히지 않습니다.</p>
+    </div>
+    <div class="rule">
+      <span class="chip">Label</span>
+      <p>모노스페이스를 쓰지 않습니다(초광폭 모노 라벨은 cordovan의 시그니처입니다). 이 시스템의 라벨은 <strong>검정 칩에 흰 글씨</strong>입니다. 색 블록 위에서는 흰 칩에 검은 글씨로 뒤집습니다. 한 화면에 5개까지.</p>
+    </div>
+  </section>
+
+  <!-- 04 COMPONENTS -->
+  <section id="components">
+    <div class="sec-hd"><span class="chip">04</span><h2>Components</h2>
+      <p class="sec-desc">모든 면은 2px 테두리와 하드 섀도우를 갖습니다. 누르면 그림자가 사라지고 종이가 눌러붙습니다.</p></div>
+
+    <h3>Buttons</h3>
+    <div class="demo">
+      <div class="row">
+        <button class="btn btn-primary">저장</button>
+        <button class="btn btn-neutral">취소</button>
+        <button class="btn btn-ink">시작</button>
+        <button class="btn btn-quiet">더 보기</button>
+        <button class="btn btn-neutral" disabled>비활성</button>
+      </div>
+      <p style="font-size:14px;margin-top:16px">↑ 눌러 보십시오. 그림자가 사라지며 3px 내려갑니다.</p>
+    </div>
+    <div class="rule">
+      <span class="chip">Rule</span>
+      <p>Primary 버튼의 색은 <strong>그 버튼이 속한 블록의 색을 따릅니다</strong>. 버튼만 혼자 다른 색을 갖지 않습니다. 파괴적 동작은 빨강 Primary가 아니라 <strong>Neutral 버튼 + 확인 모달</strong>로 처리합니다 — 빨강은 이 시스템에서 장식 색이기도 해서 위험 신호로만 읽히지 않습니다.</p>
+    </div>
+
+    <h3>Badges</h3>
+    <div class="demo">
+      <div class="row">
+        <span class="badge" style="background:var(--green);color:var(--on-green)">완료</span>
+        <span class="badge" style="background:var(--yellow);color:var(--on-yellow)">대기</span>
+        <span class="badge" style="background:var(--red);color:var(--on-red)">실패</span>
+        <span class="badge" style="background:var(--teal);color:var(--on-teal)">진행</span>
+        <span class="badge" style="background:var(--paper);color:var(--ink)">초안</span>
+      </div>
+      <p style="font-size:14px;margin-top:16px">상태를 색으로만 구분하지 않습니다 — 뱃지 안에 항상 단어를 넣습니다.</p>
+    </div>
+
+    <h3>Inputs</h3>
+    <div class="demo">
+      <div class="field">
+        <label for="e1">이메일</label>
+        <input id="e1" type="text" placeholder="name@example.com">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="e2">이메일</label>
+        <input id="e2" class="err" type="text" value="name.example.com">
+        <div class="msg">@ 없음. 형식 확인 필요</div>
+      </div>
+    </div>
+
+    <h3>지표</h3>
+    <div class="grid3">
+      <div class="card"><div class="band" style="background:var(--blue)"></div>
+        <span class="chip">Revenue</span>
+        <div class="t-metric" style="margin-top:12px">48.2M</div>
+        <p style="font-size:14px;font-weight:700;color:var(--ink-2);margin-top:8px">전월 대비 +12.4%</p></div>
+      <div class="card"><div class="band" style="background:var(--pink)"></div>
+        <span class="chip">Users</span>
+        <div class="t-metric" style="margin-top:12px">12,480</div>
+        <p style="font-size:14px;font-weight:700;color:var(--ink-2);margin-top:8px">전월 대비 +6.7%</p></div>
+      <div class="card"><div class="band" style="background:var(--green)"></div>
+        <span class="chip">Churn</span>
+        <div class="t-metric" style="margin-top:12px">2.6%</div>
+        <p style="font-size:14px;font-weight:700;color:var(--ink-2);margin-top:8px">전월 대비 -0.4%</p></div>
+    </div>
+
+    <h3>Icons</h3>
+    <p><strong>아이콘보다 도형이 먼저입니다.</strong> 원·삼각형·사각형·지그재그를 2px 검정 stroke로 직접 그립니다. 실제 아이콘 세트가 필요하면 Lucide를 stroke 2px로 올려 쓰되, 반드시 2px 테두리 도형 안에 넣습니다.</p>
+  </section>
+
+  <!-- 05 FEEDBACK -->
+  <section id="feedback">
+    <div class="sec-hd"><span class="chip">05</span><h2>Feedback Patterns</h2>
+      <p class="sec-desc">1초 미만이면 아무것도 표시하지 않습니다.</p></div>
+    <div class="grid2">
+      <div class="card">
+        <span class="chip">Loading</span>
+        <div style="margin-top:16px">
+          <div class="sk" style="width:72%;margin-bottom:12px"></div>
+          <div class="sk" style="width:90%;margin-bottom:12px"></div>
+          <div class="sk" style="width:58%"></div>
+        </div>
+        <p style="font-size:14px;margin-top:16px">스켈레톤도 2px 테두리를 갖습니다. shimmer는 쓰지 않습니다.</p>
+      </div>
+      <div class="card" style="text-align:center;padding:56px 24px">
+        <svg width="56" height="56" viewBox="0 0 56 56" style="margin-bottom:16px" aria-hidden="true">
+          <rect x="3" y="3" width="50" height="50" fill="none" stroke="currentColor" stroke-width="2"/>
+          <circle cx="28" cy="28" r="13" fill="none" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <h4 style="margin:0 0 8px">아직 아무것도 없음</h4>
+        <p style="font-size:14px;margin:0 auto 20px;max-width:32ch">첫 항목을 만들면 여기에 쌓입니다.</p>
+        <button class="btn btn-neutral">만들기</button>
+      </div>
+    </div>
+    <div class="rule">
+      <span class="chip">Empty</span>
+      <p>빈 화면에는 밀도가 <code>full</code>이어도 패턴을 깔지 않습니다. <strong>이미 비어 있는 화면을 더 시끄럽게 만들지 않습니다.</strong></p>
+    </div>
+  </section>
+
+  <!-- 06 PATTERNS -->
+  <section id="patterns">
+    <div class="sec-hd"><span class="chip">06</span><h2>Patterns · Charts</h2>
+      <p class="sec-desc">패턴 네 종류만 씁니다. 전부 2px 검정 선, 단색, SVG입니다.</p></div>
+
+    <div class="pat-grid">
+      <div class="pat"><div class="pat-v" style="color:var(--ink)">
+        <svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#p-zig)"/></svg></div>
+        <div class="pat-t"><span class="pat-n">Zigzag</span><span class="pat-d">섹션 구분, 히어로 하단</span></div></div>
+      <div class="pat"><div class="pat-v" style="color:var(--ink)">
+        <svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#p-dot)"/></svg></div>
+        <div class="pat-t"><span class="pat-n">Dots</span><span class="pat-d">넓은 여백</span></div></div>
+      <div class="pat"><div class="pat-v">
+        <svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#p-ter)"/></svg></div>
+        <div class="pat-t"><span class="pat-n">Terrazzo</span><span class="pat-d">페이지 바닥 전체</span></div></div>
+      <div class="pat"><div class="pat-v" style="color:var(--ink)">
+        <svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#p-wav)"/></svg></div>
+        <div class="pat-t"><span class="pat-n">Squiggle</span><span class="pat-d">제목 밑줄, 강조</span></div></div>
+    </div>
+
+    <div class="rule">
+      <span class="chip">Rule</span>
+      <p><strong>글자가 얹히는 면에는 패턴을 절대 깔지 않습니다.</strong> 카드 배경, 표, 폼 뒤는 언제나 단색입니다. 패턴은 콘텐츠 아래 레이어(<code>--z-pattern</code>)에만 둡니다. 한 화면에 2종까지.</p>
+    </div>
+
+    <h3>차트 — 색이 부족하면 색을 늘리지 말고 패턴을 씁니다</h3>
+    <div class="card" style="max-width:600px">
+      <span class="chip">Weekly Sessions</span>
+      <div class="bars">
+        <div class="bar" style="height:46%;background:var(--chart-1)"></div>
+        <div class="bar" style="height:62%;background:var(--chart-2)"></div>
+        <div class="bar" style="height:38%;background:var(--chart-3)"></div>
+        <div class="bar" style="height:78%;background:var(--chart-4)"></div>
+        <div class="bar" style="height:56%;background:var(--chart-5)"></div>
+        <div class="bar" style="height:92%;background:var(--paper);color:var(--ink);position:relative;overflow:hidden">
+          <svg width="100%" height="100%" style="position:absolute;inset:0"><rect width="100%" height="100%" fill="url(#p-hatch)"/></svg>
+        </div>
+      </div>
+      <div class="bar-x"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span></div>
+      <p style="font-size:14px;margin-top:14px">여섯 번째 막대는 색 대신 사선 패턴입니다. 색맹 사용자에게도 구분되고, 멤피스의 형태 언어와도 맞습니다.</p>
+    </div>
+  </section>
+
+  <!-- 07 LAYOUT -->
+  <section id="layout">
+    <div class="sec-hd"><span class="chip">07</span><h2>Layout &amp; Responsive</h2>
+      <p class="sec-desc">4px 배수만 씁니다. 하드 섀도우가 옆 블록을 침범하지 않게 간격을 넉넉히 잡습니다.</p></div>
+    <div class="tbl-scroll"><table>
+      <tr><th>구간</th><th>폭</th><th>열</th><th>여백</th><th>그림자</th></tr>
+      <tr><td><strong>Mobile</strong></td><td>&lt;640px</td><td>1열</td><td>20px</td><td>3px로 축소</td></tr>
+      <tr><td><strong>Tablet</strong></td><td>640–1024px</td><td>2열</td><td>24px</td><td>기본</td></tr>
+      <tr><td><strong>Desktop</strong></td><td>≥1024px</td><td>3열</td><td>32px</td><td>기본</td></tr>
+    </table></div>
+    <ul>
+      <li>간격 스케일: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96</li>
+      <li><strong>블록 사이 간격은 그림자 크기의 최소 4배</strong> — 안 그러면 그림자가 옆 블록을 침범합니다</li>
+      <li>비대칭 분할(2:1, 1:2)을 허용합니다. 단 밀도 <code>quiet</code>에서는 균등 그리드만</li>
+      <li>타이포 축소: Display 64→38 / H1 44→30 / H2 32→24 / Metric 40→30. <strong>본문 16px은 모든 화면 유지</strong></li>
+      <li>모바일에서 떠다니는 도형은 개수를 절반으로 줄입니다 (밀도가 <code>full</code>이어도)</li>
+      <li>터치 타깃 최소 44×44px</li>
+    </ul>
+  </section>
+
+  <!-- 08 MOTION -->
+  <section id="motion">
+    <div class="sec-hd"><span class="chip">08</span><h2>Motion · Voice · Accessibility</h2>
+      <p class="sec-desc">세 시스템 중 가장 적게 움직입니다.</p></div>
+    <div class="grid3">
+      <div class="card"><div class="band" style="background:var(--teal)"></div>
+        <span class="chip">Motion</span>
+        <ul style="margin:14px 0 0 18px;font-size:14px">
+          <li>버튼 눌림</li><li>모달·드롭다운 등장</li><li>스켈레톤 펄스</li>
+          <li><strong>이 셋뿐입니다</strong></li>
+          <li>패턴과 도형은 절대 안 움직임</li>
+        </ul></div>
+      <div class="card"><div class="band" style="background:var(--pink)"></div>
+        <span class="chip">Voice</span>
+        <ul style="margin:14px 0 0 18px;font-size:14px">
+          <li><strong>문장을 자르고 명사로</strong></li>
+          <li>"파일 3개 업로드 완료"</li>
+          <li>버튼은 동사 한두 글자</li>
+          <li>숫자를 앞세움</li>
+          <li>이모지 금지 — 도형을 씀</li>
+        </ul></div>
+      <div class="card"><div class="band" style="background:var(--yellow)"></div>
+        <span class="chip">A11y</span>
+        <ul style="margin:14px 0 0 18px;font-size:14px">
+          <li>본문 4.5:1, 24px+ 3:1</li>
+          <li><code>--on-*</code>를 임의로 바꾸지 않음</li>
+          <li>포커스는 바깥쪽 오프셋 아웃라인</li>
+          <li>패턴·도형은 <code>aria-hidden</code></li>
+          <li>검은고딕은 24px 미만 금지</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <!-- 09 QUICK -->
+  <section id="quick">
+    <div class="sec-hd"><span class="chip">09</span><h2>Quick Decision Rules</h2>
+      <p class="sec-desc">판단이 애매할 때 이 순서로 해결합니다.</p></div>
+    <div class="tbl-scroll"><table>
+      <tr><th>고민</th><th>답</th></tr>
+      <tr><td><strong>무엇부터 정하나</strong></td><td>장식 밀도. full / half / quiet 중 하나를 먼저 고른다</td></tr>
+      <tr><td><strong>색</strong></td><td>이 블록에 색 하나 → 내부는 검정·흰색. 옆 블록과 같은 색은 피한다</td></tr>
+      <tr><td><strong>색 위 글자색</strong></td><td>고르지 않는다. <code>--on-*</code>를 그대로 쓴다</td></tr>
+      <tr><td><strong>팔레트 색으로 글씨</strong></td><td>24px 이상 제목의 빨강·파랑만. 나머지는 검정</td></tr>
+      <tr><td><strong>폰트</strong></td><td>제목 display, 본문 sans. 16px 이하에 검은고딕 금지</td></tr>
+      <tr><td><strong>테두리</strong></td><td>언제나 2px. 1px도 3px도 없다</td></tr>
+      <tr><td><strong>그림자</strong></td><td>하드 섀도우 3종 중 하나. 흐릿한 그림자는 존재하지 않는다</td></tr>
+      <tr><td><strong>모서리</strong></td><td>0. 칩·뱃지만 pill</td></tr>
+      <tr><td><strong>라벨</strong></td><td>검정 칩 + 흰 글씨. 모노스페이스는 이 시스템에 없다</td></tr>
+      <tr><td><strong>패턴을 깔고 싶다</strong></td><td>글자가 얹히는 면인가? 그렇다면 깔지 않는다</td></tr>
+      <tr><td><strong>삭제 버튼</strong></td><td>빨강 아님. Neutral 버튼 + 확인 모달</td></tr>
+      <tr><td><strong>차트 색이 부족</strong></td><td>색을 늘리지 말고 패턴 채우기를 쓴다</td></tr>
+      <tr><td><strong>겹침</strong></td><td>z-index 6단계 중 하나 — 새 값 발명 금지</td></tr>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>TERRAZZO DESIGN SYSTEM · 검은고딕 + Archivo Black + Gothic A1 · 팔레트 6색</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var r=document.documentElement,b=document.body;
+  var t=document.getElementById('tgl');
+  t.addEventListener('click',function(){
+    var d=r.getAttribute('data-theme')==='dark';
+    r.setAttribute('data-theme',d?'light':'dark');
+    t.textContent=d?'Dark':'Light';
+  });
+  var btns=document.querySelectorAll('.dens button');
+  btns.forEach(function(x){
+    x.addEventListener('click',function(){
+      b.setAttribute('data-density',x.dataset.d);
+      btns.forEach(function(y){y.setAttribute('aria-pressed',String(y===x))});
+    });
+  });
+})();
+</script>
+</body>
+</html>

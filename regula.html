@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 제도용 자(ruler) — 상단 눈금 띠, 좌측 고정 목차, 본문은 눈금처럼 가는 선으로 구획 */
+:root{
+  --paper:#F1F3F0; --surface:#FFFFFF; --ink:#15171A; --ink-2:#4A4F57; --ink-3:#7E848D;
+  --rule:#D3D7D2; --mark:#F2C230; --mark-ink:#15171A; --error:#C2382D; --ok:#1F7A4D;
+  --display:"Hahmlet","Nanum Myeongjo",Georgia,serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111214; --surface:#1A1C1F; --ink:#ECEDEA; --ink-2:#AAAFB6; --ink-3:#6E747C;
+  --rule:#2C2F34; --mark:#F2C230; --mark-ink:#15171A; --error:#FF6E61; --ok:#4CC488; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111214; --surface:#1A1C1F; --ink:#ECEDEA; --ink-2:#AAAFB6; --ink-3:#6E747C;
+  --rule:#2C2F34; --mark:#F2C230; --mark-ink:#15171A; --error:#FF6E61; --ok:#4CC488; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration-color:var(--mark);text-decoration-thickness:2px;text-underline-offset:3px}
+a:hover{background:color-mix(in srgb,var(--mark) 30%,transparent)}
+:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:-.01em}
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+/* 눈금 띠 */
+.ruler{height:34px;border-bottom:1px solid var(--ink);position:relative;overflow:hidden;
+  background:
+   repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 50px) bottom/100% 16px no-repeat,
+   repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 25px) bottom/100% 10px no-repeat,
+   repeating-linear-gradient(90deg,var(--ink-3) 0 1px,transparent 1px 5px) bottom/100% 5px no-repeat}
+.ruler span{position:absolute;top:3px;font-family:var(--mono);font-size:10px;color:var(--ink-2);transform:translateX(3px)}
+
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.shell{display:grid;grid-template-columns:190px minmax(0,1fr);gap:56px;padding-block:48px 96px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--rule)}
+nav.toc a{text-decoration:none;padding:6px 0 6px 14px;margin-left:-1px;border-left:2px solid transparent;font-size:14px;color:var(--ink-2)}
+nav.toc a:hover{background:none;color:var(--ink);border-left-color:var(--mark)}
+nav.toc .label{padding:0 0 10px 14px}
+main{min-width:0;display:flex;flex-direction:column;gap:96px}
+
+/* hero */
+.hero{display:grid;gap:20px;max-width:760px}
+.hero h1{font-size:clamp(48px,9vw,104px);line-height:.95;font-weight:700}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--mark) 62% 90%,transparent 90%)}
+.hero p{font-size:18px;color:var(--ink-2);margin:0;max-width:60ch}
+.etym{display:flex;flex-wrap:wrap;gap:8px 24px;font-family:var(--mono);font-size:13px;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:14px}
+.etym b{color:var(--ink);font-weight:500}
+
+section > header{display:grid;gap:8px;margin-bottom:32px;max-width:680px}
+section > header h2{font-size:clamp(28px,4vw,40px);line-height:1.15}
+section > header p{margin:0;color:var(--ink-2)}
+
+/* 공식 */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px;padding:28px;background:var(--surface);border:1px solid var(--rule);margin-bottom:40px}
+.lab svg{width:100%;height:auto;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:12.5px;padding:5px 10px;border:1px solid var(--rule);background:transparent;color:var(--ink-2);cursor:pointer;border-radius:2px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.readout{font-family:var(--mono);font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.readout small{font-size:13px;color:var(--ink-3);display:block;margin-top:8px;letter-spacing:.04em}
+.lab-side{display:flex;flex-direction:column;gap:18px;min-width:0}
+.lab-side p{margin:0;color:var(--ink-2);font-size:14.5px}
+
+.formulas{border-top:1px solid var(--ink)}
+.f{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.f h3{font-family:var(--body);font-size:16px;font-weight:600;letter-spacing:0}
+.f .eq{font-family:var(--mono);font-size:15px;color:var(--ink);overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.f p{margin:0;color:var(--ink-2);font-size:14.5px}
+.f .src{display:block;margin-top:6px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+
+/* 툴 2단 */
+.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:40px}
+.tool{background:var(--surface);border:1px solid var(--rule);padding:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.tool h3{font-size:20px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font:inherit;font-family:var(--mono);font-size:13.5px;background:var(--paper);color:var(--ink);border:1px solid var(--rule);padding:7px 9px;border-radius:2px;min-width:0}
+input[type=color]{width:38px;height:34px;border:1px solid var(--rule);background:none;padding:2px;cursor:pointer}
+.steps{display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.step{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:baseline}
+.step .mono{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.step div:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.swatch{flex:1;min-width:0;padding:18px;border:1px solid var(--rule);font-size:15px}
+.swatch b{font-size:22px;display:block}
+.pass{font-family:var(--mono);font-size:12px;padding:3px 8px;border:1px solid currentColor;border-radius:2px}
+.pass.y{color:var(--ok)} .pass.n{color:var(--error)}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:40px minmax(0,1fr) 56px;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.bar i{display:block;height:10px;background:var(--ink)}
+.bar span:last-child{color:var(--ink-3);text-align:right}
+
+/* 패턴 */
+.scale{position:relative;margin:8px 0 36px;padding-top:30px}
+.scale .track{height:22px;border:1px solid var(--ink);border-top:none;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px calc(100%/8)) bottom/100% 10px no-repeat}
+.scale .ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:8px}
+.scale .pin{position:absolute;top:0;transform:translateX(-50%);font-family:var(--mono);font-size:11px;background:var(--mark);color:var(--mark-ink);padding:1px 5px;white-space:nowrap}
+.patterns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.p{background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.p .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.p h3{font-size:21px}
+.p h3 small{font-family:var(--mono);font-size:11.5px;font-weight:400;color:var(--ink-3);margin-left:6px;letter-spacing:.02em}
+.lvl{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.lvl b{display:inline-block;width:7px;height:7px;margin-left:2px;border:1px solid var(--ink-3)}
+.lvl b.on{background:var(--ink);border-color:var(--ink)}
+.p dl{margin:0;display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 10px;font-size:13.5px}
+.p dt{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:2px}
+.p dd{margin:0;color:var(--ink-2)}
+
+/* 미니 목업 (흑백 와이어프레임) */
+.mock{height:132px;background:var(--paper);border:1px solid var(--rule);position:relative;overflow:hidden;padding:14px;font-size:11px}
+.ln{height:6px;background:var(--rule);margin-bottom:7px;border-radius:1px}
+.ln.d{background:var(--ink-3);width:55%}
+.dim{position:absolute;inset:0;background:color-mix(in srgb,var(--ink) 38%,transparent)}
+.tag{position:absolute;background:var(--ink);color:var(--paper);padding:5px 10px;border-radius:14px;font-size:10.5px;white-space:nowrap}
+.sheet{position:absolute;left:10px;right:10px;bottom:0;background:var(--surface);padding:12px 12px 6px;border-radius:10px 10px 0 0;display:grid;gap:5px}
+.sheet::before{content:"";width:26px;height:3px;background:var(--rule);justify-self:center;border-radius:2px}
+.box{position:absolute;background:var(--surface);border-radius:8px;padding:10px;display:grid;gap:6px;text-align:center}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.btns span{padding:4px;border-radius:4px;background:var(--rule)}
+.btns span+span{background:var(--ink);color:var(--paper)}
+.field{border:1.5px solid var(--error);background:var(--surface);padding:6px 8px;border-radius:4px;margin-top:4px}
+.err{color:var(--error);font-size:10.5px;margin-top:4px}
+.bnr{position:absolute;left:0;right:0;top:0;background:color-mix(in srgb,var(--mark) 35%,var(--surface));padding:7px 14px;display:flex;justify-content:space-between}
+.dot{position:absolute;min-width:15px;height:15px;border-radius:8px;background:var(--error);color:#fff;font-size:9px;text-align:center;line-height:15px;padding:0 4px}
+.icon{position:absolute;width:24px;height:24px;border:1.5px solid var(--ink-2);border-radius:6px}
+.fab{position:absolute;right:14px;bottom:12px;width:34px;height:34px;border-radius:50%;background:var(--surface);border:3px solid var(--mark);display:grid;place-items:center;font-size:16px}
+.tip{position:absolute;background:var(--ink);color:var(--paper);padding:4px 8px;border-radius:4px;font-size:10px}
+.tip::after{content:"";position:absolute;left:50%;bottom:-4px;width:8px;height:8px;background:var(--ink);transform:translateX(-50%) rotate(45deg)}
+
+.compare{overflow-x:auto;margin-top:32px;border:1px solid var(--rule);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:11.5px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+td:first-child{font-weight:600;white-space:nowrap}
+
+/* 양식 */
+.templates{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
+.tpl{border:1px solid var(--rule);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.tpl h3{font-size:24px}
+.tpl ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:14.5px;display:grid;gap:4px}
+.cordovan{display:flex;gap:0;height:56px;border:1px solid var(--rule)}
+.cordovan div{flex:1;display:flex;align-items:flex-end;padding:6px;font-family:var(--mono);font-size:10px}
+.slots{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.slot{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed var(--rule);font-size:14.5px}
+.slot span:last-child{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+
+/* 레퍼런스 */
+.refs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 48px}
+.refgroup h3{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding-bottom:10px;border-bottom:1px solid var(--ink);margin-bottom:4px}
+.ref{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding:11px 0;border-bottom:1px solid var(--rule)}
+.ref input{margin:4px 0 0;accent-color:var(--ink);width:15px;height:15px}
+.ref .t{font-weight:600;font-size:14.5px}
+.ref .t small{font-weight:400;color:var(--ink-3);font-size:12.5px;margin-left:6px}
+.ref p{margin:2px 0 0;font-size:13.5px;color:var(--ink-2)}
+.ref.done .t{text-decoration:line-through;text-decoration-color:var(--ink-3);color:var(--ink-3)}
+.progress{display:flex;align-items:center;gap:14px;margin-bottom:28px;font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+.progress .meter{flex:1;max-width:320px;height:8px;border:1px solid var(--ink);position:relative}
+.progress .meter i{position:absolute;inset:0 auto 0 0;background:var(--mark)}
+
+.log{border-top:1px solid var(--ink)}
+.log .e{display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.log .e span:first-child{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+footer{border-top:1px solid var(--rule);padding-block:24px 48px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+
+@media (max-width:980px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:40px;padding-block:32px 72px}
+  nav.toc{position:static;flex-direction:row;flex-wrap:wrap;border-left:none;border-bottom:1px solid var(--rule);gap:4px 16px;padding-bottom:12px}
+  nav.toc .label{width:100%;padding:0}
+  nav.toc a{padding:2px 0;border:none}
+  .patterns{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lab,.templates{grid-template-columns:minmax(0,1fr)}
+  .f{grid-template-columns:minmax(0,1fr);gap:8px}
+}
+@media (max-width:640px){
+  .patterns,.tools,.refs{grid-template-columns:minmax(0,1fr)}
+  .lab{padding:18px}
+  .scale .pin{font-size:9.5px}
+  .log .e{grid-template-columns:minmax(0,1fr);gap:2px}
+}
+@media (prefers-reduced-motion:no-preference){ .bar i,.progress .meter i{transition:width .3s ease} }
+</style>
+</head>
+<body>
+
+<div class="ruler" aria-hidden="true" id="ruler"></div>
+
+<div class="wrap">
+<div class="shell">
+  <nav class="toc" aria-label="목차">
+    <span class="label">Regula · v0.1</span>
+    <a href="#principles">원리와 공식</a>
+    <a href="#tools">계산 도구</a>
+    <a href="#patterns">UI 패턴</a>
+    <a href="#templates">페이지 양식</a>
+    <a href="#references">레퍼런스</a>
+    <a href="#log">작업 기록</a>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <span class="label">개인 디자인 규칙집</span>
+      <h1><em>Regula</em></h1>
+      <p>디자인을 공부하면서 찾은 공식, 화면 패턴, 페이지 양식을 한 곳에 쌓는 노트입니다. 감으로 고르던 값을 이유가 있는 값으로 바꾸는 게 목표예요.</p>
+      <div class="etym"><span><b>regula</b> (라틴어)</span><span>① 자, 곧은 막대</span><span>② 규칙, 기준</span></div>
+    </div>
+
+    <!-- 원리와 공식 -->
+    <section id="principles">
+      <header>
+        <span class="label">§ 1 원리와 공식</span>
+        <h2>숫자로 남길 수 있는 것은 숫자로</h2>
+        <p>비율, 간격, 글자 크기, 대비처럼 측정할 수 있는 규칙을 모읍니다. 각 항목에 출처를 붙여 두고, 직접 써 본 뒤 메모를 덧붙여 가세요.</p>
+      </header>
+
+      <div class="lab">
+        <svg id="golden" viewBox="0 0 480 300" role="img" aria-label="비율별 사각형 분할 도해"></svg>
+        <div class="lab-side">
+          <span class="label">실험 · 정사각형을 떼어내면</span>
+          <div class="chips" id="ratioChips"></div>
+          <div class="readout" id="ratioReadout">1.618<small>남은 사각형의 비율</small></div>
+          <p id="ratioNote"></p>
+        </div>
+      </div>
+
+      <div class="formulas" id="formulaList"></div>
+    </section>
+
+    <!-- 계산 도구 -->
+    <section id="tools">
+      <header>
+        <span class="label">§ 2 계산 도구</span>
+        <h2>값을 직접 넣어 보기</h2>
+        <p>공식을 외우는 대신 바로 계산해 보는 곳입니다. 작업 중에 열어 두고 쓰면 됩니다.</p>
+      </header>
+      <div class="tools">
+        <div class="tool">
+          <span class="label">모듈러 타입 스케일</span>
+          <h3>글자 크기 단계</h3>
+          <div class="row">
+            <label class="label" for="tsBase">기준</label>
+            <input type="number" id="tsBase" value="16" min="10" max="24" style="width:72px">
+            <label class="label" for="tsRatio">비율</label>
+            <select id="tsRatio">
+              <option value="1.125">1.125 · 장2도</option>
+              <option value="1.2">1.200 · 단3도</option>
+              <option value="1.25" selected>1.250 · 장3도</option>
+              <option value="1.333">1.333 · 완전4도</option>
+              <option value="1.5">1.500 · 완전5도</option>
+              <option value="1.618">1.618 · 황금비</option>
+            </select>
+          </div>
+          <div class="steps" id="tsSteps"></div>
+        </div>
+
+        <div class="tool">
+          <span class="label">WCAG 명도 대비</span>
+          <h3>글자색과 배경색</h3>
+          <div class="row">
+            <input type="color" id="fgPick" value="#4a4f57" aria-label="글자색 선택">
+            <input type="text" id="fgHex" value="#4A4F57" style="width:96px" aria-label="글자색 hex">
+            <span class="label">on</span>
+            <input type="color" id="bgPick" value="#f1f3f0" aria-label="배경색 선택">
+            <input type="text" id="bgHex" value="#F1F3F0" style="width:96px" aria-label="배경색 hex">
+          </div>
+          <div class="row" style="align-items:stretch">
+            <div class="swatch" id="crSwatch"><b>가나다 Aa</b>본문 미리보기</div>
+            <div style="display:flex;flex-direction:column;justify-content:center;gap:8px">
+              <div class="readout" id="crRatio" style="font-size:36px">0:1</div>
+              <div class="row" id="crPass"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool" style="grid-column:1/-1">
+          <span class="label">간격 스케일 · Refactoring UI 방식</span>
+          <h3>인접한 값은 25% 이상 차이 나게</h3>
+          <div class="bars" id="spaceBars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UI 패턴 -->
+    <section id="patterns">
+      <header>
+        <span class="label">§ 3 UI 패턴 · 알림</span>
+        <h2>사용자에게 알려주는 방법 9가지</h2>
+        <p>릴스에서 본 9가지를 방해 정도 순으로 다시 놓았습니다. 왼쪽일수록 화면 구석에서 조용히 알리고, 오른쪽일수록 하던 일을 멈추게 합니다. 고를 때는 "이 메시지가 사용자의 흐름을 끊을 자격이 있나"부터 따져 보세요.</p>
+      </header>
+      <div class="scale" id="scale">
+        <div class="track"></div>
+        <div class="ends"><span>조용함 · 지나쳐도 됨</span><span>멈춤 · 응답해야 함</span></div>
+      </div>
+      <div class="patterns" id="patternGrid"></div>
+
+      <div class="compare">
+        <table>
+          <thead><tr><th>패턴</th><th>사라지는 방식</th><th>액션</th><th>헷갈리는 짝과의 차이</th></tr></thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 페이지 양식 -->
+    <section id="templates">
+      <header>
+        <span class="label">§ 4 페이지 양식</span>
+        <h2>다시 쓸 수 있는 디자인 양식</h2>
+        <p>직접 만든 디자인 시스템과 페이지별 양식을 등록하는 곳입니다. 첫 항목은 Lecto에 쓴 Cordovan이에요.</p>
+      </header>
+      <div class="templates">
+        <div class="tpl">
+          <span class="label">No.1 · Lecto에서 사용 중</span>
+          <h3>Cordovan</h3>
+          <div class="cordovan" aria-hidden="true">
+            <div style="background:#FFFFFF;color:#555">여백</div>
+            <div style="background:#1B1A19;color:#ddd">잉크</div>
+            <div style="background:#6B1E24;color:#f1d9d9">옥스블러드</div>
+          </div>
+          <ul>
+            <li>흰 여백을 넓게 쓰고, 글자는 잉크색으로</li>
+            <li>강조는 옥스블러드 한 가지만</li>
+            <li>라벨은 모노스페이스</li>
+            <li>카드·박스를 남발하는 AI스러운 레이아웃을 피함</li>
+          </ul>
+          <p class="label" style="margin:0">색은 대략적인 표시예요 · DESIGN.md의 실제 토큰으로 교체 예정</p>
+        </div>
+        <div class="tpl">
+          <span class="label">채워 나갈 양식</span>
+          <div class="slots">
+            <div class="slot"><span>Regula (이 페이지)</span><span>토큰 정리 예정</span></div>
+            <div class="slot"><span>랜딩 페이지</span><span>비어 있음</span></div>
+            <div class="slot"><span>로그인 · 회원가입</span><span>비어 있음</span></div>
+            <div class="slot"><span>설정 화면</span><span>비어 있음</span></div>
+            <div class="slot"><span>대시보드</span><span>비어 있음</span></div>
+            <div class="slot"><span>글 · 블로그 본문</span><span>비어 있음</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 레퍼런스 -->
+    <section id="references">
+      <header>
+        <span class="label">§ 5 레퍼런스</span>
+        <h2>읽고, 보고, 따라 해 볼 것</h2>
+        <p>책, 공개 디자인 시스템, 저장소, 커뮤니티를 모았습니다. 본 것은 체크해 두세요. 체크 표시는 이 브라우저에만 저장됩니다.</p>
+      </header>
+      <div class="progress"><span id="refCount">0 / 0</span><div class="meter"><i id="refMeter" style="width:0"></i></div></div>
+      <div class="refs" id="refList"></div>
+    </section>
+
+    <!-- 작업 기록 -->
+    <section id="log">
+      <header>
+        <span class="label">§ 6 작업 기록</span>
+        <h2>쌓아 온 것, 쌓을 것</h2>
+      </header>
+      <div class="log">
+        <div class="e"><span>2026-10-30</span><span>v0.1 시작. 황금비·타입 스케일·간격·대비 공식, 알림 패턴 9가지, Cordovan 양식, 레퍼런스 목록 정리.</span></div>
+        <div class="e"><span>다음</span><span>Cordovan 실제 토큰 옮기기 · 색 이론 섹션(색상환, 60-30-10 실습) · 게슈탈트 법칙 도해 · 버튼과 입력창 패턴 추가</span></div>
+        <div class="e"><span>나중</span><span>GitHub 저장소로 옮겨 페이지를 여러 개로 나누기 · 레퍼런스에 메모 달기</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer>Regula · zero_ruler의 디자인 규칙집 · 출처가 표시된 내용은 각 원저자의 것입니다.</footer>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* 눈금 숫자 */
+const ruler=$('#ruler');let rh='';for(let i=0;i<60;i++)rh+=`<span style="left:${i*50}px">${i}</span>`;ruler.innerHTML=rh;
+
+/* 황금비 실험 */
+const ratios=[
+ {r:1.414,n:'√2 · A4 용지',note:'A4는 반으로 접어도 같은 비율이 남도록 만든 종이예요. 하지만 정사각형을 떼어내면 2.414라는 전혀 다른 비율이 남습니다.'},
+ {r:1.5,n:'3:2 · 사진',note:'35mm 필름과 많은 카메라 센서의 비율. 정사각형을 떼면 2:1의 길쭉한 사각형이 남아요.'},
+ {r:1.618,n:'φ · 황금비',note:'정사각형을 떼어내도 남은 사각형이 처음과 같은 비율입니다. 이 성질 때문에 끝없이 나선을 그릴 수 있어요. 레이아웃에서는 본문:사이드바 = 1.618:1 같은 식으로 씁니다.'},
+ {r:1.778,n:'16:9 · 화면',note:'영상과 모니터의 표준 비율. 정사각형을 떼면 1.286이 남아 자기닮음이 깨집니다.'}
+];
+let cur=2;
+const chips=$('#ratioChips');
+chips.innerHTML=ratios.map((x,i)=>`<button class="chip" type="button" data-i="${i}" aria-pressed="${i===cur}">${x.r} ${esc(x.n.split(' · ')[1])}</button>`).join('');
+chips.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cur=+b.dataset.i;drawGolden();});
+function drawGolden(){
+  chips.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',i===cur));
+  const R=ratios[cur].r, H=280, W=Math.min(470,H*R), h=W/R;
+  let x=(480-W)/2,y=(300-h)/2,w=W,hh=h;
+  let out=`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
+  let path='';
+  for(let i=0;i<9&&w>2&&hh>2;i++){
+    const d=i%4;let s,sx,sy,a,b,c2;
+    if(d===0){s=hh;if(s>w)break;sx=x;sy=y;a=[sx,sy+s];b=[sx+s,sy];x+=s;w-=s;}
+    else if(d===1){s=w;if(s>hh)break;sx=x;sy=y;a=[sx,sy];b=[sx+s,sy+s];y+=s;hh-=s;}
+    else if(d===2){s=hh;if(s>w)break;sx=x+w-s;sy=y;a=[sx+s,sy];b=[sx,sy+s];w-=s;}
+    else {s=w;if(s>hh)break;sx=x;sy=y+hh-s;a=[sx+s,sy+s];b=[sx,sy];hh-=s;}
+    const fill=i===0?'color-mix(in srgb,var(--mark) 45%,transparent)':'none';
+    out+=`<rect x="${sx}" y="${sy}" width="${s}" height="${s}" fill="${fill}" stroke="var(--ink-3)" stroke-width="1"/>`;
+    path+=(i===0?`M${a[0]} ${a[1]}`:'')+` A${s} ${s} 0 0 1 ${b[0]} ${b[1]}`;
+  }
+  out+=`<path d="${path}" fill="none" stroke="var(--ink)" stroke-width="2"/>`;
+  out+=`<text x="${(480-W)/2}" y="${(300-h)/2-6}" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--ink-3)">1 : ${R}</text>`;
+  $('#golden').innerHTML=out;
+  const rem=1/(R-1);
+  $('#ratioReadout').innerHTML=`${rem.toFixed(3)}<small>정사각형을 떼고 남은 사각형의 비율</small>`;
+  $('#ratioNote').textContent=ratios[cur].note;
+}
+drawGolden();
+
+/* 공식 목록 */
+const F=[
+ ['황금비','φ = (1 + √5) / 2 ≈ 1.618','긴 변:짧은 변이 (긴+짧은):긴 변과 같아지는 비율. 위 실험처럼 자기닮음이 핵심이에요.','유클리드 『원론』 · 르 코르뷔지에 Modulor'],
+ ['모듈러 타입 스케일','size(n) = base × ratioⁿ','기준 크기에 같은 비율을 거듭 곱해 글자 크기를 정합니다. 단계 사이 간격이 일정하게 느껴져요.','Tim Brown, "More Meaningful Typography" (A List Apart)'],
+ ['8pt 그리드','spacing ∈ {4, 8, 12, 16, 24, 32, 48, 64 …}','간격과 크기를 8의 배수(작은 곳은 4)로만 씁니다. 자의적인 13px 같은 값이 사라집니다.','Material Design · Refactoring UI'],
+ ['근접성','gap(그룹 안) < gap(그룹 사이)','가까이 있는 것은 한 묶음으로 읽힙니다. 묶음 바깥 여백이 안쪽보다 커야 그룹이 보여요.','게슈탈트 근접성 법칙'],
+ ['명도 대비','(L₁ + 0.05) / (L₂ + 0.05) ≥ 4.5','본문 글자와 배경의 상대 휘도 비. 큰 글자(24px 이상 또는 굵은 18.66px 이상)는 3:1까지 허용.','WCAG 2.2 · 1.4.3'],
+ ['줄 길이','한 줄 45–75자 (영문 기준, 이상적 66자)','너무 길면 다음 줄을 찾기 어렵고, 너무 짧으면 리듬이 끊깁니다. 한글은 자폭이 넓어 더 적은 글자 수가 맞아요.','Robert Bringhurst, 『The Elements of Typographic Style』'],
+ ['행간','본문 line-height ≈ 1.5','본문은 1.4–1.7, 큰 제목은 1.1–1.25로 좁힙니다. 글자가 클수록 행간 배수는 작아져요.','WCAG 1.4.12 · Refactoring UI'],
+ ['60-30-10','주조색 60% · 보조색 30% · 강조색 10%','면적 비율로 색의 역할을 나눕니다. 강조색이 10%를 넘으면 강조가 아니게 돼요.','인테리어 디자인 관례'],
+ ['피츠의 법칙','T = a + b · log₂(1 + D / W)','목표까지 걸리는 시간은 거리(D)가 멀수록, 크기(W)가 작을수록 늘어납니다. 자주 누르는 버튼은 크고 가깝게.','Paul Fitts (1954) · Laws of UX'],
+ ['힉의 법칙','RT = a + b · log₂(n + 1)','선택지(n)가 늘수록 결정 시간이 늘어납니다. 메뉴는 줄이고, 많으면 단계로 나눠요.','Hick (1952) · Hyman (1953)'],
+ ['터치 영역','iOS ≥ 44 × 44pt · Android ≥ 48 × 48dp','눈에 보이는 아이콘이 작아도 눌리는 영역은 이만큼 확보합니다.','Apple HIG · Material Design']
+];
+$('#formulaList').innerHTML=F.map(f=>`<div class="f"><h3>${esc(f[0])}</h3><div class="eq">${esc(f[1])}</div><p>${esc(f[2])}<span class="src">${esc(f[3])}</span></p></div>`).join('');
+
+/* 타입 스케일 */
+function ts(){
+  const b=Math.max(10,Math.min(24,+$('#tsBase').value||16)), r=+$('#tsRatio').value;
+  const names=['캡션','본문','부제','소제목','제목','큰 제목','디스플레이'];
+  let h='';for(let n=5;n>=-1;n--){const s=b*Math.pow(r,n);h+=`<div class="step"><span class="mono">${s.toFixed(1)}px</span><div style="font-size:${Math.min(s,64)}px;font-family:${n>1?'var(--display)':'var(--body)'};font-weight:${n>1?700:400}">${names[n+1]} 레굴라</div></div>`;}
+  $('#tsSteps').innerHTML=h;
+}
+$('#tsBase').addEventListener('input',ts);$('#tsRatio').addEventListener('change',ts);ts();
+
+/* 명도 대비 */
+function lum(hex){const m=hex.replace('#','').match(/^([0-9a-f]{6}|[0-9a-f]{3})$/i);if(!m)return null;let v=m[1];if(v.length===3)v=v.split('').map(c=>c+c).join('');
+  return [0,2,4].map(i=>{let c=parseInt(v.substr(i,2),16)/255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4)}).reduce((a,c,i)=>a+c*[0.2126,0.7152,0.0722][i],0);}
+function cr(){
+  const f=$('#fgHex').value.trim(),g=$('#bgHex').value.trim();const L1=lum(f),L2=lum(g);if(L1==null||L2==null)return;
+  const r=(Math.max(L1,L2)+0.05)/(Math.min(L1,L2)+0.05);
+  $('#crRatio').textContent=r.toFixed(2)+':1';
+  const sw=$('#crSwatch');sw.style.color=f.startsWith('#')?f:'#'+f;sw.style.background=g.startsWith('#')?g:'#'+g;
+  const t=[['AA 본문',4.5],['AA 큰 글자',3],['AAA 본문',7]];
+  $('#crPass').innerHTML=t.map(([n,v])=>`<span class="pass ${r>=v?'y':'n'}">${n} ${r>=v?'통과':'미달'}</span>`).join('');
+}
+function link(p,t){$(p).addEventListener('input',e=>{$(t).value=e.target.value.toUpperCase();cr();});$(t).addEventListener('input',e=>{const v=e.target.value.trim();if(/^#?[0-9a-f]{6}$/i.test(v))$(p).value=(v[0]==='#'?v:'#'+v).toLowerCase();cr();});}
+link('#fgPick','#fgHex');link('#bgPick','#bgHex');cr();
+
+/* 간격 */
+const sp=[4,8,12,16,24,32,48,64,96,128];
+$('#spaceBars').innerHTML=sp.map((v,i)=>`<div class="bar"><span>${v}</span><i style="width:${v/128*100}%"></i><span>${i?'+'+Math.round((v/sp[i-1]-1)*100)+'%':'기준'}</span></div>`).join('');
+
+/* 패턴 */
+const P=[
+ {k:'뱃지',e:'Badge',l:1,m:`<div class="icon" style="left:40%;top:38%"></div><div class="dot" style="left:calc(40% + 16px);top:calc(38% - 6px)">3</div><div class="icon" style="left:60%;top:38%"></div><div class="dot" style="left:calc(60% + 19px);top:calc(38% - 3px);min-width:7px;height:7px;padding:0"></div>`,
+  w:'새 항목이 있다는 사실만 표시. 사용자가 스스로 확인하러 옴.',x:'급한 내용. 아무도 안 누를 수 있어요.',t:'확인하면 사라짐',a:'없음',d:'툴팁: 툴팁은 설명, 뱃지는 상태'},
+ {k:'툴팁',e:'Tooltip',l:2,m:`<div class="ln d"></div><div class="tip" style="left:20px;top:44px">최근 3개월 기준</div><div style="position:absolute;left:20px;bottom:22px;font-size:20px;font-weight:600">24%</div>`,
+  w:'용어나 숫자에 붙는 짧은 보조 설명.',x:'꼭 알아야 하는 정보. 터치 기기에선 호버가 없어요.',t:'포인터가 벗어나면',a:'없음',d:'코치마크: 툴팁은 요청할 때, 코치마크는 먼저 띄움'},
+ {k:'토스트',e:'Toast',l:3,m:`<div class="ln d"></div><div class="ln" style="width:80%"></div><div class="tag" style="left:50%;bottom:14px;transform:translateX(-50%)">저장했어요</div>`,
+  w:'방금 한 행동이 성공했다는 짧은 확인.',x:'실패 알림. 읽기 전에 사라질 수 있어요.',t:'2–4초 뒤 자동',a:'없음',d:'스낵바: 토스트에 액션 버튼이 붙으면 스낵바'},
+ {k:'스낵바',e:'Snackbar',l:4,m:`<div class="ln d"></div><div class="tag" style="left:12px;right:12px;bottom:12px;border-radius:6px;display:flex;justify-content:space-between"><span>지원서를 삭제했어요</span><span style="color:var(--mark)">되돌리기</span></div>`,
+  w:'되돌릴 수 있는 행동 직후. "되돌리기" 하나를 제공.',x:'버튼이 두 개 이상 필요할 때.',t:'4–10초 · 호버하면 멈춤',a:'1개',d:'토스트: 액션 유무가 유일한 차이'},
+ {k:'인라인 오류',e:'Inline error',l:5,m:`<div class="label" style="font-size:9.5px">이메일</div><div class="field">woody@mail</div><div class="err">이메일 형식이 아니에요. @ 뒤 도메인을 확인해 주세요.</div>`,
+  w:'입력값이 틀렸을 때, 그 칸 바로 아래에.',x:'페이지 전체 오류. 그건 배너로.',t:'고치면 사라짐',a:'없음',d:'토스트: 오류를 토스트로 띄우면 어느 칸인지 모름'},
+ {k:'배너',e:'Banner',l:6,m:`<div class="bnr"><span>서류 마감이 3일 남았어요</span><span>×</span></div><div style="margin-top:34px"><div class="ln d"></div><div class="ln"></div><div class="ln" style="width:70%"></div></div>`,
+  w:'계속 알고 있어야 하는 상태 (마감, 오프라인, 점검).',x:'방금 한 행동의 결과.',t:'사용자가 닫을 때까지',a:'0–2개',d:'모달: 배너는 작업을 막지 않음'},
+ {k:'코치마크',e:'Coach mark',l:7,m:`<div class="ln d"></div><div class="ln"></div><div class="dim"></div><div style="position:absolute;left:14px;top:46px;color:#fff;font-size:11px;font-weight:600">여기서 포폴을 올려요</div><div style="position:absolute;left:14px;top:66px;background:#fff;color:#15171A;border-radius:10px;padding:2px 8px;font-size:10px">알겠어요</div><div class="fab">+</div>`,
+  w:'처음 쓰는 기능 하나를 짚어줄 때. 한 번만.',x:'매번 보여주기, 여러 개 연달아 띄우기.',t:'확인 버튼',a:'1개',d:'툴팁: 툴팁은 요청할 때, 코치마크는 먼저 띄움'},
+ {k:'바텀시트',e:'Bottom sheet',l:8,m:`<div class="ln d"></div><div class="ln"></div><div class="dim"></div><div class="sheet"><span>공유하기</span><span>이름 바꾸기</span><span style="color:var(--error)">삭제하기</span></div>`,
+  w:'지금 화면을 유지한 채 고를 선택지가 여러 개일 때.',x:'되돌릴 수 없는 결정의 최종 확인.',t:'바깥 탭 · 아래로 쓸기',a:'여러 개',d:'모달: 시트는 고르기, 모달은 결정하기'},
+ {k:'모달',e:'Modal dialog',l:9,m:`<div class="ln d"></div><div class="ln"></div><div class="dim"></div><div class="box" style="left:14%;right:14%;top:20px"><b style="font-size:11px">지원서를 제출할까요?</b><span style="color:var(--ink-3);font-size:9.5px">제출하면 고칠 수 없어요</span><div class="btns"><span>취소</span><span>제출</span></div></div>`,
+  w:'되돌릴 수 없는 행동 직전, 꼭 답을 받아야 할 때.',x:'단순 안내. 사용자는 모달을 읽지 않고 닫는 습관이 있어요.',t:'버튼을 눌러야만',a:'2개 (취소/확인)',d:'바텀시트: 시트는 고르기, 모달은 결정하기'}
+];
+$('#patternGrid').innerHTML=P.map(p=>`<article class="p"><div class="mock" aria-hidden="true">${p.m}</div><div class="top"><h3>${p.k}<small>${p.e}</small></h3><span class="lvl" aria-label="방해 정도 ${p.l}/9">${Array.from({length:9},(_,i)=>`<b class="${i<p.l?'on':''}"></b>`).join('')}</span></div><dl><dt>쓸 때</dt><dd>${esc(p.w)}</dd><dt>피할 때</dt><dd>${esc(p.x)}</dd></dl></article>`).join('');
+const scale=$('#scale');P.forEach((p,i)=>{const s=document.createElement('span');s.className='pin';s.textContent=p.k;s.style.left=(i/8*100)+'%';if(i===0)s.style.transform='none';if(i===8)s.style.transform='translateX(-100%)';s.style.top=(i%2?14:0)+'px';scale.appendChild(s);});
+scale.style.paddingTop='38px';
+$('#compareBody').innerHTML=P.map(p=>`<tr><td>${p.k}</td><td>${esc(p.t)}</td><td>${esc(p.a)}</td><td>${esc(p.d)}</td></tr>`).join('');
+
+/* 레퍼런스 */
+const R=[
+ ['책',[
+  ['Refactoring UI','Adam Wathan · Steve Schoger','개발자를 위한 실전 UI 규칙. 간격·색·그림자 스케일을 정하는 법.','https://refactoringui.com'],
+  ['Laws of UX','Jon Yablonski','심리학 법칙을 UI에 적용한 책. 웹사이트로도 전부 볼 수 있어요.','https://lawsofux.com'],
+  ['디자인과 인간 심리','Don Norman','원제 The Design of Everyday Things. 어포던스, 피드백, 매핑의 고전.',''],
+  ['Don\'t Make Me Think','Steve Krug','사용성 입문서. 짧고 쉬워서 첫 책으로 좋아요.',''],
+  ['Thinking with Type','Ellen Lupton','타이포그래피 기초. 자간·행간·그리드를 그림으로 설명.',''],
+  ['Grid Systems in Graphic Design','Josef Müller-Brockmann','스위스 스타일 그리드의 원전.',''],
+  ['Interaction of Color','Josef Albers','색은 주변 색에 따라 달라 보인다는 걸 실습으로 보여줌.','']
+ ]],
+ ['공개 디자인 시스템',[
+  ['Material Design 3','Google','컴포넌트별 사용 기준이 가장 자세한 시스템.','https://m3.material.io'],
+  ['Human Interface Guidelines','Apple','iOS·macOS 앱을 만든다면 필수. Cinq나 메뉴바 앱에 바로 쓰임.','https://developer.apple.com/design/human-interface-guidelines/'],
+  ['TDS','토스','한국어 UX 라이팅과 모바일 컴포넌트 참고.','https://tossmini-docs.toss.im/tds-mobile/'],
+  ['Wanted Montage','원티드','피그마 커뮤니티에 무료 공개. 색을 투명도 단계로 쌓는 방식이 특징.','https://designcompass.org/2024/04/02/wanted-design-library/'],
+  ['Carbon','IBM','데이터가 많은 화면, 표, 폼 패턴이 강함.','https://carbondesignsystem.com'],
+  ['GOV.UK Design System','영국 정부','접근성과 쉬운 문구의 교과서.','https://design-system.service.gov.uk'],
+  ['Primer','GitHub','개발 도구 UI, 밀도 높은 화면 참고.','https://primer.style']
+ ]],
+ ['GitHub 저장소',[
+  ['awesome-design-systems','alexpate','공개 디자인 시스템 목록. 별 2.5만 개 이상.','https://github.com/alexpate/awesome-design-systems'],
+  ['awesome-design-systems','klaufel','개발자 관점의 디자인 시스템 글·책·도구 모음.','https://github.com/klaufel/awesome-design-systems'],
+  ['awesome-design-systems','cvega','컴포넌트, 보이스·톤, 스토리북 여부를 표시한 목록.','https://github.com/cvega/awesome-design-systems']
+ ]],
+ ['커뮤니티 · 글 · 디자이너',[
+  ['Nielsen Norman Group','UX 연구소','UX 용어와 패턴을 연구 근거와 함께 설명하는 글 모음.','https://www.nngroup.com/articles/'],
+  ['Steve Schoger','X (@steveschoger)','Refactoring UI 공저자. 짧은 UI 개선 팁을 자주 올림.','https://x.com/steveschoger'],
+  ['Learn UI Design','Erik Kennedy','색과 폰트 고르는 법에 대한 긴 글들.','https://www.learnui.design/blog/'],
+  ['디자인 나침반','한국 디자인 뉴스레터','국내 디자인 시스템·브랜드 소식.','https://designcompass.org'],
+  ['토스 기술 블로그','토스','디자인 시스템을 만드는 과정 글.','https://toss.tech'],
+  ['디자인 시스템 갤러리','오빠두','국내외 242개 브랜드의 색·타이포 토큰 정리.','https://www.oppadu.com/tools/design-systems-site/brand/'],
+  ['Mobbin','레퍼런스 아카이브','실제 앱 화면을 패턴별로 검색.','https://mobbin.com']
+ ]]
+];
+let done={};try{done=JSON.parse(localStorage.getItem('regula-refs')||'{}')}catch(e){}
+let id=0;
+$('#refList').innerHTML=R.map(([g,items])=>`<div class="refgroup"><h3>${esc(g)}</h3>${items.map(it=>{const k='r'+(id++);return `<div class="ref${done[k]?' done':''}" data-k="${k}"><input type="checkbox" id="${k}" ${done[k]?'checked':''} aria-label="${esc(it[0])} 봤음"><div><div class="t">${it[3]?`<a href="${it[3]}" target="_blank" rel="noopener">${esc(it[0])}</a>`:esc(it[0])}<small>${esc(it[1])}</small></div><p>${esc(it[2])}</p></div></div>`}).join('')}</div>`).join('');
+function count(){const all=document.querySelectorAll('.ref').length,n=document.querySelectorAll('.ref input:checked').length;$('#refCount').textContent=`${n} / ${all} 봤음`;$('#refMeter').style.width=(n/all*100)+'%';}
+$('#refList').addEventListener('change',e=>{const r=e.target.closest('.ref');if(!r)return;done[r.dataset.k]=e.target.checked;r.classList.toggle('done',e.target.checked);try{localStorage.setItem('regula-refs',JSON.stringify(done))}catch(err){}count();});
+count();
+})();
+</script>
+</body>
+</html>

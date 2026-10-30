@@ -9,7 +9,7 @@ const formulas = defineCollection({
     name: z.string(),
     order: z.number(),
     // 원리와 공식 페이지에서 묶는 단위. 실습 페이지가 있는 주제는 src/lib/site.ts의 topics에 등록
-    topic: z.enum(['비율과 간격', '타이포그래피', '색', '사용성']),
+    topic: z.enum(['비율과 간격', '타이포그래피', '색', '게슈탈트', '사용성']),
     equation: z.string(),
     meaning: z.string(),
     source: z.string().min(1),

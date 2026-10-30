@@ -15,4 +15,5 @@ url: "https://lawsofux.com"
 ## Regula에 반영한 것
 
 - §1 피츠의 법칙, 힉의 법칙.
+- §1 게슈탈트: 근접성, 유사성, 공통 영역 (실습 페이지 `/principles/gestalt/`).
 - 남은 법칙들은 v0.4 원리 확장 때 하나씩 옮길 후보.

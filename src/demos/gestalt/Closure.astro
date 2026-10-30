@@ -1,0 +1,50 @@
+---
+// 폐합: 윤곽을 여러 조각으로 끊고 남기는 비율을 줄여 간다. 모서리(원은 6군데)를 중심으로 남겨서, 꽤 많이 지워도 도형으로 읽힌다.
+// pathLength=100으로 두고 조각 수(n)만큼 dasharray를 나눈다. dashoffset은 조각 가운데가 모서리에 오도록.
+const shapes = [
+  { n: 6, d: 'M100 60 A40 40 0 1 1 20 60 A40 40 0 1 1 100 60' },
+  { n: 4, d: 'M125 20 H205 V100 H125 Z' },
+  { n: 3, d: 'M270 26 L310 95.3 L230 95.3 Z' },
+];
+---
+<div class="lab gestalt" id="gClose" data-shapes={JSON.stringify(shapes)}>
+  <svg viewBox="0 0 320 120" role="img" aria-label="윤곽이 끊긴 원, 사각형, 삼각형">
+    {shapes.map((s) => <path class="g-o" d={s.d} pathLength="100" />)}
+  </svg>
+  <div class="lab-side">
+    <span class="label">폐합 · Closure</span>
+    <h3>빈틈은 눈이 채운다</h3>
+    <div class="row">
+      <label class="label" for="closeKeep">윤곽 남김</label>
+      <input type="range" id="closeKeep" min="5" max="100" value="45" style="flex:1">
+      <span class="mono" id="closeVal"></span>
+    </div>
+    <p class="g-read">보이는 것: <mark id="closeRead"></mark></p>
+    <p>윤곽을 절반 넘게 지워도 원·사각형·삼각형으로 읽힙니다. 모서리처럼 형태를 결정하는 곳이 남아 있는 동안은 빈 곳을 스스로 이어 닫아요.</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>아이콘은 윤곽을 다 그리지 않아도 읽힙니다. 점선 테두리의 파일 끌어 놓기 영역, 끊긴 고리 모양의 로딩 표시도 같은 원리예요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#gClose')!;
+  const $ = <T extends Element>(s: string) => lab.querySelector<T>(s)!;
+  const shapes: { n: number }[] = JSON.parse(lab.dataset.shapes!);
+  const input = $<HTMLInputElement>('#closeKeep');
+  const paths = lab.querySelectorAll<SVGPathElement>('path');
+
+  function render() {
+    const p = +input.value / 100;
+    paths.forEach((el, i) => {
+      const seg = 100 / shapes[i].n, dash = seg * p;
+      el.style.strokeDasharray = `${dash} ${seg - dash}`;
+      el.style.strokeDashoffset = String(dash / 2);
+    });
+    $('#closeVal').textContent = `${input.value}%`;
+    $('#closeRead').textContent = p > 0.6 ? '닫힌 도형 셋' : p >= 0.2 ? '빈틈을 채워 여전히 도형 셋' : '도형보다 흩어진 조각에 가까움';
+  }
+  input.addEventListener('input', render);
+  render();
+</script>

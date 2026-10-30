@@ -332,3 +332,21 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
   .topichead{flex-direction:column;gap:4px}
   .cmp{grid-template-columns:minmax(0,1fr)}
 }
+
+/* 게슈탈트 실습 — 흑백 도해, 강조는 읽은 결과의 형광펜 하나 */
+.gestalt input[type=range]{accent-color:var(--ink);min-width:0}
+.gestalt .g-a{fill:var(--ink)}
+.gestalt .g-b{fill:var(--ink-3)}
+.gestalt .g-o{fill:none;stroke:var(--ink);stroke-width:3}
+.gestalt .g-region{fill:color-mix(in srgb,var(--ink) 7%,transparent);stroke:var(--ink-3)}
+.gestalt .g-cover{fill:var(--paper);stroke:var(--rule)}
+.g-fig.duo{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:center}
+.g-read{font-family:var(--mono);font-size:13px}
+.lab-side p.g-read{color:var(--ink)}
+.g-read mark{background:var(--mark);color:var(--mark-ink);padding:1px 4px}
+.g-ui{border-top:1px solid var(--rule);padding-top:12px;display:grid;gap:4px}
+.formmock{display:flex;flex-direction:column;gap:var(--out);padding:16px;border:1px solid var(--rule);margin-bottom:8px}
+.formmock .fld{display:flex;flex-direction:column;gap:var(--in,8px)}
+.formmock b{display:block;width:64px;height:8px;background:var(--ink-3)}
+.formmock i{display:block;height:30px;border:1px solid var(--ink)}
+@media (max-width:640px){ .g-fig.duo{grid-template-columns:minmax(0,1fr)} }

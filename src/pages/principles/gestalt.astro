@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Proximity from '../../demos/gestalt/Proximity.astro';
+import Similarity from '../../demos/gestalt/Similarity.astro';
+import CommonRegion from '../../demos/gestalt/CommonRegion.astro';
+import Continuity from '../../demos/gestalt/Continuity.astro';
+import Closure from '../../demos/gestalt/Closure.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const formulas = (await getCollection('formulas', (f) => f.data.topic === '게슈탈트')).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="게슈탈트 · 원리와 공식 · Regula" current="principles" description="근접성, 유사성, 공통 영역, 연속성, 폐합을 흑백 도해로 직접 조작해 보는 실습 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === '게슈탈트' ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>점을 보기 전에 묶음을 본다</h1>
+    <p>사람은 요소를 하나씩 세지 않고 묶음과 형태로 먼저 읽습니다. 1920년대 Wertheimer가 정리한 근접성·유사성·연속성·폐합에, 1992년 Palmer가 공통 영역을 더했어요. 여백을 얼마나 둘지, 상자를 칠지 말지 정할 때의 기준입니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 묶기</span>
+      <h2>무엇이 한 묶음으로 보이는가</h2>
+      <p>간격, 생김새, 테두리 — 세 가지 모두 묶음을 만듭니다. 서로 부딪치면 대개 테두리가 가장 세고, 그다음이 간격이에요. 그래서 상자는 간격으로 안 될 때만 꺼냅니다.</p>
+    </header>
+    <Proximity />
+    <Similarity />
+    <CommonRegion />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 잇기</span>
+      <h2>끊긴 곳은 눈이 잇는다</h2>
+      <p>선이 가려지거나 윤곽이 끊겨도 가장 단순한 형태로 이어 봅니다. 덕분에 덜 그려도 되지만, 정렬이 어긋나면 그만큼 쉽게 들킵니다.</p>
+    </header>
+    <Continuity />
+    <Closure />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">공식</span>
+      <h2>게슈탈트 법칙 {formulas.length}개</h2>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

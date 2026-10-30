@@ -1,0 +1,45 @@
+---
+// 열 수가 2·3·4·6으로 나뉘는지 본다. 나뉘지 않는 칸은 열 경계를 가로지르게 되어 점선으로 그린다.
+const counts = [10, 12, 16];
+const parts = [2, 3, 4, 6];
+---
+<div class="tool" id="divide" data-parts={JSON.stringify(parts)}>
+  <span class="label">실습 · 왜 12열인가</span>
+  <h3>2·3·4·6으로 나눠 보기</h3>
+  <div class="chips" id="divChips">
+    {counts.map((n) => <button class="chip" type="button" data-n={n} aria-pressed={String(n === 12)}>{n}열</button>)}
+  </div>
+  <div class="divrows" id="divRows"></div>
+  <p class="g-read">나뉘는 것: <mark id="divRead"></mark></p>
+  <p class="credit" style="margin:0">12는 2, 3, 4, 6으로 모두 떨어져서 반·삼분·사분 배치를 열 경계에 맞출 수 있어요. 10열은 3등분이, 16열은 3·6등분이 열 중간에서 잘립니다.</p>
+</div>
+
+<script>
+  const box = document.querySelector<HTMLElement>('#divide')!;
+  const parts: number[] = JSON.parse(box.dataset.parts!);
+  const chips = box.querySelector('#divChips')!;
+  let n = 12;
+
+  function render() {
+    const rows = box.querySelector<HTMLElement>('#divRows')!;
+    rows.style.setProperty('--n', String(n));
+    rows.innerHTML = parts.map((k) => {
+      const ok = n % k === 0;
+      // 나뉘면 열 경계에 맞춰 span, 안 나뉘면 열을 가로질러 비율대로
+      const segs = Array.from({ length: k }, (_, j) => ok
+        ? `<i style="grid-column:span ${n / k}"></i>`
+        : `<i class="off" style="left:calc(${(j * 100) / k}% + 1px);width:calc(${100 / k}% - 2px)"></i>`).join('');
+      return `<span class="label">${k}등분</span><div class="divrow"><div class="divcols">${'<b></b>'.repeat(n)}</div><div class="divsegs">${segs}</div></div><span class="mono">${ok ? `${n / k}열씩` : `${(n / k).toFixed(2)}열`}</span>`;
+    }).join('');
+    const okList = parts.filter((k) => n % k === 0);
+    box.querySelector('#divRead')!.textContent = okList.length === parts.length ? `${n}열 — 전부` : `${n}열 — ${okList.join('·')}만`;
+  }
+  chips.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    n = +b.dataset.n!;
+    chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  render();
+</script>

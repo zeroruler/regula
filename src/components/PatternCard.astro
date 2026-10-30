@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { pattern: CollectionEntry<'patterns'> }
+const { pattern } = Astro.props;
+const p = pattern.data;
+const slug = pattern.id.split('/').pop();
+---
+<article class="p" id={`p-${slug}`}>
+  <div class="mock" aria-hidden="true" set:html={p.mock} />
+  <div class="top">
+    <h3>{p.name}<small>{p.en}</small></h3>
+    <span class="lvl" aria-label={`방해 정도 ${p.intrusiveness}/9`}>
+      {Array.from({ length: 9 }, (_, i) => <b class={i < p.intrusiveness ? 'on' : ''}></b>)}
+    </span>
+  </div>
+  <dl><dt>쓸 때</dt><dd>{p.use_when}</dd><dt>피할 때</dt><dd>{p.avoid_when}</dd></dl>
+</article>

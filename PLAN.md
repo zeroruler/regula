@@ -4,7 +4,7 @@
 > 감으로 고르던 값을 이유가 있는 값으로 바꾸는 게 목표.
 
 - 시작일: 2026-10-30
-- 현재 버전: v0.1 (`regula.html` 단일 파일)
+- 현재 버전: v0.2 (Astro). v0.1 원본은 `regula.html`로 보존
 - 작성자: zero_ruler
 
 ---
@@ -136,11 +136,15 @@ regula/
 ## 7. 로드맵
 
 ### v0.2 — 저장소로 옮기기
-- [ ] GitHub 저장소 생성, Astro 프로젝트 초기화
-- [ ] `regula.html`의 섹션을 컴포넌트 + 콘텐츠 파일로 분리
-- [ ] 기존 공식 11개, 패턴 9개, 레퍼런스 24개를 `.md`로 이전
+- [ ] GitHub 저장소 생성 (로컬 git과 Astro 초기화는 완료)
+- [x] `regula.html`의 섹션을 컴포넌트 + 콘텐츠 파일로 분리
+- [x] 기존 공식 11개, 패턴 9개, 레퍼런스 24개를 `.md`로 이전
 - [ ] GitHub Pages 배포
-- [ ] 레퍼런스 "봤음" 체크는 localStorage 유지
+- [x] 레퍼런스 "봤음" 체크는 localStorage 유지 (키를 slug로 바꿔 순서가 바뀌어도 유지)
+- [x] 레퍼런스 상세 페이지: 내 정리 · Regula에서 쓴 곳 · 원문
+  - 자유 라이선스 저장소(awesome-design-systems 3곳)는 README를 가져와 사이트 안에서 보고 거를 수 있음
+  - 다른 페이지 안에 띄울 수 있는 사이트는 iframe 미리보기, 막힌 곳(Refactoring UI, Laws of UX, Material 3, NN/g, X, Mobbin)은 링크
+  - 책은 원문 대신 내 정리만
 
 ### v0.3 — 양식 채우기
 - [ ] Cordovan: Lecto의 DESIGN.md에서 실제 토큰 옮기기

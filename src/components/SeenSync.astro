@@ -1,0 +1,29 @@
+---
+// .ref[data-k] 항목의 체크 상태를 localStorage와 맞추고, #refCount가 있으면 진행률을 갱신한다.
+---
+<script>
+  import { loadSeen, saveSeen } from '../lib/seen';
+
+  const seen = loadSeen();
+  const items = [...document.querySelectorAll<HTMLElement>('.ref[data-k]')];
+  const count = () => {
+    const out = document.getElementById('refCount');
+    const meter = document.getElementById('refMeter');
+    if (!out || !meter) return;
+    const n = items.filter((el) => seen[el.dataset.k!]).length;
+    out.textContent = `${n} / ${items.length} 봤음`;
+    meter.style.width = `${(n / items.length) * 100}%`;
+  };
+  for (const el of items) {
+    const box = el.querySelector('input')!;
+    box.checked = !!seen[el.dataset.k!];
+    el.classList.toggle('done', box.checked);
+    box.addEventListener('change', () => {
+      seen[el.dataset.k!] = box.checked;
+      el.classList.toggle('done', box.checked);
+      saveSeen(seen);
+      count();
+    });
+  }
+  count();
+</script>

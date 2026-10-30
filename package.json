@@ -1,0 +1,17 @@
+{
+  "name": "regula",
+  "type": "module",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "sync-refs": "node scripts/sync-refs.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.4.4",
+    "marked": "^18.1.2",
+    "sanitize-html": "^2.18.1"
+  }
+}

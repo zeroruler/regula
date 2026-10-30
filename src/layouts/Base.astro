@@ -1,0 +1,32 @@
+---
+import Ruler from '../components/Ruler.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = '디자인 공식, UI 패턴, 페이지 양식을 쌓는 개인 디자인 규칙집' } = Astro.props;
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<Ruler />
+<div class="wrap">
+<div class="shell">
+  <nav class="toc" aria-label="목차"><slot name="toc" /></nav>
+  <main><slot /></main>
+</div>
+<footer>Regula · zero_ruler의 디자인 규칙집 · 출처가 표시된 내용은 각 원저자의 것입니다.</footer>
+</div>
+</body>
+</html>

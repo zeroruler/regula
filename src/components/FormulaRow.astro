@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { href } from '../lib/url';
+
+interface Props { formula: CollectionEntry<'formulas'>; refTitles: Record<string, string> }
+const { formula, refTitles } = Astro.props;
+const f = formula.data;
+---
+<div class="f" id={`f-${formula.id}`}>
+  <h3>{f.name}</h3>
+  <div class="eq">{f.equation}</div>
+  <p>
+    {f.meaning}
+    {f.note && <span class="note">{f.note}</span>}
+    <span class="src">{f.source}{f.refs.map((r) => <> · <a href={href(`references/${r}/`)}>{refTitles[r] ?? r}</a></>)}</span>
+  </p>
+</div>

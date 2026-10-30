@@ -1,0 +1,124 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { refGroups } from '../../content.config';
+import Base from '../../layouts/Base.astro';
+import SeenSync from '../../components/SeenSync.astro';
+import { href } from '../../lib/url';
+
+type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
+const imported = import.meta.glob<Imported>('../../imported/*.json', { eager: true, import: 'default' });
+
+export async function getStaticPaths() {
+  const refs = await getCollection('references');
+  const groupIndex = (r: CollectionEntry<'references'>) => refGroups.indexOf(r.data.group);
+  const sorted = refs.sort((a, b) => groupIndex(a) - groupIndex(b) || a.data.order - b.data.order);
+  return sorted.map((reference, i) => ({
+    params: { slug: reference.id },
+    props: { reference, prev: sorted[i - 1], next: sorted[i + 1], siblings: sorted.filter((r) => r.data.group === reference.data.group) },
+  }));
+}
+
+const { reference, prev, next, siblings } = Astro.props;
+const r = reference.data;
+const { Content } = await render(reference);
+const snapshot = imported[`../../imported/${reference.id}.json`];
+
+// 이 레퍼런스를 출처로 쓴 공식과 패턴
+const usedIn = [
+  ...(await getCollection('formulas', (f) => f.data.refs.includes(reference.id)))
+    .map((f) => ({ label: '§1 공식', name: f.data.name, to: href(`#f-${f.id}`) })),
+  ...(await getCollection('patterns', (p) => p.data.refs.includes(reference.id)))
+    .map((p) => ({ label: '§3 패턴', name: p.data.name, to: href(`#p-${p.id.split('/').pop()}`) })),
+];
+---
+<Base title={`${r.title} · Regula`} description={r.summary}>
+  <Fragment slot="toc">
+    <span class="label"><a href={href('#references')}>← Regula</a></span>
+    <span class="label toc-group">{r.group}</span>
+    {siblings.map((s) => (
+      <a href={href(`references/${s.id}/`)} aria-current={s.id === reference.id ? 'page' : undefined}>{s.data.title}<small>{s.data.author}</small></a>
+    ))}
+  </Fragment>
+
+  <article class="refdoc">
+    <header class="ref ref-head" data-k={reference.id}>
+      <span class="label">§ 5 레퍼런스 · {r.group}</span>
+      <h1>{r.title}</h1>
+      <p class="by">{r.author}</p>
+      <p class="lede">{r.summary}</p>
+      <div class="row">
+        <label class="seen"><input type="checkbox" aria-label={`${r.title} 봤음`}> 봤음</label>
+        {r.url && <a class="open" href={r.url} target="_blank" rel="noopener">원본 새 탭에서 열기 ↗</a>}
+      </div>
+    </header>
+
+    <section>
+      <h2 class="label">내 정리</h2>
+      <div class="prose"><Content /></div>
+    </section>
+
+    {usedIn.length > 0 && (
+      <section>
+        <h2 class="label">Regula에서 쓴 곳</h2>
+        <ul class="used">
+          {usedIn.map((u) => <li><span class="mono">{u.label}</span><a href={u.to}>{u.name}</a></li>)}
+        </ul>
+      </section>
+    )}
+
+    <section>
+      <h2 class="label">원문</h2>
+      {snapshot ? (
+        <div class="imported-wrap">
+          <p class="credit">
+            <a href={`https://github.com/${snapshot.repo}`} target="_blank" rel="noopener">{snapshot.repo}</a>의 README를 그대로 가져왔어요 ·
+            라이선스 {snapshot.license} · {snapshot.fetchedAt} 기준 · <code>npm run sync-refs</code>로 갱신
+          </p>
+          <div class="row filter">
+            <label class="label" for="impFilter">목록 거르기</label>
+            <input type="text" id="impFilter" placeholder="예: color, Korea, React" autocomplete="off">
+            <span class="mono" id="impCount"></span>
+          </div>
+          <div class="imported prose" set:html={snapshot.html} />
+        </div>
+      ) : r.embed && r.url ? (
+        <div class="frame">
+          <iframe src={r.url} title={`${r.title} 원문`} loading="lazy" referrerpolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
+          <p class="credit">사이트를 이 페이지 안에 띄운 미리보기예요. 내용은 원저자의 것이며, 화면이 비어 보이면 원본을 새 탭에서 열어 주세요.</p>
+        </div>
+      ) : r.url ? (
+        <p class="blocked">이 사이트는 다른 페이지 안에서 열리지 않도록 막아 두었어요. <a href={r.url} target="_blank" rel="noopener">원본 새 탭에서 열기 ↗</a></p>
+      ) : (
+        <p class="blocked">책이라 온라인 원문이 없어요. 읽으면서 위의 내 정리를 채워 가세요.</p>
+      )}
+    </section>
+
+    <nav class="pager" aria-label="이전·다음 레퍼런스">
+      {prev ? <a href={href(`references/${prev.id}/`)}><span class="label">← 이전</span>{prev.data.title}</a> : <span></span>}
+      {next && <a class="next" href={href(`references/${next.id}/`)}><span class="label">다음 →</span>{next.data.title}</a>}
+    </nav>
+  </article>
+  <SeenSync />
+</Base>
+
+<script>
+  // 가져온 목록(목록 항목과 표의 행)에서 글자가 포함된 것만 남긴다
+  const input = document.querySelector<HTMLInputElement>('#impFilter');
+  if (input) {
+    const items = [...document.querySelectorAll<HTMLElement>('.imported li, .imported tbody tr')];
+    const out = document.querySelector('#impCount')!;
+    const apply = () => {
+      const q = input.value.trim().toLowerCase();
+      let n = 0;
+      for (const li of items) {
+        const hit = !q || li.textContent!.toLowerCase().includes(q);
+        li.hidden = !hit;
+        if (hit) n++;
+      }
+      out.textContent = `${n} / ${items.length}`;
+    };
+    input.addEventListener('input', apply);
+    apply();
+  }
+</script>

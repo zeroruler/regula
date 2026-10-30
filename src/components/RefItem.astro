@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { href } from '../lib/url';
+
+interface Props { reference: CollectionEntry<'references'> }
+const { reference } = Astro.props;
+const r = reference.data;
+---
+<div class="ref" data-k={reference.id}>
+  <input type="checkbox" aria-label={`${r.title} 봤음`}>
+  <div>
+    <div class="t">
+      <a href={href(`references/${reference.id}/`)}>{r.title}</a><small>{r.author}</small>
+      {r.url && <a class="out" href={r.url} target="_blank" rel="noopener" aria-label={`${r.title} 원본 새 탭에서 열기`}>↗</a>}
+    </div>
+    <p>{r.summary}</p>
+  </div>
+</div>

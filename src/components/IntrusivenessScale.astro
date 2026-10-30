@@ -1,0 +1,13 @@
+---
+interface Props { names: string[] }
+const { names } = Astro.props;
+const last = names.length - 1;
+const transform = (i: number) => (i === 0 ? 'none' : i === last ? 'translateX(-100%)' : 'translateX(-50%)');
+---
+<div class="scale" style="padding-top:38px">
+  {names.map((n, i) => (
+    <span class="pin" style={`left:${(i / last) * 100}%;transform:${transform(i)};top:${i % 2 ? 14 : 0}px`}>{n}</span>
+  ))}
+  <div class="track"></div>
+  <div class="ends"><span>조용함 · 지나쳐도 됨</span><span>멈춤 · 응답해야 함</span></div>
+</div>

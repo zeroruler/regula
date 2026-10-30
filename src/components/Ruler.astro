@@ -1,0 +1,6 @@
+---
+const ticks = Array.from({ length: 60 }, (_, i) => i);
+---
+<div class="ruler" aria-hidden="true">
+  {ticks.map((i) => <span style={`left:${i * 50}px`}>{i}</span>)}
+</div>

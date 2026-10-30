@@ -1,0 +1,36 @@
+<div class="tool">
+  <span class="label">모듈러 타입 스케일</span>
+  <h3>글자 크기 단계</h3>
+  <div class="row">
+    <label class="label" for="tsBase">기준</label>
+    <input type="number" id="tsBase" value="16" min="10" max="24" style="width:72px">
+    <label class="label" for="tsRatio">비율</label>
+    <select id="tsRatio">
+      <option value="1.125">1.125 · 장2도</option>
+      <option value="1.2">1.200 · 단3도</option>
+      <option value="1.25" selected>1.250 · 장3도</option>
+      <option value="1.333">1.333 · 완전4도</option>
+      <option value="1.5">1.500 · 완전5도</option>
+      <option value="1.618">1.618 · 황금비</option>
+    </select>
+  </div>
+  <div class="steps" id="tsSteps"></div>
+</div>
+
+<script>
+  const base = document.querySelector<HTMLInputElement>('#tsBase')!;
+  const ratio = document.querySelector<HTMLSelectElement>('#tsRatio')!;
+  const names = ['캡션', '본문', '부제', '소제목', '제목', '큰 제목', '디스플레이'];
+  function render() {
+    const b = Math.max(10, Math.min(24, +base.value || 16)), r = +ratio.value;
+    let h = '';
+    for (let n = 5; n >= -1; n--) {
+      const s = b * Math.pow(r, n);
+      h += `<div class="step"><span class="mono">${s.toFixed(1)}px</span><div style="font-size:${Math.min(s, 64)}px;font-family:${n > 1 ? 'var(--display)' : 'var(--body)'};font-weight:${n > 1 ? 700 : 400}">${names[n + 1]} 레굴라</div></div>`;
+    }
+    document.querySelector('#tsSteps')!.innerHTML = h;
+  }
+  base.addEventListener('input', render);
+  ratio.addEventListener('change', render);
+  render();
+</script>

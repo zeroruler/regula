@@ -1,0 +1,54 @@
+<div class="tool">
+  <span class="label">WCAG 명도 대비</span>
+  <h3>글자색과 배경색</h3>
+  <div class="row">
+    <input type="color" id="fgPick" value="#4a4f57" aria-label="글자색 선택">
+    <input type="text" id="fgHex" value="#4A4F57" style="width:96px" aria-label="글자색 hex">
+    <span class="label">on</span>
+    <input type="color" id="bgPick" value="#f1f3f0" aria-label="배경색 선택">
+    <input type="text" id="bgHex" value="#F1F3F0" style="width:96px" aria-label="배경색 hex">
+  </div>
+  <div class="row" style="align-items:stretch">
+    <div class="swatch" id="crSwatch"><b>가나다 Aa</b>본문 미리보기</div>
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:8px">
+      <div class="readout" id="crRatio" style="font-size:36px">0:1</div>
+      <div class="row" id="crPass"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  function lum(hex: string) {
+    const m = hex.replace('#', '').match(/^([0-9a-f]{6}|[0-9a-f]{3})$/i);
+    if (!m) return null;
+    let v = m[1];
+    if (v.length === 3) v = v.split('').map((c) => c + c).join('');
+    return [0, 2, 4]
+      .map((i) => { const c = parseInt(v.substr(i, 2), 16) / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); })
+      .reduce((a, c, i) => a + c * [0.2126, 0.7152, 0.0722][i], 0);
+  }
+  function cr() {
+    const f = $<HTMLInputElement>('#fgHex').value.trim(), g = $<HTMLInputElement>('#bgHex').value.trim();
+    const L1 = lum(f), L2 = lum(g);
+    if (L1 == null || L2 == null) return;
+    const r = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+    $('#crRatio').textContent = r.toFixed(2) + ':1';
+    const sw = $('#crSwatch');
+    sw.style.color = f.startsWith('#') ? f : '#' + f;
+    sw.style.background = g.startsWith('#') ? g : '#' + g;
+    const t: [string, number][] = [['AA 본문', 4.5], ['AA 큰 글자', 3], ['AAA 본문', 7]];
+    $('#crPass').innerHTML = t.map(([n, v]) => `<span class="pass ${r >= v ? 'y' : 'n'}">${n} ${r >= v ? '통과' : '미달'}</span>`).join('');
+  }
+  function link(p: string, t: string) {
+    $<HTMLInputElement>(p).addEventListener('input', (e) => { $<HTMLInputElement>(t).value = (e.target as HTMLInputElement).value.toUpperCase(); cr(); });
+    $<HTMLInputElement>(t).addEventListener('input', (e) => {
+      const v = (e.target as HTMLInputElement).value.trim();
+      if (/^#?[0-9a-f]{6}$/i.test(v)) $<HTMLInputElement>(p).value = (v[0] === '#' ? v : '#' + v).toLowerCase();
+      cr();
+    });
+  }
+  link('#fgPick', '#fgHex');
+  link('#bgPick', '#bgHex');
+  cr();
+</script>

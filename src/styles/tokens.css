@@ -1,0 +1,13 @@
+:root{
+  --paper:#F1F3F0; --surface:#FFFFFF; --ink:#15171A; --ink-2:#4A4F57; --ink-3:#7E848D;
+  --rule:#D3D7D2; --mark:#F2C230; --mark-ink:#15171A; --error:#C2382D; --ok:#1F7A4D;
+  --display:"Hahmlet","Nanum Myeongjo",Georgia,serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111214; --surface:#1A1C1F; --ink:#ECEDEA; --ink-2:#AAAFB6; --ink-3:#6E747C;
+  --rule:#2C2F34; --mark:#F2C230; --mark-ink:#15171A; --error:#FF6E61; --ok:#4CC488; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111214; --surface:#1A1C1F; --ink:#ECEDEA; --ink-2:#AAAFB6; --ink-3:#6E747C;
+  --rule:#2C2F34; --mark:#F2C230; --mark-ink:#15171A; --error:#FF6E61; --ok:#4CC488; color-scheme:dark}

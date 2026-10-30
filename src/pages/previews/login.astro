@@ -27,6 +27,7 @@ html,body{margin:0;min-height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;display:grid;place-items:center;min-height:100vh;padding:32px 16px}
 .card{width:100%;max-width:400px;background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:36px 32px 28px;display:grid;gap:20px}
 h1{margin:0 0 4px;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:30px;line-height:1.15}
+.embedded body{min-height:0}
 .fail{margin:0;padding:12px 14px;border:var(--stroke) solid var(--danger);border-radius:var(--radius);color:var(--danger);font-size:14px}
 .field{display:grid;gap:6px}
 label{font-size:14px;font-weight:600}
@@ -75,6 +76,9 @@ a{color:var(--ink2)}
 </form>
 
 <script is:inline define:vars={{ themes }}>
+  // 다른 페이지 안(iframe)에 들어가 있으면 화면 높이를 채우지 않고 카드 높이만큼만 차지한다.
+  // 높이는 바깥 페이지가 내용에 맞춰 iframe을 늘이고 줄인다.
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
   const params = new URLSearchParams(location.search);
   const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
   for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);

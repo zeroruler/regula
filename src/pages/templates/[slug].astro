@@ -129,6 +129,28 @@ const states = [['default', '기본'], ['error', '형식 오류'], ['fail', '계
   // 미리보기의 디자인 시스템·상태 바꾸기
   const box = document.querySelector<HTMLElement>('.switch');
   const frame = document.querySelector<HTMLIFrameElement>('#pagePreview');
+  // 미리보기 iframe을 안쪽 내용 높이에 맞춘다. 상태(오류 문구)나 화면 너비에 따라 카드 높이가 달라져서
+  // 고정 높이로 두면 휴대폰에서 아래가 잘린다.
+  if (frame) {
+    let observer: ResizeObserver | undefined;
+    const fit = () => {
+      const doc = frame.contentDocument;
+      // 높이에는 iframe 자신의 위아래 테두리도 들어간다 (box-sizing: border-box)
+      const border = frame.offsetHeight - frame.clientHeight;
+      if (doc?.body) frame.style.height = `${doc.body.scrollHeight + border}px`;
+    };
+    const watch = () => {
+      observer?.disconnect();
+      const body = frame.contentDocument?.body;
+      if (!body) return;
+      observer = new ResizeObserver(fit);
+      observer.observe(body);
+      fit();
+    };
+    frame.addEventListener('load', watch);
+    // 이 스크립트보다 iframe이 먼저 다 읽혔을 수 있다
+    if (frame.contentDocument?.readyState === 'complete') watch();
+  }
   if (box && frame) {
     const pick = { system: box.querySelector<HTMLElement>('[data-system]')!.dataset.system!, state: 'default' };
     box.addEventListener('click', (e) => {

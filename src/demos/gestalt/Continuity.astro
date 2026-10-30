@@ -1,0 +1,48 @@
+---
+// 연속성: 점이 한 직선 위에 있으면 가운데가 가려져도 한 줄로 이어 본다. 오른쪽 절반을 위아래로 어긋나게 하면 이어짐이 깨진다.
+---
+<div class="lab gestalt" id="gCont">
+  <svg viewBox="0 0 320 200" role="img" aria-label="상자 뒤로 지나가는 점선"><g class="dots"></g><rect class="g-cover" x="124" y="40" width="72" height="120"/></svg>
+  <div class="lab-side">
+    <span class="label">연속성 · Good Continuation</span>
+    <h3>매끄럽게 이어지는 쪽으로 본다</h3>
+    <div class="row">
+      <label class="label" for="contOff">오른쪽 어긋남</label>
+      <input type="range" id="contOff" min="0" max="48" value="0" style="flex:1">
+      <span class="mono" id="contVal"></span>
+    </div>
+    <div class="chips"><button class="chip" type="button" id="contCover" aria-pressed="true">가리는 상자</button></div>
+    <p class="g-read">보이는 것: <mark id="contRead"></mark></p>
+    <p>상자 뒤에는 점이 없습니다. 그래도 양쪽이 한 직선 위에 있으면 상자 뒤로 지나가는 한 줄로 읽혀요. 몇 단위만 어긋나도 따로 노는 두 줄이 됩니다.</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>정렬선은 사이에 이미지나 카드가 끼어도 이어져 읽힙니다. 그래서 왼쪽 정렬이 조금만 틀어져도 눈에 띄어요. 캐러셀이 다음 카드를 잘라 보이는 것도 줄이 옆으로 이어진다는 신호입니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#gCont')!;
+  const $ = <T extends Element>(s: string) => lab.querySelector<T>(s)!;
+  const input = $<HTMLInputElement>('#contOff'), cover = $<HTMLButtonElement>('#contCover');
+  const slope = -0.36; // 왼쪽 아래에서 오른쪽 위로 약 20°
+
+  function render() {
+    const d = +input.value;
+    const left = [20, 36, 52, 68, 84, 100, 116], right = [204, 220, 236, 252, 268, 284, 300];
+    const y = (x: number) => 100 + (x - 160) * slope;
+    $('.dots').innerHTML = [
+      ...left.map((x) => `<circle class="g-a" cx="${x}" cy="${y(x)}" r="4.5"/>`),
+      ...right.map((x) => `<circle class="g-a" cx="${x}" cy="${y(x) + d}" r="4.5"/>`),
+    ].join('');
+    $<SVGRectElement>('.g-cover').style.display = cover.getAttribute('aria-pressed') === 'true' ? '' : 'none';
+    $('#contVal').textContent = String(d);
+    $('#contRead').textContent = d < 4 ? '상자 뒤로 지나가는 한 줄' : d < 16 ? '이어지긴 하는데 어긋남이 거슬림' : '따로 노는 두 줄';
+  }
+  input.addEventListener('input', render);
+  cover.addEventListener('click', () => {
+    cover.setAttribute('aria-pressed', String(cover.getAttribute('aria-pressed') !== 'true'));
+    render();
+  });
+  render();
+</script>

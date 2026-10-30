@@ -1,0 +1,45 @@
+---
+// 공통 영역(Palmer 1992): 같은 경계 안에 있으면 묶인다. "간격을 반대로"를 켜면 근접성이 상자와 다른 짝을 만들게 해서 둘의 세기를 견준다.
+---
+<div class="lab gestalt" id="gRegion">
+  <svg viewBox="0 0 320 160" role="img" aria-label="한 줄로 놓인 점 여덟 개와 배경 상자"><g class="regions"></g><g class="dots"></g></svg>
+  <div class="lab-side">
+    <span class="label">공통 영역 · Common Region</span>
+    <h3>같은 테두리 안에 있으면 묶인다</h3>
+    <div class="chips">
+      <button class="chip" type="button" id="regionBox" aria-pressed="true">배경 상자</button>
+      <button class="chip" type="button" id="regionPair" aria-pressed="false">간격을 반대로</button>
+    </div>
+    <p class="g-read">보이는 것: <mark id="regionRead"></mark></p>
+    <p>"간격을 반대로"를 켜면 점은 간격으로 1–2, 3–4…처럼 짝을 짓습니다. 상자는 2–3, 4–5를 감싸요. 상자를 켜면 대개 간격보다 상자가 이깁니다.</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>카드나 섹션 배경은 여백보다 강하게 묶습니다. 그래서 여백만으로 이미 묶이면 상자를 더하지 않아요. 상자가 많아지면 상자끼리 다시 경쟁합니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#gRegion')!;
+  const $ = <T extends Element>(s: string) => lab.querySelector<T>(s)!;
+  const box = $<HTMLButtonElement>('#regionBox'), pair = $<HTMLButtonElement>('#regionPair');
+  const on = (b: HTMLButtonElement) => b.getAttribute('aria-pressed') === 'true';
+
+  function render() {
+    // 고른 간격 34, 또는 짝 안 18 · 짝 사이 50 (가운데 기준 같은 폭)
+    const xs = Array.from({ length: 8 }, (_, i) => (on(pair) ? Math.floor(i / 2) * 68 + (i % 2) * 18 : i * 34));
+    const x0 = (320 - xs[7]) / 2, y = 80;
+    $('.dots').innerHTML = xs.map((x) => `<circle class="g-a" cx="${x0 + x}" cy="${y}" r="6"/>`).join('');
+    $('.regions').innerHTML = on(box)
+      ? [[1, 2], [3, 4], [5, 6]].map(([a, b]) => `<rect class="g-region" x="${x0 + xs[a] - 13}" y="${y - 24}" width="${xs[b] - xs[a] + 26}" height="48" rx="3"/>`).join('')
+      : '';
+    $('#regionRead').textContent = on(box)
+      ? '상자 셋과 양 끝 외톨이 — 상자대로 묶임'
+      : on(pair) ? '짝 넷 — 간격대로 묶임' : '고른 한 줄 — 묶음이 없음';
+  }
+  [box, pair].forEach((b) => b.addEventListener('click', () => {
+    b.setAttribute('aria-pressed', String(!on(b)));
+    render();
+  }));
+  render();
+</script>

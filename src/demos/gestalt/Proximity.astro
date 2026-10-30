@@ -1,0 +1,52 @@
+---
+// 근접성: 점 여섯 열을 둘씩 짝지어 두고 짝 안쪽 간격만 바꾼다. 짝 사이(바깥) 간격 32보다 좁으면 짝으로, 넓으면 짝이 바뀌어 보인다.
+// 같은 값으로 폼 목업의 라벨–입력칸 간격도 바꾼다. 입력칸끼리의 간격은 바깥 간격과 같은 32로 고정.
+const OUTER = 32;
+---
+<div class="lab gestalt" id="gProx" data-outer={OUTER}>
+  <div class="g-fig duo">
+    <svg viewBox="0 0 320 200" role="img" aria-label="둘씩 짝지은 점 여섯 열"><g class="dots"></g></svg>
+    <div>
+      <div class="formmock" style={`--out:${OUTER}px`} aria-hidden="true">
+        <div class="fld"><b></b><i></i></div>
+        <div class="fld"><b></b><i></i></div>
+      </div>
+      <span class="label">폼 목업 · 라벨과 입력칸</span>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">근접성 · Proximity</span>
+    <h3>가까운 것끼리 묶인다</h3>
+    <div class="row">
+      <label class="label" for="proxIn">안쪽 간격</label>
+      <input type="range" id="proxIn" min="4" max="56" value="12" style="flex:1">
+      <span class="mono" id="proxVal"></span>
+    </div>
+    <p class="g-read">보이는 것: <mark id="proxRead"></mark></p>
+    <p>점은 모두 같고 간격만 다릅니다. 안쪽 간격이 바깥 간격(32)에 가까워지면 묶음이 사라지고, 넘어서면 옆 짝과 새로 묶여요.</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>라벨과 입력칸 사이는 입력칸끼리의 간격보다 확실히 좁게 둡니다. 둘이 같아지면 라벨이 위 칸 것인지 아래 칸 것인지 흔들려요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#gProx')!;
+  const $ = <T extends Element>(s: string) => lab.querySelector<T>(s)!;
+  const OUTER = +lab.dataset.outer!;
+  const input = $<HTMLInputElement>('#proxIn');
+
+  function render() {
+    const w = +input.value;
+    const xs = [0, w, w + OUTER, 2 * w + OUTER, 2 * w + 2 * OUTER, 3 * w + 2 * OUTER];
+    const x0 = (320 - xs[5]) / 2;
+    $('.dots').innerHTML = [0, 1, 2, 3].flatMap((r) => xs.map((x) => `<circle class="g-a" cx="${x0 + x}" cy="${52 + r * OUTER}" r="5"/>`)).join('');
+    $<HTMLElement>('.formmock').style.setProperty('--in', `${w}px`);
+    $('#proxVal').textContent = `${w} : ${OUTER}`;
+    const r = w / OUTER;
+    $('#proxRead').textContent = r < 0.75 ? '세로 띠 3개 — 짝끼리 묶임' : r <= 1.33 ? '고른 격자 — 묶음이 없음' : '짝이 바뀜 — 가운데 두 쌍과 양 끝 외톨이';
+  }
+  input.addEventListener('input', render);
+  render();
+</script>

@@ -32,6 +32,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-10-30', text: 'v0.4 첫 페이지 양식 "로그인" 추가. 구성과 규칙(출처: GOV.UK, WCAG 2.2, OWASP)을 정리하고, 등록된 디자인 시스템 4개의 토큰을 바꿔 입히며 기본·형식 오류·계정 오류 상태를 미리볼 수 있게 함.' },
   { date: '2026-10-30', text: 'v0.4 한 페이지에 쌓던 구조를 목적별 페이지로 나눔. 공부(원리·도구·패턴·레퍼런스)와 만들기(양식)를 오가며 볼 수 있게 공통 내비게이션을 붙임.' },
   { date: '2026-10-30', text: 'v0.3 페이지 양식에 Cordovan · Chamomile · Terrazzo · Regula 등록. 토큰은 각 DESIGN.md에서 빌드할 때 바로 읽어 오고, 미리보기 화면을 사이트 안에서 띄움.' },
   { date: '2026-10-30', text: 'v0.2 Astro로 옮김. 공식·패턴·레퍼런스를 파일 하나씩으로 나누고, 레퍼런스마다 상세 페이지(내 정리 · 원문 미리보기 · 쓰인 곳)를 붙임. 자유 라이선스 저장소 3곳은 README를 가져와 사이트 안에서 봄.' },
@@ -39,5 +40,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '로그인·설정 화면 양식 · 색 이론 섹션(색상환, 60-30-10 실습) · 게슈탈트 법칙 도해 · 버튼과 입력창 패턴 추가' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · 색 이론 섹션(색상환, 60-30-10 실습) · 게슈탈트 법칙 도해 · 버튼과 입력창 패턴 추가' },
 ];

@@ -13,6 +13,26 @@ avoid:
   - "노랑·청록·핑크를 흰 배경 위 글자색으로 쓰기"
   - "반투명, 그라데이션, 아무 각도나 돌린 도형"
 swatch: ["--paper", "--canvas", "--ink", "--red", "--yellow", "--blue", "--teal", "--pink"]
+roles:
+  bg: "--canvas"
+  surface: "--paper"
+  ink: "--ink"
+  ink2: "--ink-2"
+  ink3: "--ink-3"
+  border: "--ink"
+  card-border: "--ink"
+  stroke: "--stroke"
+  key: "--red"
+  on-key: "--on-red"
+  danger: "--danger"
+  radius: "--radius"
+  card-radius: "--radius"
+  card-shadow: "--shadow-lg"
+  button-shadow: "--shadow-sm"
+  input-shadow: "--shadow"
+  font: "--font-sans"
+  display: "--font-display"
+  title-weight: "400"
 ---
 
 ## 메모

@@ -157,7 +157,7 @@ regula/
 - [x] Cordovan: 실제 토큰 옮기기 — `DESIGN/cordovan/DESIGN.md`에서 빌드할 때 바로 읽음
 - [x] Chamomile, Terrazzo도 양식으로 등록 (`DESIGN/` 폴더)
 - [x] Regula 자체 토큰을 양식으로 등록 (`src/styles/tokens.css`에서 읽음)
-- [ ] 페이지 양식 1개 추가 (로그인 또는 설정 화면)
+- [x] 페이지 양식 1개 추가 — 로그인 (디자인 시스템별 토큰을 입혀 미리보기)
 
 ### v0.4 — 원리 확장
 - [ ] 색 이론: 색상환, 보색·유사색, 60-30-10 실습

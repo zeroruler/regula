@@ -1,0 +1,115 @@
+---
+// 로그인 양식 미리보기. ?system=<디자인 시스템>&state=<default|error|fail> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안).
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로그인 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style>
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;display:grid;place-items:center;min-height:100vh;padding:32px 16px}
+.card{width:100%;max-width:400px;background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:36px 32px 28px;display:grid;gap:20px}
+h1{margin:0 0 4px;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:30px;line-height:1.15}
+.fail{margin:0;padding:12px 14px;border:var(--stroke) solid var(--danger);border-radius:var(--radius);color:var(--danger);font-size:14px}
+.field{display:grid;gap:6px}
+label{font-size:14px;font-weight:600}
+.box{display:flex;align-items:center;background:var(--surface);border:var(--stroke) solid var(--border);border-radius:var(--radius);box-shadow:var(--input-shadow)}
+.box:focus-within{outline:2px solid var(--key);outline-offset:2px}
+input{flex:1;min-width:0;height:44px;border:0;background:transparent;padding:0 12px;font:inherit;color:var(--ink);outline:none}
+.field.err .box{border-color:var(--danger)}
+.msg{font-size:13px;color:var(--danger);margin:0}
+.toggle{border:0;background:none;color:var(--ink2);font:inherit;font-size:13px;font-weight:600;padding:0 12px;height:44px;cursor:pointer}
+.primary{height:48px;border:var(--stroke) solid var(--key);border-radius:var(--radius);background:var(--key);color:var(--on-key);font:inherit;font-weight:600;font-size:15px;box-shadow:var(--button-shadow);cursor:pointer}
+.secondary{height:44px;border:var(--stroke) solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+a{color:var(--ink2)}
+.forgot{justify-self:end;font-size:13px;margin-top:-8px}
+.or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:12px}
+.or::before,.or::after{content:"";flex:1;height:var(--stroke);background:var(--card-border)}
+.social{display:grid;gap:8px}
+.foot{margin:4px 0 0;text-align:center;font-size:14px;color:var(--ink2)}
+.foot a{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<form class="card" novalidate>
+  <h1>로그인</h1>
+  <p class="fail" id="fail" role="alert" hidden>이메일 또는 비밀번호가 맞지 않습니다. 다시 확인해 주세요.</p>
+  <div class="field" id="f-email">
+    <label for="email">이메일</label>
+    <div class="box"><input id="email" type="email" autocomplete="username" spellcheck="false" autocapitalize="none" aria-describedby="m-email"></div>
+    <p class="msg" id="m-email" hidden></p>
+  </div>
+  <div class="field" id="f-pw">
+    <label for="pw">비밀번호</label>
+    <div class="box">
+      <input id="pw" type="password" autocomplete="current-password" spellcheck="false" autocapitalize="none" aria-describedby="m-pw">
+      <button class="toggle" type="button" aria-controls="pw" aria-pressed="false">보기</button>
+    </div>
+    <p class="msg" id="m-pw" hidden></p>
+  </div>
+  <a class="forgot" href="#">비밀번호를 잊었나요?</a>
+  <button class="primary" type="submit">로그인</button>
+  <div class="or">또는</div>
+  <div class="social">
+    <button class="secondary" type="button">Apple로 계속하기</button>
+    <button class="secondary" type="button">Google로 계속하기</button>
+  </div>
+  <p class="foot">계정이 없나요? <a href="#">회원가입</a></p>
+</form>
+
+<script is:inline define:vars={{ themes }}>
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+
+  const $ = (s) => document.querySelector(s);
+  const setError = (id, text) => {
+    $(`#f-${id}`).classList.toggle('err', !!text);
+    const m = $(`#m-${id}`);
+    m.hidden = !text;
+    m.textContent = text || '';
+    $(id === 'email' ? '#email' : '#pw').setAttribute('aria-invalid', String(!!text));
+  };
+  // 형식 검사는 버튼을 눌렀을 때만 (입력 중·칸을 벗어날 때는 하지 않는다)
+  const validate = () => {
+    const email = $('#email').value.trim(), pw = $('#pw').value;
+    setError('email', !email ? '이메일을 입력해 주세요.' : !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? '이메일 형식이 아닙니다. @ 뒤 도메인을 확인해 주세요.' : '');
+    setError('pw', pw ? '' : '비밀번호를 입력해 주세요.');
+    return !!email && !!pw && !$('#f-email').classList.contains('err');
+  };
+  $('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    $('#fail').hidden = true;
+    // 미리보기라 실제 계정은 없다. 형식이 맞으면 "계정 확인 실패"를 보여 준다.
+    if (validate()) $('#fail').hidden = false;
+  });
+  $('.toggle').addEventListener('click', (e) => {
+    const pw = $('#pw'), show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    e.currentTarget.textContent = show ? '숨기기' : '보기';
+    e.currentTarget.setAttribute('aria-pressed', String(show));
+  });
+
+  const state = params.get('state');
+  if (state === 'error') { $('#email').value = 'woody@mail'; validate(); }
+  if (state === 'fail') { $('#email').value = 'woody@mail.com'; $('#pw').value = 'regula-1234'; $('#fail').hidden = false; }
+</script>
+</body>
+</html>

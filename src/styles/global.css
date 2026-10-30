@@ -228,7 +228,7 @@ nav.toc a[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);fon
 .tplrow .label{display:block;margin-bottom:4px}
 .tplrow p{margin:6px 0 0;color:var(--ink-2);font-size:14.5px;max-width:62ch}
 .tplrow .sig{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:8px}
-.todo{margin-top:32px}
+.todo{margin-top:-40px}
 .rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
 .rules ol,.rules ul{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--ink-2);font-size:14.5px}
 .tokgroup{margin-top:28px}
@@ -278,3 +278,14 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 @media (max-width:640px){
   .door{grid-template-columns:minmax(0,1fr);gap:4px}
 }
+.parts{margin:0;padding-left:20px;display:grid;gap:10px;color:var(--ink-2);font-size:14.5px}
+.parts b{color:var(--ink);font-weight:600}
+.parts small{display:block;font-size:13px;color:var(--ink-3)}
+.parts small.src{font-family:var(--mono);font-size:11.5px;margin-top:2px}
+.parts .opt{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);border:1px solid var(--rule);padding:0 5px;margin-left:6px}
+.switch{justify-content:space-between;gap:12px;margin-bottom:14px}
+.tplrow .wire{height:44px;border:1px solid var(--rule);background:var(--surface);display:grid;place-items:center}
+.tplrow .wire i{display:block;width:44%;height:5px;background:var(--rule);box-shadow:0 9px 0 var(--rule),0 18px 0 var(--ink)}
+.tplrow .wire{align-content:start;padding-top:8px}
+.tplkind > h2.label{display:block;padding-bottom:10px;font-family:var(--mono);font-weight:500}
+.tplkind + .tplkind{margin-top:-40px}

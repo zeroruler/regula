@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { isColor } from '../../lib/design-tokens';
 import { loadTemplate } from '../../lib/templates';
+import { loadThemes } from '../../lib/themes';
 import { href } from '../../lib/url';
 
 export async function getStaticPaths() {
@@ -15,6 +16,9 @@ const t = template.data;
 const { Content } = await render(template);
 const { source, groups, strip, preview, doc, markdown } = loadTemplate(template);
 const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
+const isPage = t.kind === '페이지 양식';
+const themes = isPage ? await loadThemes() : [];
+const states = [['default', '기본'], ['error', '형식 오류'], ['fail', '계정 오류']];
 ---
 <Base title={`${t.name} · Regula`} description={t.concept} current="templates">
   <Fragment slot="sub">
@@ -26,8 +30,8 @@ const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
       <span class="label"><a href={href('templates/')}>§ 4 페이지 양식</a> · {t.kind}</span>
       <h1>{t.name}</h1>
       <p class="lede">{t.concept}</p>
-      <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>
-      <p class="by">{t.used_in.length ? `사용처 · ${t.used_in.join(', ')}` : '사용처 · 아직 기록 없음'}</p>
+      {strip.length > 0 && <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>}
+      {!isPage && <p class="by">{t.used_in.length ? `사용처 · ${t.used_in.join(', ')}` : '사용처 · 아직 기록 없음'}</p>}
       <div class="row">
         {preview && <a class="open" href={preview} target="_blank" rel="noopener">미리보기 새 탭에서 열기 ↗</a>}
         {doc && <a class="open" href={doc} target="_blank" rel="noopener">전체 문서 (DESIGN.html) ↗</a>}
@@ -35,7 +39,36 @@ const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
       </div>
     </header>
 
-    <section class="rules">
+    {isPage && (
+      <section class="rules">
+        <div>
+          <h2 class="label">구성 · 위에서 아래로</h2>
+          <ol class="parts">{t.parts.map((p) => <li><b>{p.name}</b>{p.optional && <span class="opt">선택</span>}{p.note && <small>{p.note}</small>}</li>)}</ol>
+        </div>
+        <div>
+          <h2 class="label">규칙 · {t.rules.length}</h2>
+          <ol class="parts">{t.rules.map((r) => <li>{r.text}<small class="src">{r.source}</small></li>)}</ol>
+        </div>
+      </section>
+    )}
+
+    {isPage && preview && (
+      <section>
+        <h2 class="label">미리보기 · 디자인 시스템을 바꿔 입혀 보기</h2>
+        <div class="row switch" data-base={preview}>
+          <div class="chips" role="group" aria-label="디자인 시스템">
+            {themes.map((th, i) => <button class="chip" type="button" data-system={th.id} aria-pressed={String(i === 0)}>{th.name}</button>)}
+          </div>
+          <div class="chips" role="group" aria-label="상태">
+            {states.map(([k, label], i) => <button class="chip" type="button" data-state={k} aria-pressed={String(i === 0)}>{label}</button>)}
+          </div>
+        </div>
+        <div class="frame"><iframe id="pagePreview" src={`${preview}?system=${themes[0]?.id}`} title={`${t.name} 미리보기`}></iframe></div>
+        <p class="credit">미리보기 안에서 직접 입력해 볼 수 있어요. 빈 칸으로 로그인을 누르면 제출 시점 검사가 동작합니다.</p>
+      </section>
+    )}
+
+    {t.signatures.length > 0 && <section class="rules">
       <div>
         <h2 class="label">시그니처</h2>
         <ol>{t.signatures.map((s) => <li>{s}</li>)}</ol>
@@ -46,16 +79,16 @@ const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
           <ul>{t.avoid.map((s) => <li>{s}</li>)}</ul>
         </div>
       )}
-    </section>
+    </section>}
 
-    {preview && (
+    {!isPage && preview && (
       <section>
         <h2 class="label">미리보기</h2>
         <div class="frame"><iframe src={preview} title={`${t.name} 미리보기`} loading="lazy"></iframe></div>
       </section>
     )}
 
-    <section>
+    {source && <section>
       <h2 class="label">디자인 토큰 · {tokenCount}개</h2>
       <p class="credit">원본 <code>{source}</code> — 이 표는 빌드할 때 원본에서 바로 읽어 와서, 원본을 고치면 따라 바뀝니다.</p>
       {groups.map((g) => (
@@ -78,7 +111,7 @@ const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
           </div>
         </div>
       ))}
-    </section>
+    </section>}
 
     <section>
       <h2 class="label">메모</h2>
@@ -91,3 +124,20 @@ const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
     </nav>
   </article>
 </Base>
+
+<script>
+  // 미리보기의 디자인 시스템·상태 바꾸기
+  const box = document.querySelector<HTMLElement>('.switch');
+  const frame = document.querySelector<HTMLIFrameElement>('#pagePreview');
+  if (box && frame) {
+    const pick = { system: box.querySelector<HTMLElement>('[data-system]')!.dataset.system!, state: 'default' };
+    box.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      const key = b.dataset.system ? 'system' : 'state';
+      pick[key] = (b.dataset.system ?? b.dataset.state)!;
+      b.parentElement!.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      frame.src = `${box.dataset.base}?system=${pick.system}&state=${pick.state}`;
+    });
+  }
+</script>

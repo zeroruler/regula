@@ -14,6 +14,23 @@ avoid:
   - "가죽결·노이즈 같은 질감, 그라데이션"
   - "라벨을 남발하기 — 한 화면 5개까지"
 swatch: ["--surface", "--bg", "--ink", "--ink-secondary", "--key", "--key-soft"]
+roles:
+  bg: "--bg"
+  surface: "--surface"
+  ink: "--ink"
+  ink2: "--ink-secondary"
+  ink3: "--ink-tertiary"
+  border: "--border-strong"
+  card-border: "--border"
+  key: "--key"
+  on-key: "--key-on"
+  danger: "--danger"
+  radius: "--radius-md"
+  card-radius: "--radius-xl"
+  card-shadow: "--shadow-1"
+  font: "--font-sans"
+  display: "--font-display"
+  title-tracking: "-0.035em"
 ---
 
 ## 메모

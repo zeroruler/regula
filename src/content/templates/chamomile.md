@@ -13,6 +13,23 @@ avoid:
   - "세리프를 본문·버튼·라벨 같은 기능성 UI에 쓰기"
   - "그라데이션"
 swatch: ["--surface", "--bg", "--text", "--text-secondary", "--primary", "--primary-soft"]
+roles:
+  bg: "--bg"
+  surface: "--surface"
+  ink: "--text"
+  ink2: "--text-secondary"
+  ink3: "--text-tertiary"
+  border: "--border-strong"
+  card-border: "--border"
+  key: "--primary"
+  on-key: "#FFFFFF"
+  danger: "--danger"
+  radius: "--radius-md"
+  card-radius: "--radius-lg"
+  card-shadow: "--shadow-1"
+  font: "--font-sans"
+  display: "--font-serif"
+  title-weight: "600"
 ---
 
 ## 메모

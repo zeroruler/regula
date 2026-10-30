@@ -14,6 +14,21 @@ avoid:
   - "카드·박스를 남발하는 레이아웃"
   - "노란색 글자 (흰 배경에서 안 읽힘)"
 swatch: ["--paper", "--surface", "--ink", "--ink-2", "--rule", "--mark"]
+roles:
+  bg: "--paper"
+  surface: "--surface"
+  ink: "--ink"
+  ink2: "--ink-2"
+  ink3: "--ink-3"
+  border: "--rule"
+  card-border: "--rule"
+  key: "--ink"
+  on-key: "--paper"
+  danger: "--error"
+  radius: "2px"
+  card-radius: "0"
+  font: "--body"
+  display: "--display"
 ---
 
 ## 메모

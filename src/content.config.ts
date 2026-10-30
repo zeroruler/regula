@@ -55,23 +55,35 @@ const references = defineCollection({
 });
 
 // 직접 만든 디자인 시스템과 페이지 양식 (PLAN §4 페이지 양식)
+export const templateKinds = ['디자인 시스템', '페이지 양식'] as const;
+
 const templates = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/templates' }),
   schema: z.object({
     name: z.string(),
     order: z.number(),
-    kind: z.string(),
+    kind: z.enum(templateKinds),
     concept: z.string(),
+    used_in: z.array(z.string()).default([]),
+
+    // ── 디자인 시스템 ──
     // 토큰의 원본: DESIGN/<design>/DESIGN.md, 또는 tokens_from에 적은 CSS 파일
     design: z.string().optional(),
     tokens_from: z.string().optional(),
     // 미리보기로 띄울 페이지 (사이트 기준 경로). 없으면 DESIGN/<design>/preview.html
     preview: z.string().optional(),
-    used_in: z.array(z.string()).default([]),
-    signatures: z.array(z.string()).min(1),
+    signatures: z.array(z.string()).default([]),
     avoid: z.array(z.string()).default([]),
     // 목록에 보여 줄 대표 색 토큰 이름
-    swatch: z.array(z.string()),
+    swatch: z.array(z.string()).default([]),
+    // 페이지 양식 미리보기에 입힐 역할 → 토큰 이름(--로 시작) 또는 그대로 쓸 값
+    roles: z.record(z.string(), z.string()).optional(),
+
+    // ── 페이지 양식 ──
+    // 화면 위에서 아래로 놓이는 구성
+    parts: z.array(z.object({ name: z.string(), note: z.string().optional(), optional: z.boolean().default(false) })).default([]),
+    // 규칙마다 출처 필수
+    rules: z.array(z.object({ text: z.string(), source: z.string().min(1) })).default([]),
   }),
 });
 

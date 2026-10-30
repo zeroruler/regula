@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { templateKinds } from '../../content.config';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import { loadTemplate } from '../../lib/templates';
@@ -9,33 +10,42 @@ const templates = (await getCollection('templates')).sort((a, b) => a.data.order
 ---
 <Base title="페이지 양식 · Regula" current="templates">
   <Fragment slot="sub">
-    {templates.map((t) => <a href={href(`templates/${t.id}/`)}>{t.data.name}</a>)}
+    {templateKinds.map((k) => <a href={`#${k === '디자인 시스템' ? 'k-system' : 'k-page'}`}>{k}</a>)}
   </Fragment>
 
   <PageHead current="templates" title="다시 쓸 수 있는 디자인 양식">
     <p>직접 만든 디자인 시스템과 페이지별 양식을 등록하는 곳입니다. 이름을 누르면 시그니처, 미리보기, 실제 토큰 전체를 볼 수 있어요.</p>
   </PageHead>
+  {templateKinds.map((kind) => (
+  <section class="tplkind" id={kind === '디자인 시스템' ? 'k-system' : 'k-page'}>
+  <h2 class="label">{kind}</h2>
   <div class="tplrows">
-    {templates.map((t) => {
+    {templates.filter((t) => t.data.kind === kind).map((t) => {
       const { strip } = loadTemplate(t);
       return (
         <a class="tplrow" href={href(`templates/${t.id}/`)}>
-          <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>
+          {strip.length > 0
+            ? <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>
+            : <div class="wire" aria-hidden="true"><i></i></div>}
           <div>
-            <span class="label">No.{t.data.order} · {t.data.kind}{t.data.used_in.length > 0 && ` · ${t.data.used_in.join(', ')}`}</span>
+            {t.data.used_in.length > 0 && <span class="label">{t.data.used_in.join(', ')}에서 사용 중</span>}
             <h3>{t.data.name}</h3>
             <p>{t.data.concept}</p>
-            <div class="sig">{t.data.signatures.map((x) => x.split(' — ')[0]).join(' · ')}</div>
+            <div class="sig">{t.data.signatures.length
+              ? t.data.signatures.map((x) => x.split(' — ')[0]).join(' · ')
+              : t.data.parts.map((p) => p.name).join(' · ')}</div>
           </div>
         </a>
       );
     })}
   </div>
+  </section>
+  ))}
   <div class="tpl todo">
     <span class="label">채워 나갈 양식</span>
     <div class="slots">
       <div class="slot"><span>랜딩 페이지</span><span>비어 있음</span></div>
-      <div class="slot"><span>로그인 · 회원가입</span><span>비어 있음</span></div>
+      <div class="slot"><span>회원가입</span><span>비어 있음</span></div>
       <div class="slot"><span>설정 화면</span><span>비어 있음</span></div>
       <div class="slot"><span>대시보드</span><span>비어 있음</span></div>
       <div class="slot"><span>글 · 블로그 본문</span><span>비어 있음</span></div>

@@ -1,0 +1,70 @@
+---
+// 한 영역의 버튼 세 개에 무게(채움·아웃라인·텍스트)를 직접 정해 본다. 처음엔 셋 다 채운 버튼 — 고쳐 보는 실습.
+const slots = [
+  { k: 'cancel', n: '취소', light: true },
+  { k: 'draft', n: '임시 저장' },
+  { k: 'submit', n: '제출', main: true },
+];
+const kinds = [
+  { k: 'fill', n: '채움' },
+  { k: 'out', n: '아웃라인' },
+  { k: 'txt', n: '텍스트' },
+];
+---
+<div class="lab btnlab" id="btnHier" data-slots={JSON.stringify(slots)}>
+  <div class="bh-frame" aria-hidden="true">
+    <div class="ln d"></div><div class="ln"></div><div class="ln" style="width:72%"></div>
+    <div class="bh-field"></div><div class="bh-field"></div>
+    <div class="bh-acts">
+      {slots.map((s) => <span class="btn-x fill" data-slot={s.k}>{s.n}</span>)}
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 한 영역의 버튼 위계</span>
+    <h3>무거운 버튼은 하나만</h3>
+    {slots.map((s) => (
+      <div class="row bh-row">
+        <span class="label">{s.n}</span>
+        <div class="chips" data-slot={s.k}>
+          {kinds.map((k) => <button class="chip" type="button" data-kind={k.k} aria-pressed={String(k.k === 'fill')}>{k.n}</button>)}
+        </div>
+      </div>
+    ))}
+    <p class="g-read">읽히는 것: <mark id="bhRead"></mark></p>
+    <p>셋 다 채운 버튼이면 어느 것이 주 행동인지 눈이 고르지 못합니다. 제출만 채우고, 임시 저장은 아웃라인, 취소는 텍스트로 내려 보세요.</p>
+    <div class="g-ui">
+      <span class="label">규칙</span>
+      <p>영역마다 채운 버튼은 하나. 나머지는 무게를 한 단계씩 내린다. 취소처럼 되돌아가는 행동은 가장 가볍게.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#btnHier')!;
+  const slots: { k: string; n: string; light?: boolean; main?: boolean }[] = JSON.parse(lab.dataset.slots!);
+  const kind: Record<string, string> = Object.fromEntries(slots.map((s) => [s.k, 'fill']));
+  const weight: Record<string, number> = { fill: 3, out: 2, txt: 1 };
+
+  function render() {
+    slots.forEach((s) => {
+      lab.querySelector<HTMLElement>(`.btn-x[data-slot="${s.k}"]`)!.className = `btn-x ${kind[s.k]}`;
+    });
+    const fills = slots.filter((s) => kind[s.k] === 'fill').length;
+    const main = slots.find((s) => s.main)!, light = slots.find((s) => s.light)!;
+    const heaviest = Math.max(...slots.map((s) => weight[kind[s.k]]));
+    lab.querySelector('#bhRead')!.textContent =
+      fills === 0 ? '주 행동이 안 보임 — 하나는 채운다'
+      : fills > 1 ? `채운 버튼 ${fills}개가 경쟁함`
+      : weight[kind[main.k]] < heaviest ? '엉뚱한 버튼이 주 행동처럼 보임'
+      : weight[kind[light.k]] >= weight[kind[main.k]] - 1 && kind[light.k] !== 'txt' ? '주 행동은 분명, 취소를 더 가볍게'
+      : '주 행동 하나가 분명함';
+  }
+  lab.querySelectorAll<HTMLElement>('.chips[data-slot]').forEach((group) => group.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    kind[group.dataset.slot!] = b.dataset.kind!;
+    group.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  }));
+  render();
+</script>

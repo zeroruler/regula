@@ -1,6 +1,6 @@
 ---
-interface Props { names: string[] }
-const { names } = Astro.props;
+interface Props { names: string[]; ends?: [string, string] }
+const { names, ends = ['조용함 · 지나쳐도 됨', '멈춤 · 응답해야 함'] } = Astro.props;
 const last = names.length - 1;
 const transform = (i: number) => (i === 0 ? 'none' : i === last ? 'translateX(-100%)' : 'translateX(-50%)');
 ---
@@ -9,5 +9,5 @@ const transform = (i: number) => (i === 0 ? 'none' : i === last ? 'translateX(-1
     <span class="pin" style={`left:${(i / last) * 100}%;transform:${transform(i)};top:${i % 2 ? 14 : 0}px`}>{n}</span>
   ))}
   <div class="track"></div>
-  <div class="ends"><span>조용함 · 지나쳐도 됨</span><span>멈춤 · 응답해야 함</span></div>
+  <div class="ends"><span>{ends[0]}</span><span>{ends[1]}</span></div>
 </div>

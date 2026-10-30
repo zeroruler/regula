@@ -25,11 +25,16 @@ const patterns = defineCollection({
     name: z.string(),
     en: z.string(),
     category: z.string(),
-    intrusiveness: z.number().int().min(1).max(9),
+    // 카테고리마다 1–9 눈금 하나로 정렬한다. 알림은 방해 정도, 버튼은 시각적 무게 (src/lib/site.ts patternGroups)
+    intrusiveness: z.number().int().min(1).max(9).optional(),
+    emphasis: z.number().int().min(1).max(9).optional(),
     use_when: z.string(),
     avoid_when: z.string(),
-    dismiss: z.string(),
-    actions: z.string(),
+    // 알림
+    dismiss: z.string().optional(),
+    actions: z.string().optional(),
+    // 버튼: 한 화면(영역)에 몇 개까지
+    per_view: z.string().optional(),
     confused_with: z.string(),
     source: z.string().min(1),
     refs: z.array(z.string()).default([]),

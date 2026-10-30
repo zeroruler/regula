@@ -377,3 +377,35 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--g);padding:14px;border:1px solid var(--rule)}
 .cols3 div{display:flex;flex-direction:column;gap:10px}
 .cols3 i{display:block;height:6px;background:var(--ink-3)}
+
+/* 좋은 디자인 실습 — 흑백 카드에 장식을 켜고 끈다 */
+.rcard-wrap{display:grid;place-items:center;padding:12px;min-width:0}
+.rcard{width:100%;max-width:340px;padding:20px;display:flex;flex-direction:column;gap:14px;background:var(--surface);border:1px solid var(--rule);transition:box-shadow .2s,border-color .2s,background .2s}
+.rcard.shadow{box-shadow:0 10px 24px color-mix(in srgb,var(--ink) 28%,transparent)}
+.rcard.border{border:3px solid var(--ink)}
+.rcard.fill{background:color-mix(in srgb,var(--ink) 10%,var(--surface))}
+.rc-head{display:flex;align-items:center;gap:10px}
+.rc-title{display:block;height:14px;width:55%;background:var(--ink)}
+.rc-ico{display:none;flex:none;width:22px;height:22px;border:2px solid var(--ink);border-radius:50%}
+.rcard.icons .rc-ico{display:block}
+.rc-badge{display:none;margin-left:auto;width:40px;height:16px;background:var(--ink);border-radius:8px}
+.rcard.badge .rc-badge{display:block}
+.rc-rule{display:none;margin:0;border:none;border-top:2px solid var(--ink-3)}
+.rcard.rules .rc-rule{display:block}
+.rc-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 10px;align-items:center}
+.rc-body span{grid-column:2;height:7px;background:var(--ink-3)}
+.rc-body span.w{width:70%}
+.rc-body .rc-ico{grid-row:1/4;width:28px;height:28px;border-radius:2px}
+.rcard.bold .rc-body span{height:11px;background:var(--ink)}
+.rc-acts{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rc-acts em{display:block;height:30px;width:84px;background:var(--ink)}
+.rc-acts .extra{display:none}
+.rc-acts .link{display:block;width:56px;height:8px;border-bottom:2px solid var(--ink-3)}
+.rcard.btns .rc-acts em{width:72px;background:var(--surface);border:2px solid var(--ink)}
+.rcard.btns .rc-acts .extra{display:block}
+.rcard.btns .rc-acts .link{display:none}
+.ramscheck ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.ramscheck .ref label{cursor:pointer}
+.ramscheck .ref .t small{display:block;margin:2px 0 0}
+#ramsMeter{background:var(--mark)}
+.rcard:not(.icons) .rc-body span{grid-column:1}

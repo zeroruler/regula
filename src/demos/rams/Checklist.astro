@@ -1,0 +1,57 @@
+---
+// 지금 만드는 화면 하나를 놓고 10원칙 질문에 답해 보는 점검표. 체크 상태는 이 브라우저에만 남는다.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { items: CollectionEntry<'formulas'>[] }
+const { items } = Astro.props;
+---
+<div class="ramscheck" id="ramsCheck">
+  <div class="progress">
+    <span id="ramsScore"></span>
+    <div class="meter"><i id="ramsMeter"></i></div>
+    <button class="chip" type="button" id="ramsReset">비우기</button>
+  </div>
+  <ol>
+    {items.map((f, i) => (
+      <li class="ref" data-k={f.id}>
+        <input type="checkbox" id={`rc-${f.id}`}>
+        <label for={`rc-${f.id}`}>
+          <span class="t">{f.data.equation}<small>{String(i + 1).padStart(2, '0')} · {f.data.name}</small></span>
+        </label>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<script>
+  const KEY = 'regula:rams-check';
+  const root = document.querySelector<HTMLElement>('#ramsCheck')!;
+  const items = [...root.querySelectorAll<HTMLElement>('li[data-k]')];
+  let state: Record<string, boolean> = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { state = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+
+  function count() {
+    const n = items.filter((el) => state[el.dataset.k!]).length;
+    root.querySelector('#ramsScore')!.textContent = `${n} / ${items.length} 통과`;
+    root.querySelector<HTMLElement>('#ramsMeter')!.style.width = `${(n / items.length) * 100}%`;
+  }
+  for (const el of items) {
+    const box = el.querySelector('input')!;
+    box.checked = !!state[el.dataset.k!];
+    el.classList.toggle('done', box.checked);
+    box.addEventListener('change', () => {
+      state[el.dataset.k!] = box.checked;
+      el.classList.toggle('done', box.checked);
+      save();
+      count();
+    });
+  }
+  root.querySelector('#ramsReset')!.addEventListener('click', () => {
+    state = {};
+    items.forEach((el) => { el.querySelector('input')!.checked = false; el.classList.remove('done'); });
+    save();
+    count();
+  });
+  count();
+</script>

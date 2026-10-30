@@ -1,0 +1,62 @@
+---
+// 덜어내기: 같은 카드에 장식을 켜고 끈다. 모두 끄면 남는 것은 제목, 본문, 할 일 하나.
+const decos = [
+  { k: 'shadow', n: '그림자' },
+  { k: 'border', n: '굵은 테두리' },
+  { k: 'fill', n: '배경 채움' },
+  { k: 'icons', n: '아이콘' },
+  { k: 'rules', n: '구분선' },
+  { k: 'bold', n: '전부 굵게' },
+  { k: 'badge', n: '배지' },
+  { k: 'btns', n: '같은 무게 버튼 3개' },
+];
+---
+<div class="lab ramslab" id="ramsLess">
+  <div class="rcard-wrap">
+    <div class={`rcard ${decos.map((d) => d.k).join(' ')}`} id="ramsCard" aria-hidden="true">
+      <div class="rc-head"><i class="rc-ico"></i><b class="rc-title"></b><span class="rc-badge"></span></div>
+      <hr class="rc-rule">
+      <div class="rc-body"><i class="rc-ico"></i><span></span><span></span><span class="w"></span></div>
+      <hr class="rc-rule">
+      <div class="rc-acts"><em class="primary"></em><em class="extra"></em><em class="extra"></em><u class="link"></u></div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 10 가능한 한 적게</span>
+    <h3>하나씩 빼 보기</h3>
+    <div class="chips" id="ramsChips">
+      {decos.map((d) => <button class="chip" type="button" data-k={d.k} aria-pressed="true">{d.n}</button>)}
+    </div>
+    <div class="row">
+      <button class="chip" type="button" id="ramsNone">전부 끄기</button>
+      <button class="chip" type="button" id="ramsAll">전부 켜기</button>
+    </div>
+    <p class="g-read">남은 장식 <span id="ramsN"></span>개: <mark id="ramsRead"></mark></p>
+    <p>장식을 다 꺼도 카드는 무너지지 않습니다. 제목·본문·할 일의 위계는 크기와 간격이 만들고 있었기 때문이에요. 버튼은 셋을 같은 무게로 두는 대신 주 버튼 하나와 글자 링크로 나눕니다.</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>장식을 하나 넣을 때마다 "이걸 빼면 무엇을 잃나"를 묻습니다. 답이 없으면 뺍니다. 강조가 여러 개면 아무것도 강조되지 않아요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#ramsLess')!;
+  const card = lab.querySelector<HTMLElement>('#ramsCard')!;
+  const chips = [...lab.querySelectorAll<HTMLButtonElement>('#ramsChips button')];
+
+  function render() {
+    chips.forEach((b) => card.classList.toggle(b.dataset.k!, b.getAttribute('aria-pressed') === 'true'));
+    const n = chips.filter((b) => b.getAttribute('aria-pressed') === 'true').length;
+    lab.querySelector('#ramsN')!.textContent = String(n);
+    lab.querySelector('#ramsRead')!.textContent = n === 0 ? '할 일이 먼저 보임' : n <= 3 ? '아직 읽히지만 시끄러움' : '장식이 내용과 경쟁함';
+  }
+  chips.forEach((b) => b.addEventListener('click', () => {
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+    render();
+  }));
+  const setAll = (on: boolean) => { chips.forEach((b) => b.setAttribute('aria-pressed', String(on))); render(); };
+  lab.querySelector('#ramsNone')!.addEventListener('click', () => setAll(false));
+  lab.querySelector('#ramsAll')!.addEventListener('click', () => setAll(true));
+  render();
+</script>

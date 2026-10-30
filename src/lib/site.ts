@@ -37,11 +37,13 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
   { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
+  { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
 ];
 export const section = (key: SectionKey) => sections.find((s) => s.key === key)!;
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-10-30', text: 'v0.4 네 번째 실습 페이지 "좋은 디자인"을 추가하며 v0.4 원리 확장을 마침. Dieter Rams 10원칙을 원칙마다 UI 점검 질문으로 바꾸고, 카드 장식 여덟 가지를 켜고 끄는 덜어내기 실습과 브라우저에 남는 점검표를 붙임.' },
   { date: '2026-10-30', text: 'v0.4 세 번째 실습 페이지 "그리드"를 추가. 화면 너비를 바꾸면 구간별로 4 · 8 · 12열과 마진이 바뀌고 같은 블록이 다시 배치되는 실험, 10 · 12 · 16열을 2 · 3 · 4 · 6으로 나눠 보기, 거터와 행간 비교. 공식 4개(12단 그리드, 열 너비, 거터, 브레이크포인트) 추가.' },
   { date: '2026-10-30', text: 'v0.4 두 번째 실습 페이지 "게슈탈트"를 추가. 근접성(간격 슬라이더와 폼 목업), 유사성, 공통 영역(배경 상자 대 간격), 연속성, 폐합을 흑백 도해로 직접 조작해 봄. 근접성을 새 주제로 옮기고 공식 4개(유사성, 공통 영역, 연속성, 폐합) 추가.' },
   { date: '2026-10-30', text: 'v0.4 원리와 공식을 주제별로 묶고, 첫 실습 페이지 "색"을 추가. OKLCH 색상환으로 배색 고르기, 그 팔레트로 60-30-10 칠해 보기, Albers식 동시 대비 실습. 색 공식 6개(보색, 유사색, 삼각, 분할 보색, OKLCH, 동시 대비) 추가.' },
@@ -53,5 +55,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · Dieter Rams 10원칙 · 버튼과 입력창 패턴 추가' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 버튼과 입력창 패턴 추가' },
 ];

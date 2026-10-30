@@ -350,3 +350,30 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .formmock b{display:block;width:64px;height:8px;background:var(--ink-3)}
 .formmock i{display:block;height:30px;border:1px solid var(--ink)}
 @media (max-width:640px){ .g-fig.duo{grid-template-columns:minmax(0,1fr)} }
+
+/* 그리드 실습 — 열 표시만 형광펜, 블록은 흑백 와이어프레임 */
+.gridlab svg{max-height:460px}
+.gridlab input[type=range],#divide input[type=range],#measure input[type=range]{accent-color:var(--ink);min-width:0}
+.gridlab .gc{fill:color-mix(in srgb,var(--mark) 32%,transparent)}
+.gridlab .gframe{fill:none;stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.gridlab .gb{fill:var(--surface);fill-opacity:.55;stroke:var(--ink);stroke-width:1;vector-effect:non-scaling-stroke}
+.gridlab .gl{fill:var(--ink-3)}
+.bpbar{position:relative;display:flex;border-top:1px solid var(--ink);font-family:var(--mono);font-size:11px;color:var(--ink-3);padding-top:4px}
+.bpbar span{min-width:0;border-left:1px solid var(--ink);padding-left:4px;line-height:1.3;overflow:hidden;white-space:nowrap}
+.bpbar small{display:block;font-size:10px}
+.bpbar i{position:absolute;top:-7px;width:2px;height:12px;background:var(--ink);transform:translateX(-1px)}
+.gridread{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 16px;margin:0;font-family:var(--mono);font-size:13px}
+.gridread dt{color:var(--ink-3)}
+.gridread dd{margin:0}
+.gridread mark{background:var(--mark);color:var(--mark-ink);padding:1px 4px}
+.divrows{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 10px;align-items:center}
+.divrows .mono{font-size:11.5px;color:var(--ink-3)}
+.divrow{position:relative;height:26px}
+.divcols{position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:2px}
+.divcols b{background:color-mix(in srgb,var(--mark) 32%,transparent)}
+.divsegs{position:absolute;inset:5px 0;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:2px}
+.divsegs i{display:block;border:1.5px solid var(--ink);background:var(--surface)}
+.divsegs i.off{position:absolute;top:0;bottom:0;border-style:dashed;background:transparent}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--g);padding:14px;border:1px solid var(--rule)}
+.cols3 div{display:flex;flex-direction:column;gap:10px}
+.cols3 i{display:block;height:6px;background:var(--ink-3)}

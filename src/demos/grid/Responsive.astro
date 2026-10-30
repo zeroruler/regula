@@ -1,0 +1,94 @@
+---
+// 화면 너비를 바꾸면 구간(Material 3 window size class 경계 600 · 840)에 따라 열 수와 마진이 바뀌고,
+// 같은 와이어프레임 블록이 그 열에 맞춰 다시 배치된다. 열 수·마진 값은 Regula가 고른 예시.
+const classes = [
+  { n: 'compact', min: 320, cols: 4, margin: 16 },
+  { n: 'medium', min: 600, cols: 8, margin: 24 },
+  { n: 'expanded', min: 840, cols: 12, margin: 32 },
+];
+const MIN = 320, MAX = 1600;
+---
+<div class="lab gridlab" id="gridLab" data-classes={JSON.stringify(classes)}>
+  <svg role="img" aria-label="열 그리드 위에 놓인 페이지 와이어프레임"><g class="cols"></g><g class="blocks"></g></svg>
+  <div class="lab-side">
+    <span class="label">실험 · 화면 너비와 열</span>
+    <h3>같은 블록, 다른 열</h3>
+    <div class="row">
+      <label class="label" for="gridW">화면 너비</label>
+      <input type="range" id="gridW" min={MIN} max={MAX} step="8" value="1024" style="flex:1">
+      <span class="mono" id="gridWVal"></span>
+    </div>
+    <div class="bpbar" aria-hidden="true">
+      {classes.map((c, i) => <span style={`flex:${(classes[i + 1]?.min ?? MAX) - c.min}`}>{c.n}<small>{c.min}</small></span>)}
+      <i id="bpPin"></i>
+    </div>
+    <div class="row">
+      <label class="label" for="gridG">거터</label>
+      <input type="range" id="gridG" min="8" max="40" step="4" value="24" style="flex:1">
+      <span class="mono" id="gridGVal"></span>
+      <button class="chip" type="button" id="gridCols" aria-pressed="true">열 보기</button>
+    </div>
+    <dl class="gridread">
+      <dt>구간</dt><dd><mark id="gridClass"></mark></dd>
+      <dt>열 · 마진</dt><dd id="gridCM"></dd>
+      <dt>열 너비</dt><dd id="gridCol"></dd>
+    </dl>
+    <p>블록은 열 단위로만 폭을 가집니다. 본문 8열 + 사이드 4열이 medium에서는 위아래로 쌓이고, compact에서는 모두 4열을 꽉 채워요. 거터를 바꾸면 열 너비만 바뀌고 배치는 그대로입니다.</p>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#gridLab')!;
+  const $ = <T extends Element>(s: string) => lab.querySelector<T>(s)!;
+  const classes: { n: string; min: number; cols: number; margin: number }[] = JSON.parse(lab.dataset.classes!);
+  const w = $<HTMLInputElement>('#gridW'), g = $<HTMLInputElement>('#gridG'), colsBtn = $<HTMLButtonElement>('#gridCols');
+  // 블록마다 열 수 4 · 8 · 12일 때 차지하는 열
+  const blocks = [
+    { h: 48, span: { 4: 4, 8: 8, 12: 12 }, kind: 'bar' },
+    { h: 220, span: { 4: 4, 8: 8, 12: 8 }, kind: 'main' },
+    { h: 220, span: { 4: 4, 8: 8, 12: 4 }, kind: 'side' },
+    { h: 120, span: { 4: 4, 8: 4, 12: 4 }, kind: 'card' },
+    { h: 120, span: { 4: 4, 8: 4, 12: 4 }, kind: 'card' },
+    { h: 120, span: { 4: 4, 8: 4, 12: 4 }, kind: 'card' },
+  ] as const;
+
+  function render() {
+    const W = +w.value, G = +g.value;
+    const c = [...classes].reverse().find((x) => W >= x.min)!;
+    const n = c.cols, M = c.margin;
+    const col = (W - 2 * M - (n - 1) * G) / n;
+    const x = (i: number) => M + i * (col + G);
+    // 열을 앞에서부터 채우고, 넘치면 다음 줄로
+    let ci = 0, y = M, rowH = 0;
+    const rects: string[] = [];
+    for (const b of blocks) {
+      const s = b.span[n as 4 | 8 | 12];
+      if (ci + s > n) { ci = 0; y += rowH + G; rowH = 0; }
+      const bx = x(ci), bw = s * col + (s - 1) * G;
+      rects.push(`<rect class="gb" x="${bx}" y="${y}" width="${bw}" height="${b.h}"/>`);
+      const lines = b.kind === 'bar' ? [[0.2, 0.42]] : b.kind === 'card' ? [[0.6, 0.25], [0.8, 0.45]] : [[0.5, 0.12], [0.9, 0.24], [0.8, 0.32]];
+      lines.forEach(([lw, ly]) => rects.push(`<rect class="gl" x="${bx + 14}" y="${y + b.h * ly}" width="${Math.max(0, (bw - 28) * lw)}" height="8"/>`));
+      ci += s; rowH = Math.max(rowH, b.h);
+    }
+    const H = y + rowH + M;
+    const svg = $<SVGSVGElement>('svg');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    $('.cols').innerHTML = colsBtn.getAttribute('aria-pressed') === 'true'
+      ? Array.from({ length: n }, (_, i) => `<rect class="gc" x="${x(i)}" y="0" width="${col}" height="${H}"/>`).join('') : '';
+    $('.blocks').innerHTML = `<rect class="gframe" x="0" y="0" width="${W}" height="${H}"/>` + rects.join('');
+    $('#gridWVal').textContent = `${W}px`;
+    $('#gridGVal').textContent = `${G}`;
+    $('#gridClass').textContent = c.n;
+    $('#gridCM').textContent = `${n}열 · 마진 ${M}`;
+    $('#gridCol').textContent = `${col.toFixed(1)}px`;
+    $<HTMLElement>('#bpPin').style.left = `${((W - 320) / (1600 - 320)) * 100}%`;
+  }
+  // 처음에는 지금 보고 있는 화면 너비에서 시작
+  w.value = String(Math.min(1600, Math.max(320, Math.round(innerWidth / 8) * 8)));
+  [w, g].forEach((el) => el.addEventListener('input', render));
+  colsBtn.addEventListener('click', () => {
+    colsBtn.setAttribute('aria-pressed', String(colsBtn.getAttribute('aria-pressed') !== 'true'));
+    render();
+  });
+  render();
+</script>

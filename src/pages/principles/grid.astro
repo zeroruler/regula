@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Responsive from '../../demos/grid/Responsive.astro';
+import Divide from '../../demos/grid/Divide.astro';
+import Measure from '../../demos/grid/Measure.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const formulas = (await getCollection('formulas', (f) => f.data.topic === '그리드')).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="그리드 · 원리와 공식 · Regula" current="principles" description="12단 그리드, 거터, 브레이크포인트를 화면 너비를 바꿔 가며 보는 실습 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === '그리드' ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>폭은 열 단위로만 정한다</h1>
+    <p>그리드는 요소의 폭과 위치를 정하는 눈금입니다. 열 수, 열 사이의 거터, 바깥 마진 세 값을 정하고, 화면 너비가 바뀌는 지점(브레이크포인트)에서 이 값을 바꿉니다. 블록은 그 눈금 위에서만 움직여요.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 브레이크포인트</span>
+      <h2>화면이 좁아지면 열을 줄인다</h2>
+      <p>열 수를 그대로 두고 화면만 좁히면 열이 손가락보다 가늘어집니다. 그래서 구간마다 열 수와 마진을 바꿔요. 여기서는 Material 3의 창 크기 구간(600 · 840)을 경계로 4 · 8 · 12열을 씁니다.</p>
+    </header>
+    <Responsive />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 열과 거터</span>
+      <h2>12로 나누고, 거터로 가른다</h2>
+      <p>12열은 반, 삼분, 사분 배치가 모두 열 경계에 맞는 가장 작은 수입니다. 거터는 열 사이를 가르는 여백이라, 글줄 사이보다 좁으면 단이 갈리지 않아요.</p>
+    </header>
+    <div class="tools" style="margin-top:0"><Divide /><Measure /></div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">공식</span>
+      <h2>그리드에 관한 규칙 {formulas.length}개</h2>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

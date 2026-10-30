@@ -1,0 +1,30 @@
+---
+// 거터는 열 사이를 가르는 여백이다. 본문 행간보다 좁으면 옆 단 글줄과 이어 읽힌다 (근접성).
+---
+<div class="tool" id="measure">
+  <span class="label">실습 · 거터와 행간</span>
+  <h3>거터가 행간보다 좁으면</h3>
+  <div class="row">
+    <label class="label" for="gutterIn">거터</label>
+    <input type="range" id="gutterIn" min="2" max="40" value="6" style="flex:1">
+    <span class="mono" id="gutterVal"></span>
+  </div>
+  <div class="cols3" id="cols3" aria-hidden="true">
+    {[0, 1, 2].map(() => <div>{Array.from({ length: 6 }, (_, i) => <i style={`width:${[92, 100, 86, 97, 100, 64][i]}%`}></i>)}</div>)}
+  </div>
+  <p class="g-read">보이는 것: <mark id="gutterRead"></mark></p>
+  <p class="credit" style="margin:0">글줄 사이(행간 여백)는 약 10px입니다. 거터가 그보다 좁으면 눈이 옆 단으로 넘어가 가로줄로 읽어요. 거터는 글줄 사이보다 확실히 넓게 — 근접성과 같은 원리입니다.</p>
+</div>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('#gutterIn')!;
+  const cols = document.querySelector<HTMLElement>('#cols3')!;
+  const paint = () => {
+    const g = +input.value;
+    cols.style.setProperty('--g', `${g}px`);
+    document.querySelector('#gutterVal')!.textContent = `${g}px`;
+    document.querySelector('#gutterRead')!.textContent = g <= 10 ? '가로로 이어진 긴 줄' : g < 20 ? '단이 갈리기 시작함' : '세 단';
+  };
+  input.addEventListener('input', paint);
+  paint();
+</script>

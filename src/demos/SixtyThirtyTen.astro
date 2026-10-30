@@ -1,0 +1,59 @@
+---
+// 색상환에서 고른 팔레트로 60-30-10을 직접 칠해 본다. 역할을 돌리거나 강조색을 60%로 키워서 깨지는 모습을 본다.
+---
+<div class="tool" id="ratioLab">
+  <span class="label">실습 · 60-30-10</span>
+  <h3>같은 세 색, 다른 면적</h3>
+  <div class="row">
+    <button class="chip" type="button" id="rotate">역할 돌리기</button>
+    <div class="chips" role="group" aria-label="면적 비율">
+      <button class="chip" type="button" data-mix="60,30,10" aria-pressed="true">60 · 30 · 10</button>
+      <button class="chip" type="button" data-mix="34,33,33" aria-pressed="false">33 · 33 · 33</button>
+      <button class="chip" type="button" data-mix="10,30,60" aria-pressed="false">10 · 30 · 60</button>
+    </div>
+  </div>
+  <div class="mini" id="mini" aria-hidden="true">
+    <div class="mini-nav"><b></b><i></i><i></i></div>
+    <div class="mini-body">
+      <div class="mini-card"><span></span><span></span><span class="w"></span><em></em></div>
+      <div class="mini-card"><span></span><span></span><span class="w"></span><em></em></div>
+    </div>
+  </div>
+  <div class="mixbar" id="mixbar"></div>
+  <p class="credit" id="mixNote" style="margin:0"></p>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#ratioLab')!;
+  const mini = lab.querySelector<HTMLElement>('#mini')!;
+  let palette = JSON.parse(document.querySelector<HTMLElement>('#wheelLab')?.dataset.palette ?? '["#E7E2DA","#5C6B73","#C2382D"]');
+  let shift = 0, mix = [60, 30, 10];
+  const notes: Record<string, string> = {
+    '60,30,10': '주조색이 바탕을 잡고, 보조색이 구획을 나누고, 강조색은 눌러야 할 곳에만 있어요.',
+    '34,33,33': '세 색이 같은 무게로 싸워서 어디를 봐야 할지 흐려집니다.',
+    '10,30,60': '강조색이 바탕이 되면 더는 강조가 아니에요. 버튼이 오히려 묻힙니다.',
+  };
+
+  function render() {
+    const [main, sub, accent] = [0, 1, 2].map((i) => palette[(i + shift) % palette.length] ?? palette[0]);
+    const order = [...mix].map((v, i) => [v, [main, sub, accent][i]] as const).sort((a, b) => b[0] - a[0]);
+    // 가장 넓은 면적 = 바탕, 다음 = 카드·내비, 가장 좁은 = 버튼·포인트
+    mini.style.setProperty('--m', order[0][1]);
+    mini.style.setProperty('--s', order[1][1]);
+    mini.style.setProperty('--a', order[2][1]);
+    lab.querySelector('#mixbar')!.innerHTML = [main, sub, accent]
+      .map((c, i) => `<i style="flex:${mix[i]};background:${c}"><span>${mix[i]}%</span></i>`).join('');
+    lab.querySelector('#mixNote')!.textContent = notes[mix.join(',')];
+  }
+  lab.querySelector('#rotate')!.addEventListener('click', () => { shift = (shift + 1) % 3; render(); });
+  lab.querySelectorAll<HTMLButtonElement>('[data-mix]').forEach((b) => b.addEventListener('click', () => {
+    mix = b.dataset.mix!.split(',').map(Number);
+    lab.querySelectorAll('[data-mix]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  }));
+  document.addEventListener('regula:palette', (e) => {
+    palette = (e as CustomEvent<string[]>).detail;
+    render();
+  });
+  render();
+</script>

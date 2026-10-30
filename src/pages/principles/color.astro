@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import ColorWheel from '../../demos/ColorWheel.astro';
+import SixtyThirtyTen from '../../demos/SixtyThirtyTen.astro';
+import SimultaneousContrast from '../../demos/SimultaneousContrast.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const formulas = (await getCollection('formulas', (f) => f.data.topic === '색')).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="색 · 원리와 공식 · Regula" current="principles" description="색상환과 배색, 60-30-10, 동시 대비를 직접 해 보는 실습 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === '색' ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>색은 혼자 있지 않다</h1>
+    <p>색 하나를 잘 고르는 것보다, 어떤 색과 어떤 면적으로 어떤 바탕 위에 놓이는지가 더 중요합니다. 색상환으로 고르고, 면적을 나눠 보고, 바탕을 바꿔 봅니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 배색</span>
+      <h2>색상환에서 각도로 고르기</h2>
+      <p>보색·유사색·삼각·분할 보색은 기준 색에서 몇 도 떨어진 색을 쓰는지의 규칙입니다. 이 색상환은 화면용 OKLCH 기준이라, 물감(RYB) 기준인 Itten의 12색상환과는 보색 짝이 조금 다를 수 있어요.</p>
+    </header>
+    <ColorWheel />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 면적</span>
+      <h2>위에서 고른 색으로 60-30-10</h2>
+      <p>배색은 어떤 색을 쓰는지보다 각각 얼마나 쓰는지에서 성패가 갈립니다. 실제 UI 시스템은 더 극단적이어서, Cordovan은 화면의 95%를 뉴트럴로 두고 키 컬러를 한 군데에만 씁니다.</p>
+    </header>
+    <div class="tools"><SixtyThirtyTen /><SimultaneousContrast /></div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">공식</span>
+      <h2>색에 관한 규칙 {formulas.length}개</h2>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

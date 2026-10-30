@@ -1,0 +1,32 @@
+---
+// Albers식 동시 대비: 같은 회색이 바탕에 따라 달라 보인다. "바탕 잇기"를 켜면 같은 색이라는 걸 확인할 수 있다.
+---
+<div class="tool" id="albers">
+  <span class="label">실습 · 동시 대비</span>
+  <h3>가운데 두 사각형은 같은 색일까</h3>
+  <div class="albers" id="albersBox" aria-hidden="true">
+    <div class="ground" style="background:#1D2B3A"><i></i></div>
+    <div class="ground" style="background:#E9D8A6"><i></i></div>
+    <b class="bridge"></b>
+  </div>
+  <div class="row">
+    <label class="label" for="mid">가운데 색 밝기</label>
+    <input type="range" id="mid" min="20" max="80" value="52" style="flex:1">
+    <button class="chip" type="button" id="bridge" aria-pressed="false">바탕 잇기</button>
+  </div>
+  <p class="credit" style="margin:0">두 사각형은 처음부터 같은 값이에요. 어두운 바탕 위의 것이 더 밝아 보입니다. 팔레트를 흰 종이 위에서만 고르면 실제 화면에서 다르게 보이는 이유예요.</p>
+</div>
+
+<script>
+  const box = document.querySelector<HTMLElement>('#albersBox')!;
+  const input = document.querySelector<HTMLInputElement>('#mid')!;
+  const btn = document.querySelector<HTMLButtonElement>('#bridge')!;
+  const paint = () => box.style.setProperty('--mid', `hsl(30 8% ${input.value}%)`);
+  input.addEventListener('input', paint);
+  btn.addEventListener('click', () => {
+    const on = btn.getAttribute('aria-pressed') !== 'true';
+    btn.setAttribute('aria-pressed', String(on));
+    box.classList.toggle('bridged', on);
+  });
+  paint();
+</script>

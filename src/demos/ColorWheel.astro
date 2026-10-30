@@ -1,0 +1,94 @@
+---
+// 색상환 위에서 기준 색을 고르고 배색 규칙(보색·유사색·삼각·분할 보색)으로 나머지를 정한다.
+// 고른 팔레트는 'regula:palette' 이벤트로 60-30-10 실습에 넘긴다.
+const schemes = [
+  { k: 'complementary', n: '보색', offsets: [0, 180] },
+  { k: 'analogous', n: '유사색', offsets: [-30, 0, 30] },
+  { k: 'triadic', n: '삼각', offsets: [0, 120, 240] },
+  { k: 'split', n: '분할 보색', offsets: [0, 150, 210] },
+];
+const segments = Array.from({ length: 24 }, (_, i) => i * 15);
+const arc = (deg: number) => {
+  const r1 = 140, r0 = 92, a0 = ((deg - 7.5 - 90) * Math.PI) / 180, a1 = ((deg + 7.5 - 90) * Math.PI) / 180;
+  const p = (r: number, a: number) => `${(150 + r * Math.cos(a)).toFixed(2)} ${(150 + r * Math.sin(a)).toFixed(2)}`;
+  return `M${p(r0, a0)} L${p(r1, a0)} A${r1} ${r1} 0 0 1 ${p(r1, a1)} L${p(r0, a1)} A${r0} ${r0} 0 0 0 ${p(r0, a0)}Z`;
+};
+---
+<div class="lab colorlab" id="wheelLab" data-schemes={JSON.stringify(schemes)}>
+  <svg viewBox="0 0 300 300" role="img" aria-label="OKLCH 색상환">
+    {segments.map((h) => <path d={arc(h)} style={`fill:oklch(0.7 0.13 ${h})`} data-h={h} class="seg" />)}
+    <g id="marks"></g>
+    <text x="150" y="146" text-anchor="middle" class="hub" id="hubHue">30°</text>
+    <text x="150" y="166" text-anchor="middle" class="hub small">기준 색상각</text>
+  </svg>
+  <div class="lab-side">
+    <span class="label">실험 · 색상환에서 배색 고르기</span>
+    <div class="chips" id="schemeChips">
+      {schemes.map((s, i) => <button class="chip" type="button" data-k={s.k} aria-pressed={String(i === 0)}>{s.n}</button>)}
+    </div>
+    <div class="row">
+      <label class="label" for="hue">색상각</label>
+      <input type="range" id="hue" min="0" max="359" value="30" style="flex:1">
+    </div>
+    <div class="row">
+      <label class="label" for="light">밝기 L</label>
+      <input type="range" id="light" min="35" max="85" value="62" style="flex:1">
+      <label class="label" for="chroma">채도 C</label>
+      <input type="range" id="chroma" min="2" max="20" value="13" style="flex:1">
+    </div>
+    <div class="palette" id="palette"></div>
+    <p class="credit" style="margin:0">색상환을 눌러도 기준 색이 바뀝니다. 아래 두 줄은 같은 색상각을 HSL과 OKLCH로 찍은 것이에요. Y는 실제 밝기(상대 휘도)입니다.</p>
+    <div class="cmp">
+      <span class="label">HSL · S 70% L 50%</span><div class="hslrow" id="hslRow"></div>
+      <span class="label">OKLCH · 같은 L</span><div class="hslrow" id="okRow"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { oklchToRgb, toHex, hslToRgb, luminance } from '../lib/color';
+
+  const lab = document.querySelector<HTMLElement>('#wheelLab')!;
+  const schemes: { k: string; n: string; offsets: number[] }[] = JSON.parse(lab.dataset.schemes!);
+  const $ = <T extends Element>(s: string) => lab.querySelector<T>(s)!;
+  let scheme = schemes[0];
+
+  function render() {
+    const h0 = +$<HTMLInputElement>('#hue').value, l = +$<HTMLInputElement>('#light').value / 100, c = +$<HTMLInputElement>('#chroma').value / 100;
+    const hues = scheme.offsets.map((o) => (h0 + o + 360) % 360);
+    const colors = hues.map((h) => ({ h, rgb: oklchToRgb({ l, c, h }) }));
+    $('#hubHue').textContent = `${h0}°`;
+    $('#marks').innerHTML = hues.map((h, i) => {
+      const a = ((h - 90) * Math.PI) / 180, x = 150 + 116 * Math.cos(a), y = 150 + 116 * Math.sin(a);
+      return `<line x1="150" y1="150" x2="${x}" y2="${y}" stroke="var(--ink)" stroke-width="${i === 0 ? 2 : 1}" stroke-dasharray="${i === 0 ? '' : '3 3'}"/><circle cx="${x}" cy="${y}" r="${i === 0 ? 9 : 7}" fill="${toHex(colors[i].rgb)}" stroke="var(--ink)" stroke-width="2"/>`;
+    }).join('');
+    $('#palette').innerHTML = colors.map(({ h, rgb }, i) =>
+      `<div class="pal"><i style="background:${toHex(rgb)}"></i><span class="mono">${toHex(rgb)}</span><small>${i === 0 ? '기준' : `${h}°`}</small></div>`).join('');
+    // 비교: HSL에서 S 70%·L 50%로 같은 색상각을 찍으면 밝기가 제각각이다
+    const chip = (rgb: [number, number, number]) => {
+      const y = luminance(rgb);
+      return `<span style="background:${toHex(rgb)};color:${y > 0.25 ? '#15171A' : '#FFFFFF'}">Y ${y.toFixed(2)}</span>`;
+    };
+    $('#hslRow').innerHTML = hues.map((h) => chip(hslToRgb(h, 0.7, 0.5))).join('');
+    $('#okRow').innerHTML = colors.map(({ rgb }) => chip(rgb)).join('');
+    // 색이 둘뿐인 배색(보색)은 기준 색을 아주 옅게 뺀 뉴트럴을 바탕으로 더해 세 색을 만든다
+    const palette = colors.map((x) => toHex(x.rgb));
+    if (palette.length < 3) palette.unshift(toHex(oklchToRgb({ l: 0.96, c: 0.012, h: h0 })));
+    lab.dataset.palette = JSON.stringify(palette);
+    document.dispatchEvent(new CustomEvent('regula:palette', { detail: palette }));
+  }
+
+  $('#schemeChips').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    scheme = schemes.find((s) => s.k === b.dataset.k)!;
+    $('#schemeChips').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  lab.querySelectorAll<SVGPathElement>('.seg').forEach((seg) => seg.addEventListener('click', () => {
+    $<HTMLInputElement>('#hue').value = seg.dataset.h!;
+    render();
+  }));
+  ['#hue', '#light', '#chroma'].forEach((s) => $(s).addEventListener('input', render));
+  render();
+</script>

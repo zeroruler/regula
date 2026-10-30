@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import TypeScale from '../demos/TypeScale.astro';
+import Contrast from '../demos/Contrast.astro';
+import Spacing from '../demos/Spacing.astro';
+---
+<Base title="계산 도구 · Regula" current="tools">
+  <PageHead current="tools" title="값을 직접 넣어 보기">
+    <p>공식을 외우는 대신 바로 계산해 보는 곳입니다. 작업 중에 열어 두고 쓰면 됩니다.</p>
+  </PageHead>
+  <div class="tools">
+    <TypeScale />
+    <Contrast />
+    <Spacing />
+  </div>
+</Base>

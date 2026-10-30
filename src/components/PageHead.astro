@@ -1,0 +1,12 @@
+---
+import { section, type SectionKey } from '../lib/site';
+
+interface Props { current: SectionKey; title: string }
+const { current, title } = Astro.props;
+const s = section(current);
+---
+<header class="pagehead">
+  <span class="label">§ {s.no} {s.title}</span>
+  <h1>{title}</h1>
+  <slot />
+</header>

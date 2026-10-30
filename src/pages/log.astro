@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { log, next } from '../lib/site';
+---
+<Base title="작업 기록 · Regula" current="log">
+  <PageHead current="log" title="쌓아 온 것, 쌓을 것" />
+  <div class="log">
+    {next.map((e) => <div class="e"><span>{e.when}</span><span>{e.text}</span></div>)}
+    {log.map((e) => <div class="e"><span>{e.date}</span><span>{e.text}</span></div>)}
+  </div>
+</Base>

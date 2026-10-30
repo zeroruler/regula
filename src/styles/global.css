@@ -6,7 +6,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 a{color:inherit;text-decoration-color:var(--mark);text-decoration-thickness:2px;text-underline-offset:3px}
 a:hover{background:color-mix(in srgb,var(--mark) 30%,transparent)}
 :focus-visible{outline:2px solid var(--mark);outline-offset:2px}
-h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;word-break:keep-all;margin:0;letter-spacing:-.01em}
 .mono{font-family:var(--mono)}
 .label{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 
@@ -173,10 +173,8 @@ footer{border-top:1px solid var(--rule);padding-block:24px 48px;font-family:var(
 .ref .out{margin-left:6px;font-family:var(--mono);font-size:12px;text-decoration:none;color:var(--ink-3)}
 
 /* 레퍼런스 상세 */
-nav.toc small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
 nav.toc a[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);font-weight:600}
-nav.toc .label a{text-decoration:none;padding:0;border:none;margin:0;font-size:inherit;color:inherit}
-nav.toc .toc-group{padding-top:14px}
+.ref-head .label a{text-decoration:none}
 .refdoc{display:flex;flex-direction:column;gap:56px;min-width:0}
 .ref-head{display:grid;gap:10px;grid-template-columns:none;padding:0;border:none;max-width:760px}
 .ref-head h1{font-size:clamp(36px,6vw,64px);line-height:1.05}
@@ -217,9 +215,6 @@ nav.toc .toc-group{padding-top:14px}
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid var(--ink);padding-top:16px}
 .pager a{text-decoration:none;display:grid;gap:2px;font-weight:600}
 .pager .next{text-align:right}
-@media (max-width:980px){
-  nav.toc small,nav.toc .toc-group{display:none}
-}
 
 /* 페이지 양식 */
 .strip{display:flex;height:28px;border:1px solid var(--rule);max-width:420px}
@@ -246,4 +241,40 @@ nav.toc .toc-group{padding-top:14px}
 .tokens .sw{display:inline-block;width:14px;height:14px;border:1px solid var(--rule);vertical-align:-2px;margin-right:6px}
 @media (max-width:640px){
   .tplrow,.rules{grid-template-columns:minmax(0,1fr);gap:12px}
+}
+
+/* 사이트 내비게이션 */
+nav.toc .brand{font-family:var(--display);font-weight:700;font-size:22px;color:var(--ink);padding:0 0 18px 14px;border:none}
+nav.toc .brand span{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--ink-3);margin-left:4px}
+nav.toc .brand:hover{border:none}
+nav.toc .navgroup{display:flex;flex-direction:column;gap:2px;padding-bottom:18px}
+nav.toc .navgroup .label{padding:0 0 6px 14px}
+nav.toc .subnav{display:flex;flex-direction:column;margin:2px 0 6px}
+nav.toc .subnav a{font-size:13px;padding:3px 0 3px 26px;color:var(--ink-3)}
+nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
+
+/* 페이지 머리말 */
+.pagehead{display:grid;gap:10px;max-width:720px;margin-bottom:-40px}
+.pagehead h1{font-size:clamp(32px,5vw,52px);line-height:1.1}
+.pagehead p{margin:0;color:var(--ink-2)}
+
+/* 홈 입구 */
+.doors{display:flex;flex-direction:column}
+.doors > h2.label{display:block;padding-bottom:10px;border-bottom:1px solid var(--ink);font-family:var(--mono);font-weight:500}
+.door{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--rule);text-decoration:none}
+.door:hover{background:none}
+.door:hover b{background:linear-gradient(transparent 62%,var(--mark) 62% 90%,transparent 90%)}
+.door .no{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.door b{font-family:var(--display);font-size:24px;font-weight:700}
+.door small{display:block;color:var(--ink-2);font-size:14px;margin-top:2px}
+.door .n{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+@media (max-width:980px){
+  nav.toc .brand{width:100%;padding:0 0 4px}
+  nav.toc .navgroup{display:contents}
+  nav.toc .navgroup .label,nav.toc .subnav{display:none}
+  nav.toc a[aria-current="page"]{border-bottom:2px solid var(--mark)}
+  .pagehead{margin-bottom:-16px}
+}
+@media (max-width:640px){
+  .door{grid-template-columns:minmax(0,1fr);gap:4px}
 }

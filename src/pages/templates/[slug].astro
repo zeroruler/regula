@@ -16,16 +16,14 @@ const { Content } = await render(template);
 const { source, groups, strip, preview, doc, markdown } = loadTemplate(template);
 const tokenCount = groups.reduce((n, g) => n + g.tokens.length, 0);
 ---
-<Base title={`${t.name} · Regula`} description={t.concept}>
-  <Fragment slot="toc">
-    <span class="label"><a href={href('#templates')}>← Regula</a></span>
-    <span class="label toc-group">페이지 양식</span>
-    {all.map((s) => <a href={href(`templates/${s.id}/`)} aria-current={s.id === template.id ? 'page' : undefined}>{s.data.name}<small>{s.data.kind}</small></a>)}
+<Base title={`${t.name} · Regula`} description={t.concept} current="templates">
+  <Fragment slot="sub">
+    {all.map((s) => <a href={href(`templates/${s.id}/`)} aria-current={s.id === template.id ? 'page' : undefined}>{s.data.name}</a>)}
   </Fragment>
 
   <article class="refdoc">
     <header class="ref-head">
-      <span class="label">§ 4 페이지 양식 · {t.kind}</span>
+      <span class="label"><a href={href('templates/')}>§ 4 페이지 양식</a> · {t.kind}</span>
       <h1>{t.name}</h1>
       <p class="lede">{t.concept}</p>
       <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>

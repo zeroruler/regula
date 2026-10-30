@@ -1,12 +1,16 @@
 ---
 import Ruler from '../components/Ruler.astro';
+import { nav, version, type SectionKey } from '../lib/site';
+import { href } from '../lib/url';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
+  // 지금 보고 있는 페이지가 속한 섹션. 내비게이션에서 표시하고, sub 슬롯을 그 아래에 펼친다.
+  current?: SectionKey;
 }
-const { title, description = '디자인 공식, UI 패턴, 페이지 양식을 쌓는 개인 디자인 규칙집' } = Astro.props;
+const { title, description = '디자인 공식, UI 패턴, 페이지 양식을 쌓는 개인 디자인 규칙집', current } = Astro.props;
 ---
 <!doctype html>
 <html lang="ko">
@@ -23,7 +27,20 @@ const { title, description = '디자인 공식, UI 패턴, 페이지 양식을 �
 <Ruler />
 <div class="wrap">
 <div class="shell">
-  <nav class="toc" aria-label="목차"><slot name="toc" /></nav>
+  <nav class="toc" aria-label="사이트">
+    <a class="brand" href={href()} aria-current={current ? undefined : 'page'}>Regula <span>{version}</span></a>
+    {nav.map((g) => (
+      <div class="navgroup">
+        <span class="label">{g.group}</span>
+        {g.items.map((s) => (
+          <>
+            <a href={href(s.path)} aria-current={s.key === current ? 'page' : undefined}>{s.title}</a>
+            {s.key === current && Astro.slots.has('sub') && <div class="subnav"><slot name="sub" /></div>}
+          </>
+        ))}
+      </div>
+    ))}
+  </nav>
   <main><slot /></main>
 </div>
 <footer>Regula · zero_ruler의 디자인 규칙집 · 출처가 표시된 내용은 각 원저자의 것입니다.</footer>

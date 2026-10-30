@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import FormulaRow from '../components/FormulaRow.astro';
+import GoldenRatio from '../demos/GoldenRatio.astro';
+
+const formulas = (await getCollection('formulas')).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="원리와 공식 · Regula" current="principles">
+  <Fragment slot="sub">
+    <a href="#lab">실험 · 황금비</a>
+    {formulas.map((f) => <a href={`#f-${f.id}`}>{f.data.name}</a>)}
+  </Fragment>
+
+  <PageHead current="principles" title="숫자로 남길 수 있는 것은 숫자로">
+    <p>비율, 간격, 글자 크기, 대비처럼 측정할 수 있는 규칙을 모읍니다. 각 항목에 출처를 붙여 두고, 직접 써 본 뒤 메모를 덧붙여 가세요.</p>
+  </PageHead>
+  <div id="lab"><GoldenRatio /></div>
+  <div class="formulas">
+    {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+  </div>
+</Base>

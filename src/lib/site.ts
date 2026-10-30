@@ -1,0 +1,43 @@
+// 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
+export const version = 'v0.4';
+
+export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log';
+
+export const nav: { group: string; items: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] }[] = [
+  {
+    group: '공부',
+    items: [
+      { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
+      { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '컴포넌트를 언제 쓰고 언제 피하는지' },
+      { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
+    ],
+  },
+  {
+    group: '만들기',
+    items: [
+      { key: 'templates', no: 4, title: '페이지 양식', path: 'templates/', blurb: '직접 만든 디자인 시스템과 페이지 양식' },
+    ],
+  },
+  {
+    group: '기록',
+    items: [
+      { key: 'log', no: 6, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
+    ],
+  },
+];
+
+export const sections = nav.flatMap((g) => g.items);
+export const section = (key: SectionKey) => sections.find((s) => s.key === key)!;
+
+// 작업 기록 — 위가 최신
+export const log: { date: string; text: string }[] = [
+  { date: '2026-10-30', text: 'v0.4 한 페이지에 쌓던 구조를 목적별 페이지로 나눔. 공부(원리·도구·패턴·레퍼런스)와 만들기(양식)를 오가며 볼 수 있게 공통 내비게이션을 붙임.' },
+  { date: '2026-10-30', text: 'v0.3 페이지 양식에 Cordovan · Chamomile · Terrazzo · Regula 등록. 토큰은 각 DESIGN.md에서 빌드할 때 바로 읽어 오고, 미리보기 화면을 사이트 안에서 띄움.' },
+  { date: '2026-10-30', text: 'v0.2 Astro로 옮김. 공식·패턴·레퍼런스를 파일 하나씩으로 나누고, 레퍼런스마다 상세 페이지(내 정리 · 원문 미리보기 · 쓰인 곳)를 붙임. 자유 라이선스 저장소 3곳은 README를 가져와 사이트 안에서 봄.' },
+  { date: '2026-10-30', text: 'v0.1 시작. 황금비·타입 스케일·간격·대비 공식, 알림 패턴 9가지, Cordovan 양식, 레퍼런스 목록 정리.' },
+];
+
+export const next = [
+  { when: '다음', text: '로그인·설정 화면 양식 · 색 이론 섹션(색상환, 60-30-10 실습) · 게슈탈트 법칙 도해 · 버튼과 입력창 패턴 추가' },
+];

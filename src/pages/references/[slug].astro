@@ -26,23 +26,21 @@ const snapshot = imported[`../../imported/${reference.id}.json`];
 // 이 레퍼런스를 출처로 쓴 공식과 패턴
 const usedIn = [
   ...(await getCollection('formulas', (f) => f.data.refs.includes(reference.id)))
-    .map((f) => ({ label: '§1 공식', name: f.data.name, to: href(`#f-${f.id}`) })),
+    .map((f) => ({ label: '§1 공식', name: f.data.name, to: href(`principles/#f-${f.id}`) })),
   ...(await getCollection('patterns', (p) => p.data.refs.includes(reference.id)))
-    .map((p) => ({ label: '§3 패턴', name: p.data.name, to: href(`#p-${p.id.split('/').pop()}`) })),
+    .map((p) => ({ label: '§3 패턴', name: p.data.name, to: href(`patterns/#p-${p.id.split('/').pop()}`) })),
 ];
 ---
-<Base title={`${r.title} · Regula`} description={r.summary}>
-  <Fragment slot="toc">
-    <span class="label"><a href={href('#references')}>← Regula</a></span>
-    <span class="label toc-group">{r.group}</span>
+<Base title={`${r.title} · Regula`} description={r.summary} current="references">
+  <Fragment slot="sub">
     {siblings.map((s) => (
-      <a href={href(`references/${s.id}/`)} aria-current={s.id === reference.id ? 'page' : undefined}>{s.data.title}<small>{s.data.author}</small></a>
+      <a href={href(`references/${s.id}/`)} aria-current={s.id === reference.id ? 'page' : undefined}>{s.data.title}</a>
     ))}
   </Fragment>
 
   <article class="refdoc">
     <header class="ref ref-head" data-k={reference.id}>
-      <span class="label">§ 5 레퍼런스 · {r.group}</span>
+      <span class="label"><a href={href('references/')}>§ 5 레퍼런스</a> · {r.group}</span>
       <h1>{r.title}</h1>
       <p class="by">{r.author}</p>
       <p class="lede">{r.summary}</p>

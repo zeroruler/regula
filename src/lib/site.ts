@@ -9,7 +9,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     items: [
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
-      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼 — 컴포넌트를 언제 쓰고 언제 피하는지' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력 — 컴포넌트를 언제 쓰고 언제 피하는지' },
       { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
     ],
   },
@@ -41,7 +41,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 ];
 // UI 패턴의 카테고리 순서. level은 카드와 눈금에 쓰는 1–9 값의 필드, path가 있으면 실습 페이지가 있다.
 export const patternGroups: {
-  id: string; name: string; path?: string; level: 'intrusiveness' | 'emphasis'; levelName: string;
+  id: string; name: string; path?: string; level: 'intrusiveness' | 'emphasis' | 'effort'; levelName: string;
   title: string; intro: string; ends: [string, string];
 }[] = [
   {
@@ -56,12 +56,19 @@ export const patternGroups: {
     intro: '버튼은 생김새의 무게로 위계를 말합니다. 왼쪽일수록 가볍게 곁에 있고, 오른쪽일수록 화면에서 가장 먼저 눈에 띕니다. 무거운 버튼은 한 영역에 하나만 — 둘이면 서로 이기려고 다퉈요.',
     ends: ['가벼움 · 보조 행동', '무거움 · 화면의 주 행동'],
   },
+  {
+    id: 'forms', name: '입력', path: 'patterns/forms/', level: 'effort', levelName: '입력 수고',
+    title: '답을 받는 방법',
+    intro: '입력 컴포넌트를 사용자가 들이는 수고 순으로 놓았습니다. 왼쪽일수록 한 번 눌러 끝나고, 오른쪽일수록 직접 써야 합니다. 고를 수 있는 답이면 고르게 하고, 정말 자유로운 답만 쓰게 하세요.',
+    ends: ['고르기만 · 한 번 누름', '직접 씀 · 오래 걸림'],
+  },
 ];
 
 export const section = (key: SectionKey) => sections.find((s) => s.key === key)!;
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-10-31', text: 'v0.5 UI 패턴에 "입력" 추가. 토글부터 여러 줄 입력까지 7가지를 입력 수고 순으로 놓고, 실습 페이지에서 라벨 위치(위·왼쪽·플레이스홀더·떠오르는 라벨)를 바꿔 직접 써 보는 실습과 검증 시점(입력마다·칸을 떠날 때·제출할 때) 실습을 붙임.' },
   { date: '2026-10-30', text: 'v0.5 UI 패턴에 "버튼" 추가. 텍스트·아이콘·아웃라인·채운·위험·플로팅 버튼 6가지를 시각적 무게 순으로 놓고, 실습 페이지에서 한 영역의 버튼 무게를 직접 정해 보는 위계 실습과 상태(호버·눌림·포커스·비활성·로딩) 실습을 붙임. 패턴 페이지를 카테고리별로 묶음.' },
   { date: '2026-10-30', text: 'v0.4 네 번째 실습 페이지 "좋은 디자인"을 추가하며 v0.4 원리 확장을 마침. Dieter Rams 10원칙을 원칙마다 UI 점검 질문으로 바꾸고, 카드 장식 여덟 가지를 켜고 끄는 덜어내기 실습과 브라우저에 남는 점검표를 붙임.' },
   { date: '2026-10-30', text: 'v0.4 세 번째 실습 페이지 "그리드"를 추가. 화면 너비를 바꾸면 구간별로 4 · 8 · 12열과 마진이 바뀌고 같은 블록이 다시 배치되는 실험, 10 · 12 · 16열을 2 · 3 · 4 · 6으로 나눠 보기, 거터와 행간 비교. 공식 4개(12단 그리드, 열 너비, 거터, 브레이크포인트) 추가.' },
@@ -75,5 +82,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 입력창과 폼 · 내비게이션 패턴 추가' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 내비게이션 · 빈 상태와 로딩 패턴 추가' },
 ];

@@ -1,0 +1,96 @@
+---
+// 같은 이메일 칸을 검증 시점 세 가지로 바꿔 써 본다. "쓰는 도중 뜬 오류" 횟수를 세서 성급한 오류를 눈으로 보게 한다.
+const modes = [
+  { k: 'input', n: '입력할 때마다', note: '첫 글자부터 "올바르지 않음"이 뜹니다. 아직 다 쓰지도 않았는데 혼나는 셈이에요. 비밀번호 조건처럼 체크리스트가 채워지는 경우가 아니면 피합니다.' },
+  { k: 'blur', n: '칸을 떠날 때', note: '다 쓰고 다음 칸으로 넘어갈 때 한 번 확인합니다. 오류가 뜬 뒤에는 고치는 즉시 오류를 지워 줘요. 늦게 혼내고 빨리 칭찬하는 방식.' },
+  { k: 'submit', n: '제출할 때', note: '제출을 누르면 위에 오류 요약을, 칸 옆에 오류를 함께 보여 줍니다. 칸이 많은 긴 폼이나 화면 낭독기 사용자에게 가장 예측하기 쉬운 방식이에요.' },
+];
+---
+<div class="lab formlab" id="valLab" data-modes={JSON.stringify(modes)}>
+  <form class="vf" id="vfForm" novalidate>
+    <div class="vf-summary" id="vfSummary" role="alert" hidden>
+      <b>확인할 것이 있어요</b>
+      <a href="#vfMail">이메일 주소를 name@example.com 형식으로 써 주세요</a>
+    </div>
+    <div class="lf-row">
+      <label for="vfMail">이메일 주소</label>
+      <span class="vf-hint" id="vfHint">예: name@example.com</span>
+      <span class="vf-err" id="vfErr" hidden>⚠ 이메일 주소를 name@example.com 형식으로 써 주세요</span>
+      <input id="vfMail" type="email" autocomplete="off" aria-describedby="vfHint vfErr">
+    </div>
+    <div class="lf-row">
+      <label for="vfName">이름</label>
+      <input id="vfName" type="text" autocomplete="off">
+    </div>
+    <div class="row"><button class="btn-x fill live" type="submit">제출</button><button class="chip" type="button" id="vfReset">다시</button></div>
+  </form>
+  <div class="lab-side">
+    <span class="label">실험 · 검증 시점</span>
+    <h3>언제 틀렸다고 말할까</h3>
+    <div class="chips" id="vfChips">
+      {modes.map((m, i) => <button class="chip" type="button" data-k={m.k} aria-pressed={String(i === 0)}>{m.n}</button>)}
+    </div>
+    <p class="g-read">쓰는 도중 뜬 오류: <mark id="vfCount">0번</mark></p>
+    <p id="vfNote"></p>
+    <div class="g-ui">
+      <span class="label">규칙</span>
+      <p>쓰는 도중에는 판단하지 않는다. 칸을 떠날 때나 제출할 때 확인하고, 고치면 바로 지운다. 오류는 색만이 아니라 아이콘과 문장으로 — 무엇을 어떻게 고칠지 적는다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#valLab')!;
+  const modes: { k: string; note: string }[] = JSON.parse(lab.dataset.modes!);
+  const form = lab.querySelector<HTMLFormElement>('#vfForm')!;
+  const mail = lab.querySelector<HTMLInputElement>('#vfMail')!;
+  const err = lab.querySelector<HTMLElement>('#vfErr')!;
+  const summary = lab.querySelector<HTMLElement>('#vfSummary')!;
+  const chips = lab.querySelector('#vfChips')!;
+  let mode = 'input', premature = 0, shown = false;
+
+  const valid = () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim());
+  function show(on: boolean) {
+    shown = on;
+    err.hidden = !on;
+    mail.setAttribute('aria-invalid', String(on));
+    mail.closest('.lf-row')!.classList.toggle('has-err', on);
+    if (!on) summary.hidden = true;
+  }
+  const count = () => (lab.querySelector('#vfCount')!.textContent = `${premature}번`);
+
+  mail.addEventListener('input', () => {
+    if (mode === 'input') {
+      const bad = !valid();
+      if (bad && document.activeElement === mail) premature++;
+      show(bad && mail.value !== '');
+      count();
+    } else if (shown && valid()) {
+      show(false); // 고치면 바로 지운다
+    }
+  });
+  mail.addEventListener('blur', () => { if (mode === 'blur' && mail.value) show(!valid()); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const bad = !valid();
+    show(bad);
+    // 제출 시점 방식만 요약을 띄운다. 다른 방식도 제출 때 남은 오류는 칸 옆에 보인다.
+    summary.hidden = !(bad && mode === 'submit');
+    if (!summary.hidden) summary.querySelector('a')!.focus();
+  });
+  summary.querySelector('a')!.addEventListener('click', (e) => { e.preventDefault(); mail.focus(); });
+
+  function reset() {
+    form.reset(); premature = 0; show(false); summary.hidden = true; count();
+  }
+  lab.querySelector('#vfReset')!.addEventListener('click', reset);
+  chips.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    mode = b.dataset.k!;
+    chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    lab.querySelector('#vfNote')!.textContent = modes.find((m) => m.k === mode)!.note;
+    reset();
+  });
+  lab.querySelector('#vfNote')!.textContent = modes[0].note;
+</script>

@@ -9,7 +9,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     items: [
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
-      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력 — 컴포넌트를 언제 쓰고 언제 피하는지' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션 — 언제 쓰고 언제 피하는지' },
       { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
     ],
   },
@@ -41,7 +41,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 ];
 // UI 패턴의 카테고리 순서. level은 카드와 눈금에 쓰는 1–9 값의 필드, path가 있으면 실습 페이지가 있다.
 export const patternGroups: {
-  id: string; name: string; path?: string; level: 'intrusiveness' | 'emphasis' | 'effort'; levelName: string;
+  id: string; name: string; path?: string; level: 'intrusiveness' | 'emphasis' | 'effort' | 'scope'; levelName: string;
   title: string; intro: string; ends: [string, string];
 }[] = [
   {
@@ -62,12 +62,19 @@ export const patternGroups: {
     intro: '입력 컴포넌트를 사용자가 들이는 수고 순으로 놓았습니다. 왼쪽일수록 한 번 눌러 끝나고, 오른쪽일수록 직접 써야 합니다. 고를 수 있는 답이면 고르게 하고, 정말 자유로운 답만 쓰게 하세요.',
     ends: ['고르기만 · 한 번 누름', '직접 씀 · 오래 걸림'],
   },
+  {
+    id: 'navigation', name: '내비게이션', path: 'patterns/navigation/', level: 'scope', levelName: '다루는 범위',
+    title: '길을 보여 주는 방법',
+    intro: '내비게이션을 다루는 범위 순으로 놓았습니다. 왼쪽일수록 한 화면 안에서 움직이고, 오른쪽일수록 앱 전체를 오갑니다. 범위가 넓은 것일수록 늘 보이게 둘지, 숨길지가 중요해져요.',
+    ends: ['화면 안 · 보기 전환', '앱 전체 · 최상위 목적지'],
+  },
 ];
 
 export const section = (key: SectionKey) => sections.find((s) => s.key === key)!;
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-10-31', text: 'v0.5 UI 패턴에 "내비게이션" 추가. 페이지네이션부터 내비게이션 드로어까지 6가지를 다루는 범위 순으로 놓고, 실습 페이지에서 드러난 메뉴와 숨은 메뉴로 같은 목적지에 가 보며 누른 횟수를 세는 실습, 화면 너비에 따라 하단 바·레일·사이드바가 바뀌는 실습을 붙임.' },
   { date: '2026-10-31', text: 'v0.5 UI 패턴에 "입력" 추가. 토글부터 여러 줄 입력까지 7가지를 입력 수고 순으로 놓고, 실습 페이지에서 라벨 위치(위·왼쪽·플레이스홀더·떠오르는 라벨)를 바꿔 직접 써 보는 실습과 검증 시점(입력마다·칸을 떠날 때·제출할 때) 실습을 붙임.' },
   { date: '2026-10-30', text: 'v0.5 UI 패턴에 "버튼" 추가. 텍스트·아이콘·아웃라인·채운·위험·플로팅 버튼 6가지를 시각적 무게 순으로 놓고, 실습 페이지에서 한 영역의 버튼 무게를 직접 정해 보는 위계 실습과 상태(호버·눌림·포커스·비활성·로딩) 실습을 붙임. 패턴 페이지를 카테고리별로 묶음.' },
   { date: '2026-10-30', text: 'v0.4 네 번째 실습 페이지 "좋은 디자인"을 추가하며 v0.4 원리 확장을 마침. Dieter Rams 10원칙을 원칙마다 UI 점검 질문으로 바꾸고, 카드 장식 여덟 가지를 켜고 끄는 덜어내기 실습과 브라우저에 남는 점검표를 붙임.' },
@@ -82,5 +89,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 내비게이션 · 빈 상태와 로딩 패턴 추가' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 빈 상태와 로딩 · UX 라이팅 추가' },
 ];

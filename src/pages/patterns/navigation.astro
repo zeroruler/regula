@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternCard from '../../components/PatternCard.astro';
+import Hidden from '../../demos/navigation/Hidden.astro';
+import ByWidth from '../../demos/navigation/ByWidth.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const groups = await patternsByGroup();
+const navs = groups.find((x) => x.group.id === 'navigation')!.items;
+
+// 내비게이션 규칙. 출처가 있는 것만 적는다.
+const rules = [
+  { s: '숨김', rule: '숨은 내비게이션(햄버거 메뉴)은 드러난 내비게이션보다 덜 쓰이고, 찾는 데 더 오래 걸렸다', src: 'Kim Flaherty, 「Hamburger Menus and Hidden Navigation Hurt UX Metrics」 (NN/g, 2016)' },
+  { s: '탭 바', rule: '최상위 목적지 3–5곳, 아이콘에 라벨을 함께', src: 'Apple HIG Tab bars · Material Design 3 Navigation bar' },
+  { s: '너비', rule: '좁은 화면은 하단 바, 중간은 레일, 넓은 화면은 레일이나 펼친 드로어', src: 'Material Design 3 Navigation (window size classes)' },
+  { s: '브레드크럼', rule: '지나온 기록이 아니라 구조상 위치를 보여 주고, 현재 페이지는 링크로 만들지 않는다', src: 'NN/g 「Breadcrumbs: 11 Design Guidelines」 · WAI-ARIA APG Breadcrumb (aria-current="page")' },
+  { s: '탭', rule: '탭 목록 안은 화살표 키로 움직이고, Tab 키는 탭 패널로 넘어간다', src: 'W3C WAI-ARIA Authoring Practices Tabs Pattern' },
+  { s: '현재 위치', rule: '지금 있는 곳을 내비게이션에 표시한다 — 색만이 아니라 굵기나 표시선으로도', src: 'WCAG 2.2 1.4.1 Use of Color · 2.4.8 Location (AAA)' },
+];
+---
+<Base title="내비게이션 · UI 패턴 · Regula" current="patterns" description="드러난 메뉴와 숨은 메뉴, 화면 너비별 내비게이션을 직접 써 보는 실습 페이지">
+  <Fragment slot="sub">
+    {groups.map(({ group: g, items }) => (
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'navigation' ? 'page' : undefined}>{g.name} · {items.length}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>보이는 길이 쓰이는 길</h1>
+    <p>내비게이션은 지금 어디 있는지, 어디로 갈 수 있는지를 알려 줍니다. 목적지를 늘 보이게 둘지 메뉴 속에 숨길지, 화면이 넓어지면 어디로 옮길지를 직접 눌러 보고 늘려 봅니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 드러냄</span>
+      <h2>숨기면 한 번 더 누른다</h2>
+      <p>같은 다섯 목적지를 하단 탭 바와 햄버거 메뉴로 각각 둡니다. 몇 번씩 목표를 찾아가 보면 평균 횟수가 쌓여요.</p>
+    </header>
+    <Hidden />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 너비</span>
+      <h2>화면이 넓어지면 옆으로 옮긴다</h2>
+      <p>그리드 실습과 같은 경계(600 · 840)에서 내비게이션의 모양이 바뀝니다. 목적지는 그대로, 놓이는 자리만 달라져요.</p>
+    </header>
+    <ByWidth />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">종류</span>
+      <h2>내비게이션 {navs.length}가지, 좁은 범위부터</h2>
+    </header>
+    <div class="patterns">
+      {navs.map((p) => <PatternCard pattern={p} />)}
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th>내비게이션</th><th>알맞은 범위</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
+        <tbody>
+          {navs.map(({ data: p }) => (
+            <tr><td>{p.name}</td><td>{p.fits}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

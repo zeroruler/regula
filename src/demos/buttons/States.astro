@@ -1,0 +1,63 @@
+---
+// 버튼 상태를 하나씩 강제로 보여 준다. 아래의 진짜 버튼은 마우스·키보드로 직접 눌러 볼 수 있다.
+const states = [
+  { k: 'rest', n: '기본', note: '아무 일도 없을 때. 여기서 이미 버튼인 게 보여야 한다 — 테두리나 채움, 라벨은 동사로.' },
+  { k: 'hover', n: '호버', note: '포인터가 올라가면 명도를 한 단계 바꾼다. 터치 화면에는 호버가 없으니, 호버에서만 보이는 정보를 두지 않는다.' },
+  { k: 'active', n: '눌림', note: '누르는 순간 바로(0.1초 안) 반응해야 눌렸다고 느낀다. 더 진하게, 살짝 내려앉게.' },
+  { k: 'focus', n: '포커스', note: '키보드로 왔을 때 테두리 바깥에 뚜렷한 링을 그린다. 링을 없애면 키보드 사용자는 자기 위치를 잃는다. Regula는 노란 링.' },
+  { k: 'disabled', n: '비활성', note: '되도록 쓰지 않는다. 왜 못 누르는지 말해 주지 않고, 흐린 색이라 읽기도 어렵다. 누르게 두고 무엇이 빠졌는지 오류로 알려 준다.' },
+  { k: 'loading', n: '로딩', note: '너비를 그대로 둔 채 라벨 자리에 진행 표시를 놓는다. 버튼 크기가 바뀌면 옆 요소가 밀린다. 처리 중에는 다시 눌러도 두 번 제출되지 않게 막는다.' },
+];
+const kinds = [
+  { k: 'fill', n: '채움' },
+  { k: 'out', n: '아웃라인' },
+  { k: 'txt', n: '텍스트' },
+];
+---
+<div class="lab btnlab" id="btnStates" data-states={JSON.stringify(states)}>
+  <div class="bs-stage">
+    <div class="bs-big" aria-hidden="true"><span class="btn-x big fill" id="bsBtn"><i class="spin"></i><span>제출하기</span></span></div>
+    <div class="bs-real">
+      <span class="label">직접 눌러 보기 · Tab으로 포커스</span>
+      <div class="row">
+        {kinds.map((k) => <button type="button" class={`btn-x ${k.k} live`}>{k.n}</button>)}
+      </div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 버튼 상태</span>
+    <h3>여섯 가지 상태</h3>
+    <div class="chips" id="bsKinds">
+      {kinds.map((k, i) => <button class="chip" type="button" data-kind={k.k} aria-pressed={String(i === 0)}>{k.n}</button>)}
+    </div>
+    <div class="chips" id="bsStates">
+      {states.map((s, i) => <button class="chip" type="button" data-state={s.k} aria-pressed={String(i === 0)}>{s.n}</button>)}
+    </div>
+    <p id="bsNote"></p>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#btnStates')!;
+  const states: { k: string; note: string }[] = JSON.parse(lab.dataset.states!);
+  const btn = lab.querySelector<HTMLElement>('#bsBtn')!;
+  let kind = 'fill', state = 'rest';
+
+  function render() {
+    btn.className = `btn-x big ${kind} is-${state}`;
+    lab.querySelector('#bsNote')!.textContent = states.find((s) => s.k === state)!.note;
+  }
+  const pick = (sel: string, attr: string, set: (v: string) => void) => {
+    const group = lab.querySelector(sel)!;
+    group.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      set(b.getAttribute(attr)!);
+      group.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      render();
+    });
+  };
+  pick('#bsKinds', 'data-kind', (v) => (kind = v));
+  pick('#bsStates', 'data-state', (v) => (state = v));
+  render();
+</script>

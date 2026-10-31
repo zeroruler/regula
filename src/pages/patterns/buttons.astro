@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternCard from '../../components/PatternCard.astro';
+import Hierarchy from '../../demos/buttons/Hierarchy.astro';
+import States from '../../demos/buttons/States.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const groups = await patternsByGroup();
+const buttons = groups.find((x) => x.group.id === 'buttons')!.items;
+
+// 상태별 규칙. 출처가 있는 것만 적는다.
+const stateRules = [
+  { s: '포커스', rule: '키보드 포커스가 항상 눈에 보여야 한다', src: 'WCAG 2.2 2.4.7 Focus Visible (AA)' },
+  { s: '포커스', rule: '포커스 링은 주변과 3:1 이상, 2px 두께 둘레 이상', src: 'WCAG 2.2 2.4.13 Focus Appearance (AAA)' },
+  { s: '눌림', rule: '0.1초 안에 반응하면 직접 조작한다고 느낀다', src: 'Jakob Nielsen, 『Usability Engineering』 (1993) 응답 시간 한계' },
+  { s: '비활성', rule: '대비가 낮고 이유를 알려 주지 않으니 되도록 쓰지 않는다', src: 'GOV.UK Design System Button' },
+  { s: '로딩', rule: '처리 중 다시 눌러 두 번 제출되지 않게 막는다', src: 'GOV.UK Design System Button (이중 클릭 방지)' },
+  { s: '전체', rule: '터치 영역은 최소 24×24 CSS px, 권장 44–48', src: 'WCAG 2.2 2.5.8 Target Size (Minimum) · Apple HIG · Material 3' },
+];
+---
+<Base title="버튼 · UI 패턴 · Regula" current="patterns" description="버튼의 위계와 상태를 직접 정해 보고 눌러 보는 실습 페이지">
+  <Fragment slot="sub">
+    {groups.map(({ group: g, items }) => (
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'buttons' ? 'page' : undefined}>{g.name} · {items.length}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>버튼은 무게로 말한다</h1>
+    <p>같은 영역의 버튼들은 생김새의 무게로 무엇이 주 행동인지 알려 줍니다. 무게를 정하는 법(위계)과, 누르기 전·누르는 중·누를 수 없을 때 어떻게 보여야 하는지(상태)를 직접 바꿔 봅니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 위계</span>
+      <h2>주 행동 하나, 나머지는 한 단계씩 가볍게</h2>
+      <p>Material 3는 버튼을 강조 정도로, GOV.UK는 기본·보조·경고로 나눕니다. 이름은 달라도 규칙은 같아요. 한 영역에서 가장 무거운 버튼은 하나뿐입니다.</p>
+    </header>
+    <Hierarchy />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 상태</span>
+      <h2>누르기 전, 누르는 중, 누를 수 없을 때</h2>
+      <p>버튼은 정지 화면이 아니라 반응입니다. 상태마다 바뀌는 것은 하나씩만 — 명도, 링, 진행 표시.</p>
+    </header>
+    <States />
+    <div class="compare">
+      <table>
+        <thead><tr><th>상태</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {stateRules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">종류</span>
+      <h2>버튼 {buttons.length}가지, 가벼운 것부터</h2>
+    </header>
+    <div class="patterns">
+      {buttons.map((p) => <PatternCard pattern={p} />)}
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th>버튼</th><th>한 화면에</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
+        <tbody>
+          {buttons.map(({ data: p }) => (
+            <tr><td>{p.name}</td><td>{p.per_view}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

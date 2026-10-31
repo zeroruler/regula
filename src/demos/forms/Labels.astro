@@ -1,0 +1,64 @@
+---
+// 라벨 위치 네 가지를 바꿔 가며 같은 폼에 직접 써 본다. 플레이스홀더만 쓰면 쓰는 순간 라벨이 사라지는 걸 체험하게 한다.
+const modes = [
+  { k: 'top', n: '위', read: '훑기 가장 빠름 — 시선이 아래로만 내려감', note: '라벨과 칸이 한 덩어리라 눈이 아래로만 움직입니다. 좁은 화면에서도 그대로예요. 기본값으로 씁니다.' },
+  { k: 'left', n: '왼쪽', read: '라벨 길이가 제각각이면 시선이 지그재그', note: '세로 공간은 아끼지만 라벨과 칸 사이를 눈이 오가야 합니다. 좁은 화면에선 칸이 너무 좁아져 결국 위로 올려야 해요.' },
+  { k: 'inside', n: '플레이스홀더만', read: '쓰기 시작하면 무엇을 묻는지 사라짐', note: '아무 칸에나 써 보세요. 쓰는 순간 질문이 사라지고, 다 쓰고 나서 확인할 수도 없습니다. 흐린 글자는 이미 채워진 값처럼 보여 건너뛰기도 해요.' },
+  { k: 'float', n: '떠오르는 라벨', read: '사라지진 않지만 작아짐', note: '쓰기 시작하면 라벨이 칸 위로 작게 올라갑니다. 질문은 남지만 글자가 작아지고 움직여서, 그냥 위에 두는 것보다 나을 게 없습니다.' },
+];
+const fields = [
+  { id: 'fName', label: '이름', type: 'text', ac: 'name' },
+  { id: 'fMail', label: '이메일 주소', type: 'email', ac: 'email' },
+  { id: 'fZip', label: '우편번호', type: 'text', ac: 'postal-code', w: '8em' },
+];
+---
+<div class="lab formlab" id="labelLab" data-modes={JSON.stringify(modes)}>
+  <form class="lf top" id="lfForm">
+    {fields.map((f) => (
+      <div class="lf-row">
+        <label for={f.id}>{f.label}</label>
+        <input id={f.id} type={f.type} autocomplete={f.ac} placeholder=" " style={f.w ? `max-width:${f.w}` : undefined}>
+      </div>
+    ))}
+  </form>
+  <div class="lab-side">
+    <span class="label">실험 · 라벨 위치</span>
+    <h3>직접 써 보면 안다</h3>
+    <div class="chips" id="lfChips">
+      {modes.map((m, i) => <button class="chip" type="button" data-k={m.k} aria-pressed={String(i === 0)}>{m.n}</button>)}
+    </div>
+    <p class="g-read">읽히는 것: <mark id="lfRead"></mark></p>
+    <p id="lfNote"></p>
+    <div class="g-ui">
+      <span class="label">규칙</span>
+      <p>라벨은 칸 위에, 늘 보이게. 예시는 라벨 아래 힌트로 따로 적고, 칸 너비는 답의 길이에 맞춥니다(우편번호 칸이 짧은 이유).</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#labelLab')!;
+  const modes: { k: string; read: string; note: string }[] = JSON.parse(lab.dataset.modes!);
+  const form = lab.querySelector<HTMLFormElement>('#lfForm')!;
+  const inputs = [...form.querySelectorAll<HTMLInputElement>('input')];
+  const chips = lab.querySelector('#lfChips')!;
+
+  function apply(k: string) {
+    const m = modes.find((x) => x.k === k)!;
+    form.className = `lf ${k}`;
+    // 플레이스홀더 모드에서만 라벨 글자를 플레이스홀더로 옮긴다 (라벨 요소는 화면 낭독기용으로 남김).
+    // 나머지는 빈 칸 — 떠오르는 라벨이 :placeholder-shown으로 비었는지 판단한다.
+    inputs.forEach((el) => {
+      el.placeholder = k === 'inside' ? form.querySelector(`label[for="${el.id}"]`)!.textContent! : ' ';
+    });
+    lab.querySelector('#lfRead')!.textContent = m.read;
+    lab.querySelector('#lfNote')!.textContent = m.note;
+  }
+  chips.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    apply(b.dataset.k!);
+  });
+  apply('top');
+</script>

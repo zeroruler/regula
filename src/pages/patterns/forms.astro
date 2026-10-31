@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternCard from '../../components/PatternCard.astro';
+import Labels from '../../demos/forms/Labels.astro';
+import Validation from '../../demos/forms/Validation.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const groups = await patternsByGroup();
+const inputs = groups.find((x) => x.group.id === 'forms')!.items;
+
+// 폼 규칙. 출처가 있는 것만 적는다.
+const rules = [
+  { s: '라벨', rule: '라벨은 칸 위에 둔다. 시선 이동이 가장 적고 작성 시간이 가장 짧았다', src: 'Matteo Penzo, 「Label Placement in Forms」 (UXmatters, 2006)' },
+  { s: '라벨', rule: '플레이스홀더를 라벨 대신 쓰지 않는다. 쓰는 순간 사라지고, 흐려서 읽기 어렵다', src: 'Katie Sherwin, 「Placeholders in Form Fields Are Harmful」 (NN/g, 2014) · WCAG 2.2 3.3.2' },
+  { s: '라벨', rule: '필수에 별표를 다는 대신, 몇 안 되는 선택 항목에 "(선택)"을 붙인다', src: 'GOV.UK Design System Question pages' },
+  { s: '칸', rule: '칸 너비는 답의 길이에 맞춘다. 칸이 곧 힌트다', src: 'GOV.UK Design System Text input (fixed width inputs)' },
+  { s: '칸', rule: '입력 목적을 autocomplete로 알려 자동 채우기를 돕는다', src: 'WCAG 2.2 1.3.5 Identify Input Purpose' },
+  { s: '검증', rule: '칸을 떠난 뒤 확인하는 인라인 검증이 오류와 작성 시간을 줄였다. 쓰는 도중의 확인은 오히려 방해', src: 'Luke Wroblewski, 「Inline Validation in Web Forms」 (A List Apart, 2009)' },
+  { s: '검증', rule: '제출 시 오류가 있으면 맨 위에 요약을 두고 각 칸으로 이동하는 링크를 단다', src: 'GOV.UK Design System Error summary' },
+  { s: '오류', rule: '오류를 색만으로 알리지 않는다. 문장으로, 무엇을 어떻게 고칠지', src: 'WCAG 2.2 1.4.1 Use of Color · 3.3.1 Error Identification · 3.3.3 Error Suggestion' },
+];
+---
+<Base title="입력 · UI 패턴 · Regula" current="patterns" description="라벨 위치와 검증 시점을 바꿔 가며 직접 써 보는 폼 실습 페이지">
+  <Fragment slot="sub">
+    {groups.map(({ group: g, items }) => (
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'forms' ? 'page' : undefined}>{g.name} · {items.length}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>묻는 말은 끝까지 보이게</h1>
+    <p>폼은 대화입니다. 무엇을 묻는지 계속 보여 주고(라벨), 답이 틀렸으면 알맞은 때에 어떻게 고칠지 말해 줘야(검증) 합니다. 아래 폼은 진짜 입력칸이에요. 직접 써 보세요.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 라벨 위치</span>
+      <h2>위, 왼쪽, 안쪽</h2>
+      <p>라벨을 어디에 두느냐에 따라 눈이 움직이는 길과, 쓰는 동안 질문이 남아 있는지가 갈립니다.</p>
+    </header>
+    <Labels />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 검증 시점</span>
+      <h2>너무 이르지도, 너무 늦지도 않게</h2>
+      <p>같은 이메일 칸을 세 시점으로 바꿔 써 보세요. 일부러 틀리게 쓰다가 고쳐 보면 차이가 보입니다.</p>
+    </header>
+    <Validation />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">종류</span>
+      <h2>입력 {inputs.length}가지, 수고가 적은 것부터</h2>
+    </header>
+    <div class="patterns">
+      {inputs.map((p) => <PatternCard pattern={p} />)}
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th>입력</th><th>알맞은 답</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
+        <tbody>
+          {inputs.map(({ data: p }) => (
+            <tr><td>{p.name}</td><td>{p.fits}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

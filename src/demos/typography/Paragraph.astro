@@ -41,7 +41,8 @@ const { fonts } = Astro.props;
     $('tyLhV').textContent = lh.toFixed(2);
     $('tyMeasureV').textContent = `${ms}자`;
     $('tyRead').textContent = lh < 1.4 ? '좁음 — 줄이 붙어 보임' : lh <= 1.7 ? '본문 범위 (1.4–1.7)' : '넓음 — 문단이 흩어져 보임';
-    $('tyNote').textContent = `한 줄에 한글 약 ${ms}자(글자 폭을 1em으로 셈). 라틴 문자는 45–75자가 기준인데, 한글은 글자 하나가 넓어 그보다 적게 잡습니다 — 몇 자가 알맞은지는 Regula에 아직 근거를 모으지 못했어요. 줄이 길수록 행간을 조금 더 넓혀 보세요.`;
+    const range = ms > 40 ? 'WCAG 1.4.8의 한중일 글자 상한(40자)을 넘었어요' : ms < 30 ? '30자보다 짧아요 — 한글 웹 문서 실험(신종현 · 박민용 2003)에서 10자는 30 · 50자보다 확실히 느렸어요' : '30–40자 — WCAG 1.4.8 상한(40자)과 한글 실험의 하한 쪽 결과(30자)를 겹친 범위';
+    $('tyNote').textContent = `한 줄에 한글 약 ${ms}자(글자 폭을 1em으로 셈). ${range}. 라틴 문자는 45–75자가 기준이고, 한글은 글자 하나가 두 배쯤 넓어 절반 가까이로 잡습니다. 줄이 길수록 행간을 조금 더 넓혀 보세요.`;
   }
   $('tyFonts').addEventListener('click', (e) => {
     const b = (e.target as Element).closest<HTMLButtonElement>('button');

@@ -1,0 +1,182 @@
+---
+// 같은 답을 생각 중 표시 · 단계 · 스트리밍 · 출처 · 멈춤을 켜고 끄며 받아 본다.
+// 답은 Regula가 지은 예시이고, 출처는 Regula 안의 페이지다.
+import { href } from '../../lib/url';
+
+const prompts = [
+  {
+    q: '버튼 위계 정리해 줘',
+    a: [
+      '한 영역에서 가장 무거운 버튼은 하나만 둡니다[1]. 주 행동은 채운 버튼, 보조 행동은 아웃라인이나 텍스트 버튼으로 내려요[1]. 지우는 행동은 위험 버튼으로 따로 구분합니다[1].',
+      '버튼은 생김새의 무게로 순서를 말해요[1]. 채운 버튼은 화면의 주 행동 하나에만, 나머지는 테두리나 글자만 남겨 가볍게 둡니다[1].',
+    ],
+    src: [{ t: 'Regula › UI 패턴 › 버튼', u: href('patterns/buttons/') }],
+  },
+  {
+    q: '모달이랑 바텀시트 차이?',
+    a: [
+      '모달은 하던 일을 멈추게 하고 답을 받아야 닫힙니다[1]. 바텀시트는 아래에서 올라와 지금 화면을 반쯤 보여 준 채 고르게 해요[1]. 되돌릴 수 없는 결정이면 모달, 가벼운 선택이면 바텀시트가 맞습니다[1].',
+      '둘 다 화면 위에 뜨지만 막는 정도가 달라요[1]. 모달은 응답해야 넘어가고, 바텀시트는 내려서 닫으면 원래 화면으로 돌아갑니다[1].',
+    ],
+    src: [{ t: 'Regula › UI 패턴 › 알림', u: href('patterns/feedback/') }],
+  },
+  {
+    q: '명도 대비 기준 알려 줘',
+    a: [
+      '본문 글자는 배경과 4.5:1 이상[1], 큰 글자(24px, 또는 굵은 18.66px 이상)는 3:1 이상이면 됩니다[1]. 아이콘이나 입력창 테두리 같은 그래픽은 3:1을 봅니다[2].',
+      '글자는 크기에 따라 4.5:1 또는 3:1[1], 글자가 아닌 그래픽 요소는 3:1이 기준이에요[2]. 계산 도구에서 바로 재 볼 수 있어요[1].',
+    ],
+    src: [
+      { t: 'WCAG 2.2 1.4.3 · Regula › 원리 › 명도 대비', u: href('principles/color/#f-contrast') },
+      { t: 'WCAG 2.2 1.4.11 Non-text Contrast', u: 'https://www.w3.org/TR/WCAG22/#non-text-contrast' },
+    ],
+  },
+];
+const parts = [
+  { k: 'dots', n: '생각 중 표시' },
+  { k: 'steps', n: '단계' },
+  { k: 'stream', n: '스트리밍' },
+  { k: 'cite', n: '출처' },
+  { k: 'stop', n: '멈춤 버튼' },
+];
+---
+<div class="lab ailab" id="aiLab" data-prompts={JSON.stringify(prompts)}>
+  <div class="ai-frame">
+    <div class="ai-log" id="aiLog">
+      <div class="ai-empty" id="aiEmpty">
+        <span class="label">이렇게 물어볼 수 있어요</span>
+        <div class="ai-chips" id="aiChips">
+          {prompts.map((p, i) => <button type="button" class="chip" data-i={i}>{p.q}</button>)}
+        </div>
+      </div>
+    </div>
+    <div class="ai-bar"><span class="mono" id="aiClock">0.0초</span><button type="button" class="btn-x out" id="aiStop" hidden>■ 멈추기</button><button type="button" class="btn-x txt" id="aiReset">새 대화</button></div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 기다리는 동안 보이는 것</span>
+    <h3>같은 6초, 다른 기다림</h3>
+    <p>답을 다 쓰는 데 걸리는 시간은 늘 6초입니다. 아래 요소를 켜고 끈 뒤 질문을 골라 보세요.</p>
+    <div class="chips" id="aiParts">
+      {parts.map((p) => <button class="chip" type="button" data-k={p.k} aria-pressed="true">{p.n}</button>)}
+    </div>
+    <p class="g-read" aria-live="polite">첫 글자까지 <span id="aiFirst">—</span> · 아무 변화 없던 시간 <span id="aiBlank">—</span>: <mark id="aiRead">질문을 골라 보세요</mark></p>
+    <p id="aiNote"></p>
+  </div>
+</div>
+
+<script>
+  type P = { q: string; a: string[]; src: { t: string; u: string }[] };
+  const lab = document.querySelector<HTMLElement>('#aiLab')!;
+  const prompts: P[] = JSON.parse(lab.dataset.prompts!);
+  const $ = (id: string) => lab.querySelector<HTMLElement>(`#${id}`)!;
+  const log = $('aiLog');
+  const on = new Set(['dots', 'steps', 'stream', 'cite', 'stop']);
+  const TOTAL = 6, FIRST = 1.8;
+  let raf = 0, t0 = 0, cur: { p: P; v: number; box: HTMLElement; stopped: boolean; done: boolean } | null = null;
+
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+  const fmt = (text: string) => on.has('cite') ? esc(text).replace(/\[(\d)\]/g, '<sup>$1</sup>') : esc(text.replace(/\[\d\]/g, ''));
+
+  function send(i: number, v = 0) {
+    cancelAnimationFrame(raf);
+    $('aiEmpty').hidden = true;
+    const p = prompts[i];
+    if (v === 0) {
+      const u = document.createElement('div');
+      u.className = 'ai-u';
+      u.textContent = p.q;
+      log.appendChild(u);
+    }
+    const box = document.createElement('div');
+    box.className = 'ai-a';
+    box.innerHTML = '<div class="ai-steps" hidden></div><div class="ai-dots" hidden><i></i><i></i><i></i></div><p class="ai-text"></p><div class="ai-src" hidden></div><div class="ai-acts" hidden></div>';
+    log.appendChild(box);
+    cur = { p, v, box, stopped: false, done: false };
+    t0 = performance.now();
+    $('aiStop').hidden = !on.has('stop');
+    $('aiFirst').textContent = `${on.has('stream') ? FIRST : TOTAL}초`;
+    $('aiBlank').textContent = `${on.has('dots') || on.has('steps') ? 0 : on.has('stream') ? FIRST : TOTAL}초`;
+    const blank = on.has('dots') || on.has('steps') ? 0 : on.has('stream') ? FIRST : TOTAL;
+    $('aiRead').textContent = blank >= TOTAL ? '6초 동안 멈춘 화면 — 고장 난 줄 안다'
+      : blank > 1 ? `${blank}초 동안 빈 화면 — 보냈는지 의심한다`
+      : !on.has('stream') ? '무언가 하는 건 알지만 6초를 다 기다린다'
+      : '1.8초 만에 읽기 시작';
+    $('aiNote').textContent = [
+      on.has('steps') ? '단계는 AI가 무엇을 하고 있는지(어디서 찾는지)를 보여 줘서 믿을지 말지 정하게 돕습니다.' : '',
+      on.has('cite') ? '번호를 누르면 근거로 간다면 사용자가 직접 확인할 수 있어요.' : '출처를 끄면 답이 맞는지 확인할 길이 없습니다.',
+      on.has('stop') ? '' : '멈춤 버튼이 없으면 엉뚱한 답도 끝까지 기다려야 해요.',
+    ].filter(Boolean).join(' ');
+    tick();
+  }
+
+  function tick() {
+    if (!cur) return;
+    const t = (performance.now() - t0) / 1000;
+    const { p, v, box } = cur;
+    const text = p.a[v];
+    const steps = box.querySelector<HTMLElement>('.ai-steps')!;
+    const dots = box.querySelector<HTMLElement>('.ai-dots')!;
+    const tx = box.querySelector<HTMLElement>('.ai-text')!;
+    const shown = on.has('stream') ? (t < FIRST ? 0 : Math.min(1, (t - FIRST) / (TOTAL - FIRST))) : t >= TOTAL ? 1 : 0;
+    const end = cur.stopped || t >= TOTAL;
+    if (on.has('steps')) {
+      steps.hidden = false;
+      const names = ['질문 읽기', 'Regula에서 찾기', '답 쓰기'];
+      const k = t < 0.7 ? 0 : t < FIRST ? 1 : 2;
+      steps.innerHTML = names.map((n, i) => `<span class="${end || i < k ? 'done' : i === k ? 'on' : ''}">${n}</span>`).join('');
+    }
+    dots.hidden = !(on.has('dots') && shown === 0 && !end);
+    if (shown > 0 || cur.stopped) {
+      const n = Math.round([...text].length * (cur.stopped ? Math.max(shown, 0) : shown));
+      const part = [...text].slice(0, n).join('');
+      tx.innerHTML = fmt(part) + (end ? '' : '<i class="ai-caret"></i>');
+    }
+    $('aiClock').textContent = `${Math.min(t, TOTAL).toFixed(1)}초`;
+    if (end) return finish();
+    raf = requestAnimationFrame(tick);
+  }
+
+  function finish() {
+    if (!cur) return;
+    const { p, v, box, stopped } = cur;
+    cur.done = true;
+    $('aiStop').hidden = true;
+    if (stopped) box.querySelector('.ai-text')!.insertAdjacentHTML('beforeend', ' <em class="ai-stopped">멈춤</em>');
+    if (on.has('cite') && !stopped) {
+      const src = box.querySelector<HTMLElement>('.ai-src')!;
+      src.hidden = false;
+      src.innerHTML = p.src.map((s, i) => `<a href="${s.u}"><b>${i + 1}</b>${esc(s.t)}</a>`).join('');
+    }
+    const acts = box.querySelector<HTMLElement>('.ai-acts')!;
+    acts.hidden = false;
+    acts.innerHTML = `<button type="button" class="chip" data-f="up" aria-pressed="false">좋아요</button><button type="button" class="chip" data-f="down" aria-pressed="false">별로예요</button><button type="button" class="chip" data-re>↻ 다시 생성</button><span class="mono">${v + 1} / ${p.a.length}</span>`;
+    acts.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      if (b.dataset.re !== undefined) { acts.hidden = true; send(prompts.indexOf(p), (v + 1) % p.a.length); return; }
+      acts.querySelectorAll('[data-f]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    });
+    log.scrollTop = log.scrollHeight;
+  }
+
+  $('aiChips').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (b) send(+b.dataset.i!);
+  });
+  $('aiStop').addEventListener('click', () => { if (cur && !cur.done) { cur.stopped = true; } });
+  $('aiReset').addEventListener('click', () => {
+    cancelAnimationFrame(raf);
+    cur = null;
+    log.querySelectorAll('.ai-u, .ai-a').forEach((x) => x.remove());
+    $('aiEmpty').hidden = false;
+    $('aiStop').hidden = true;
+    $('aiClock').textContent = '0.0초';
+  });
+  $('aiParts').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    const k = b.dataset.k!;
+    on.has(k) ? on.delete(k) : on.add(k);
+    b.setAttribute('aria-pressed', String(on.has(k)));
+  });
+</script>

@@ -1,0 +1,131 @@
+---
+// 같은 행동(삭제 · 보관)을 밀어서, 길게 눌러서, 보이는 ⋯ 버튼으로 해 본다. 보이는 버튼을 끄면 제스처를 모르는 사람은 할 수 없다.
+const rows = [
+  { t: 'A사 프로덕트 디자이너', s: '서류 합격 안내가 왔어요' },
+  { t: 'B사 UX 디자이너', s: '과제 마감이 내일이에요' },
+  { t: 'C사 디자인 인턴', s: '지원서를 열람했어요' },
+  { t: 'D사 브랜드 디자이너', s: '면접 일정을 골라 주세요' },
+];
+---
+<div class="lab gslab" id="gsLab" data-rows={JSON.stringify(rows)}>
+  <div class="gs-frame">
+    <div class="wl-head"><b>지원 현황</b><span class="mono" id="gsCount"></span></div>
+    <ul class="gs-list" id="gsList"></ul>
+    <div class="gs-snack" id="gsSnack" hidden><span id="gsSnackText"></span><button type="button" id="gsUndo">되돌리기</button></div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 숨은 동작과 대체 수단</span>
+    <h3>삭제하는 길이 몇 개인가</h3>
+    <p>항목을 <b>왼쪽으로 밀거나</b>, <b>길게 누르거나</b>, <b>⋯ 버튼</b>을 눌러 보세요. 마우스로는 끌어서 밀 수 있어요.</p>
+    <div class="chips" id="gsAlt">
+      <button class="chip" type="button" data-v="on" aria-pressed="true">⋯ 버튼 보이기</button>
+      <button class="chip" type="button" data-v="off" aria-pressed="false">제스처만</button>
+    </div>
+    <p class="g-read" aria-live="polite">해 본 길: <span id="gsUsed">없음</span> · <mark id="gsRead"></mark></p>
+    <p id="gsNote"></p>
+    <div class="g-ui">
+      <span class="label">규칙</span>
+      <p>밀기 · 끌기 · 여러 손가락 같은 동작에는 한 번 누르기로 하는 대체 수단을 둔다(WCAG 2.5.1 · 2.5.7). 지우는 동작에는 되돌리기를.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#gsLab')!;
+  const data: { t: string; s: string }[] = JSON.parse(lab.dataset.rows!);
+  const list = lab.querySelector<HTMLUListElement>('#gsList')!;
+  const $ = (id: string) => lab.querySelector<HTMLElement>(`#${id}`)!;
+  let items = data.map((d, i) => ({ ...d, id: i }));
+  let alt = true;
+  let last: { item: (typeof items)[number]; at: number } | null = null;
+  const used = new Set<string>();
+  let snackTimer = 0;
+
+  function remove(id: number, how: string, verb = '삭제') {
+    const at = items.findIndex((x) => x.id === id);
+    if (at < 0) return;
+    last = { item: items[at], at };
+    items.splice(at, 1);
+    used.add(how);
+    $('gsSnackText').textContent = `${last.item.t} ${verb}함`;
+    $('gsSnack').hidden = false;
+    clearTimeout(snackTimer);
+    snackTimer = window.setTimeout(() => ($('gsSnack').hidden = true), 6000);
+    render();
+  }
+
+  function render() {
+    list.innerHTML = '';
+    for (const it of items) {
+      const li = document.createElement('li');
+      li.className = 'gs-row';
+      li.innerHTML = `<div class="gs-back"><span>보관</span><span>삭제</span></div>
+        <div class="gs-front"><i></i><div><b></b><span></span></div>${alt ? '<button type="button" class="gs-more" aria-label="더 보기">⋯</button>' : ''}</div>
+        <div class="gs-menu" hidden><button type="button" data-a="보관">보관</button><button type="button" data-a="삭제">삭제</button></div>`;
+      li.querySelector('b')!.textContent = it.t;
+      li.querySelector('.gs-front span')!.textContent = it.s;
+      bind(li, it.id);
+      list.appendChild(li);
+    }
+    if (!items.length) list.innerHTML = '<li class="gs-empty">모두 정리했어요</li>';
+    $('gsCount').textContent = `${items.length}건`;
+    $('gsUsed').textContent = used.size ? [...used].join(', ') : '없음';
+    $('gsRead').textContent = alt ? '제스처를 몰라도 ⋯ 버튼으로 할 수 있음' : '밀기 · 길게 누르기를 모르면 지울 방법이 없음';
+    $('gsNote').textContent = alt
+      ? '제스처는 아는 사람의 지름길이고, ⋯ 버튼은 모두의 길입니다. 키보드로도 ⋯ 버튼에 닿아요.'
+      : '버튼을 없애면 화면은 깔끔해 보이지만, 키보드 · 스위치 · 화면 낭독기를 쓰는 사람과 제스처를 모르는 사람은 여기서 막힙니다.';
+  }
+
+  function bind(li: HTMLLIElement, id: number) {
+    const front = li.querySelector<HTMLElement>('.gs-front')!;
+    const menu = li.querySelector<HTMLElement>('.gs-menu')!;
+    let x0 = 0, y0 = 0, dx = 0, dragging = false, pressTimer = 0, pressed = false;
+    const openMenu = (how: string) => { menu.hidden = false; used.add(how); $('gsUsed').textContent = [...used].join(', '); menu.querySelector('button')!.focus(); };
+    front.addEventListener('pointerdown', (e) => {
+      if ((e.target as Element).closest('.gs-more')) return;
+      x0 = e.clientX; y0 = e.clientY; dx = 0; dragging = true; pressed = false;
+      front.setPointerCapture(e.pointerId);
+      pressTimer = window.setTimeout(() => { if (Math.abs(dx) < 8) { pressed = true; dragging = false; openMenu('길게 누르기'); } }, 550);
+    });
+    front.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      dx = Math.min(0, e.clientX - x0);
+      if (Math.abs(e.clientY - y0) > 24 && Math.abs(dx) < 12) { dragging = false; clearTimeout(pressTimer); front.style.transform = ''; return; }
+      if (Math.abs(dx) > 8) clearTimeout(pressTimer);
+      front.style.transform = `translateX(${Math.max(dx, -140)}px)`;
+    });
+    const end = () => {
+      clearTimeout(pressTimer);
+      if (!dragging) return;
+      dragging = false;
+      if (dx < -100) remove(id, '밀기');
+      else front.style.transform = '';
+    };
+    front.addEventListener('pointerup', end);
+    front.addEventListener('pointercancel', end);
+    front.addEventListener('contextmenu', (e) => { e.preventDefault(); if (!pressed) openMenu('길게 누르기'); });
+    li.querySelector('.gs-more')?.addEventListener('click', () => (menu.hidden ? openMenu('⋯ 버튼') : (menu.hidden = true)));
+    menu.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      const how = [...used].pop() ?? '메뉴';
+      remove(id, how, b.dataset.a!);
+    });
+  }
+
+  $('gsUndo').addEventListener('click', () => {
+    if (!last) return;
+    items.splice(last.at, 0, last.item);
+    last = null;
+    $('gsSnack').hidden = true;
+    render();
+  });
+  $('gsAlt').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    alt = b.dataset.v === 'on';
+    $('gsAlt').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  render();
+</script>

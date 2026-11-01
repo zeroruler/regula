@@ -42,6 +42,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '타이포그래피', path: 'principles/typography/', blurb: '타입 스케일, 줄 길이, 행간, 내가 쓰는 서체' },
   { name: '색', path: 'principles/color/', blurb: '색상환과 배색, 60-30-10, 동시 대비, 명도 대비' },
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
+  { name: '조형', path: 'principles/composition/', blurb: '크기 위계, 여백, 시각적 무게, 대칭, 질감, 형태, 동세, 율동 — 『디자인 구구단』 9단' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
   { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
   { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드' },
@@ -119,6 +120,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '책 『디자인 구구단』(에이핫, 길벗)을 레퍼런스에 추가하고, 원리에 "조형" 실습 페이지(/principles/composition/)를 새로 만듦. 직접 찍어 정리한 9단 학습 노트를 바탕으로 비율·공간·균형·질감·형태·움직임·율동의 공식 15개를 내 말로 옮기고, 색에 "채도 대비", 타이포그래피에 "제목 · 소제목 · 본문"을 더함. 시각적 무게 시소와 율동 실습을 붙임.' },
   { date: '2026-11-01', text: '출처 3차 검증. m3.material.io 대신 Google의 공개 구현 저장소 소스에서 Material 3 값을 확인 — motion 토큰(시간 50–1000ms 16단계, standard · emphasized 곡선)을 움직임 규칙 표와 ease-in · ease-out에 넣고, 창 크기 경계 600 · 840dp, 내비게이션 바 3–5곳을 확인. 스낵바 4–10초는 MDC Web(4000–10000ms)과 Compose M3(4초 · 10초)로 출처를 바꾸고, Android View 구현은 1.5 · 2.75초로 다르다고 적음. 클레이모피즘은 Malewicz의 글이 이름을 널리 알렸지만 처음 지은 사람은 확정하지 않음. 기록은 docs/source-check.md.' },
   { date: '2026-11-01', text: '여섯 번째 페이지 양식 "랜딩 페이지" 추가. 구성 7개와 규칙 14개(출처: NN/g Top 10 Guidelines for Homepage Usability · Photos as Web Content · Scrolling and Attention · Auto-Forwarding Carousels, GOV.UK Start using a service · Button, WCAG 2.2.2 · 1.4.2 · 1.4.3, deceptive.design). 마케팅 블로그의 전환율 주장은 쓰지 않음. 미리보기는 기본 · 주 버튼 둘 · 꾸밈용 그림 상태를 볼 수 있음. 채워 나갈 양식 목록이 비어 그 칸을 지움.' },
   { date: '2026-11-01', text: '다섯 번째 페이지 양식 "글 본문" 추가. 구성 8개와 규칙 14개(출처: WCAG 1.4.8 · 1.4.10 · 1.4.12 · 1.1.1 · F73 · F88, W3C WAI Headings, CSS Text 3 word-break, WHATWG HTML blockquote · figure · pre, GOV.UK Lists, NN/g How Users Read on the Web). 타이포그래피 페이지에 비어 있던 한글 한 줄 글자 수 근거를 채움 — 상한은 WCAG 1.4.8의 CJK 40자, 하한 쪽은 신종현 · 박민용(2003)의 한글 웹 문서 실험(10자가 30 · 50자보다 느림). 30–40자를 직접 권한 출처는 못 찾았다고 적음. 미리보기는 기본 · 간격 늘림(1.4.12) · 줄 길이 제한 없음 · 글자 단위 줄바꿈 상태를 볼 수 있음.' },

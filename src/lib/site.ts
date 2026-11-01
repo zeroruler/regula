@@ -48,7 +48,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
   { name: '조형', path: 'principles/composition/', blurb: '크기 위계, 여백, 시각적 무게, 대칭, 질감, 형태, 동세, 율동 — 『디자인 구구단』 9단' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
-  { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
+  { name: '사용성과 접근성', path: 'principles/usability/', blurb: '피츠, 힉, 터치 영역, 포커스, 리플로, 대체 텍스트 — WCAG 2.2' },
   { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드' },
   { name: '움직임', path: 'principles/motion/', blurb: '이즈 인 · 아웃, 스프링, 순차 등장, 페이드, 슬라이드, 화면 전환' },
   { name: '비주얼 스타일', path: 'principles/styles/', blurb: '스큐어모피즘부터 리퀴드 글래스까지, 이름과 재료로 말하기' },
@@ -124,6 +124,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '원리의 "사용성"을 "사용성과 접근성"으로 넓히고 실습 페이지(/principles/usability/)를 만듦. WCAG 2.2 기준으로 포커스 표시 · 포커스 가림 · 포커스 순서 · 컴포넌트 대비 3:1 · 색에만 기대지 않기 · 리플로 320px · 움직임 줄이기 · 대체 텍스트 · 끌기의 대안 9개를 더하고, 터치 영역에 24px 간격 예외를 적음. 눌리는 영역과 간격을 바꿔 2.5.8 통과 여부를 보는 실습, 실제 폼을 Tab으로 지나가며 포커스 표시를 끄고 순서를 어긋나게 해 보는 실습을 붙임.' },
   { date: '2026-11-01', text: '방향을 "공개 웹디자인 아카이브"로 맞춤. 홈 · 메타 설명 · 레퍼런스 · 서체 · 양식의 문구를 "나"가 아니라 방문자 기준으로 바꾸고("내 정리" → "정리", "내가 쓰는 서체" → "양식에 쓴 서체"), 기록장을 "출처 기록"으로 이름을 바꿔 내비게이션에서 뺌(항목 아래 "본 곳"과 작업 기록에서 들어감). 공식에 "웹에서" 필드를 더해 조형 · 채도 대비 · 제목 계층 17개에 웹 화면 적용 예를 붙임.' },
   { date: '2026-11-01', text: '책 『디자인 구구단』(에이핫, 길벗)을 레퍼런스에 추가하고, 원리에 "조형" 실습 페이지(/principles/composition/)를 새로 만듦. 직접 찍어 정리한 9단 학습 노트를 바탕으로 비율·공간·균형·질감·형태·움직임·율동의 공식 15개를 내 말로 옮기고, 색에 "채도 대비", 타이포그래피에 "제목 · 소제목 · 본문"을 더함. 시각적 무게 시소와 율동 실습을 붙임.' },
   { date: '2026-11-01', text: '출처 3차 검증. m3.material.io 대신 Google의 공개 구현 저장소 소스에서 Material 3 값을 확인 — motion 토큰(시간 50–1000ms 16단계, standard · emphasized 곡선)을 움직임 규칙 표와 ease-in · ease-out에 넣고, 창 크기 경계 600 · 840dp, 내비게이션 바 3–5곳을 확인. 스낵바 4–10초는 MDC Web(4000–10000ms)과 Compose M3(4초 · 10초)로 출처를 바꾸고, Android View 구현은 1.5 · 2.75초로 다르다고 적음. 클레이모피즘은 Malewicz의 글이 이름을 널리 알렸지만 처음 지은 사람은 확정하지 않음. 기록은 docs/source-check.md.' },

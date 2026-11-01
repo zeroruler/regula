@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Target from '../../demos/usability/Target.astro';
+import Focus from '../../demos/usability/Focus.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const T = '사용성과 접근성';
+const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="사용성과 접근성 · 원리와 공식 · Regula" current="principles" description="터치 영역, 포커스 표시와 순서, 컴포넌트 대비, 리플로, 움직임 줄이기, 대체 텍스트를 WCAG 2.2 기준과 함께 정리하고 직접 해 보는 실습 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>누구나 누르고, 읽고, 지나갈 수 있게</h1>
+    <p>손이 떨리는 사람, 키보드로만 움직이는 사람, 화면을 크게 키워 보는 사람, 화면 낭독기로 듣는 사람도 같은 화면을 씁니다. 대부분은 숫자로 정해진 기준이 있어요 — 웹 콘텐츠 접근성 지침 WCAG 2.2의 성공 기준 번호와 수준(A · AA · AAA)을 항목마다 붙였습니다. 보통 AA까지를 목표로 삼습니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 누르기</span>
+      <h2>보이는 크기와 눌리는 크기는 다르다</h2>
+      <p>피츠의 법칙대로 작고 먼 목표는 누르기 어렵습니다. 아이콘은 작아도 되지만, 눌리는 영역은 기준만큼 확보하거나 이웃과 충분히 떨어뜨려야 해요.</p>
+    </header>
+    <Target />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 키보드</span>
+      <h2>포커스는 키보드 사용자의 커서다</h2>
+      <p>포커스 표시는 지금 어디에 있는지, 포커스 순서는 다음에 어디로 갈지를 알려 줍니다. 둘 중 하나만 무너져도 폼 하나를 채우기가 어려워져요.</p>
+    </header>
+    <Focus />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">공식</span>
+      <h2>사용성과 접근성 {formulas.length}개</h2>
+      <p>글자 대비(4.5 : 1)는 <a href={href('tools/')}>계산 도구</a>의 명도 대비에서 직접 잴 수 있어요. 라벨과 오류 문구는 <a href={href('patterns/forms/')}>입력</a> · <a href={href('patterns/writing/')}>문구</a> 패턴에, 움직임의 길이와 곡선은 <a href={href('principles/motion/')}>움직임</a>에 있습니다.</p>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

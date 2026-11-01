@@ -1,0 +1,145 @@
+---
+// 목록 → 상세 화면 전환을 다섯 가지로 바꿔 본다. 돌아올 때 목록의 순차 등장을 켜고 끈다.
+const kinds = [
+  { k: 'none', n: '없음' },
+  { k: 'fade', n: '페이드' },
+  { k: 'slide', n: '슬라이드' },
+  { k: 'container', n: '확대 전환' },
+  { k: 'shared', n: '공유 요소' },
+];
+const cards = ['여행 앨범', '오늘의 추천', '새 메시지', '지난 주문'];
+---
+<div class="lab molab" id="moTr">
+  <div class="mo-phone-wrap">
+    <div class="mo-phone" id="moPhone">
+      <div class="mo-list" id="moList">
+        <div class="mo-top"><b>보관함</b></div>
+        {cards.map((c, i) => (
+          <button type="button" class="mo-card" data-i={i}><i class="mo-thumb"></i><span><b>{c}</b><em></em></span></button>
+        ))}
+      </div>
+      <div class="mo-detail" id="moDetail" hidden>
+        <div class="mo-top"><button type="button" class="mo-back" id="moBack" aria-label="뒤로">‹</button><b id="moTitle"></b></div>
+        <i class="mo-hero" id="moHero"></i>
+        <div class="mo-body"><span></span><span></span><span class="w"></span><span></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 화면 전환</span>
+    <h3>어디서 왔는지 말하기</h3>
+    <div class="chips" id="moKind">
+      {kinds.map((k, i) => <button class="chip" type="button" data-k={k.k} aria-pressed={String(i === 3)}>{k.n}</button>)}
+    </div>
+    <div class="chips" id="moStag">
+      <button class="chip" type="button" data-v="on" aria-pressed="true">돌아올 때 순차 등장</button>
+      <button class="chip" type="button" data-v="off" aria-pressed="false">한꺼번에</button>
+    </div>
+    <p>카드를 눌러 상세로 들어갔다가 ‹ 로 돌아와 보세요.</p>
+    <p class="g-read" aria-live="polite">말해 주는 것: <mark id="moTrRead"></mark></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>전환은 꾸밈이 아니라 길 안내입니다. 새 화면이 어디서 왔는지(카드에서, 오른쪽에서) 보여 주면, 돌아갈 곳도 알게 돼요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#moTr')!;
+  const $ = (id: string) => lab.querySelector<HTMLElement>(`#${id}`)!;
+  const phone = $('moPhone'), list = $('moList'), detail = $('moDetail');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const OUT = 'cubic-bezier(0, 0, 0.58, 1)', IN = 'cubic-bezier(0.42, 0, 1, 1)', INOUT = 'cubic-bezier(0.42, 0, 0.58, 1)';
+  let kind = 'container', stagger = true, from: HTMLElement | null = null;
+  const reads: Record<string, string> = {
+    none: '갑자기 바뀜 — 어디서 왔는지 모름',
+    fade: '조용히 바뀜 — 화면 사이 관계는 말하지 않음',
+    slide: '오른쪽에서 들어옴 — 한 단계 안으로 들어감',
+    container: '누른 카드가 커져 화면이 됨 — 닫으면 그 자리로',
+    shared: '사진이 따라옴 — 같은 것을 크게 보는 중',
+  };
+  const d = (ms: number) => (reduce ? 0 : ms);
+  const rel = (el: Element) => {
+    const a = el.getBoundingClientRect(), p = phone.getBoundingClientRect();
+    return { x: a.left - p.left, y: a.top - p.top, w: a.width, h: a.height };
+  };
+  const inset = (r: { x: number; y: number; w: number; h: number }) =>
+    `inset(${r.y}px ${phone.clientWidth - r.x - r.w}px ${phone.clientHeight - r.y - r.h}px ${r.x}px round 8px)`;
+
+  function ghost(a: HTMLElement, b: HTMLElement, ms: number, reverse = false) {
+    const ra = rel(a), rb = rel(b);
+    const g = document.createElement('i');
+    g.className = 'mo-ghostel';
+    phone.appendChild(g);
+    const box = (r: typeof ra) => ({ left: `${r.x}px`, top: `${r.y}px`, width: `${r.w}px`, height: `${r.h}px` });
+    const anim = g.animate(reverse ? [box(rb), box(ra)] : [box(ra), box(rb)], { duration: d(ms), easing: INOUT, fill: 'forwards' });
+    a.style.visibility = b.style.visibility = 'hidden';
+    anim.onfinish = () => { g.remove(); a.style.visibility = b.style.visibility = ''; };
+  }
+
+  function open(card: HTMLElement) {
+    from = card;
+    $('moTitle').textContent = card.querySelector('b')!.textContent;
+    detail.hidden = false;
+    const thumb = card.querySelector<HTMLElement>('.mo-thumb')!;
+    if (kind === 'fade') {
+      list.animate([{ opacity: 1 }, { opacity: 0 }], { duration: d(90), easing: IN });
+      detail.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(210), delay: d(90), easing: OUT, fill: 'backwards' });
+    } else if (kind === 'slide') {
+      detail.animate([{ transform: 'translateX(100%)' }, { transform: 'none' }], { duration: d(300), easing: OUT });
+      list.animate([{ transform: 'none' }, { transform: 'translateX(-30%)' }], { duration: d(300), easing: OUT });
+    } else if (kind === 'container') {
+      detail.animate([{ clipPath: inset(rel(card)) }, { clipPath: inset({ x: 0, y: 0, w: phone.clientWidth, h: phone.clientHeight }) }], { duration: d(360), easing: INOUT });
+      detail.querySelector('.mo-body')!.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(200), delay: d(160), fill: 'backwards' });
+    } else if (kind === 'shared') {
+      detail.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(300), easing: OUT });
+      ghost(thumb, $('moHero'), 360);
+    }
+    $('moTrRead').textContent = reads[kind];
+    $('moBack').focus();
+  }
+
+  function close() {
+    const card = from;
+    const done = () => {
+      detail.hidden = true;
+      if (stagger) lab.querySelectorAll<HTMLElement>('.mo-card').forEach((c, i) =>
+        c.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: d(220), delay: d(i * 40), easing: OUT, fill: 'backwards' }));
+      card?.focus();
+    };
+    if (kind === 'none' || reduce) return done();
+    let a: Animation;
+    if (kind === 'fade') a = detail.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, easing: IN });
+    else if (kind === 'slide') {
+      a = detail.animate([{ transform: 'none' }, { transform: 'translateX(100%)' }], { duration: 250, easing: IN });
+      list.animate([{ transform: 'translateX(-30%)' }, { transform: 'none' }], { duration: 250, easing: OUT });
+    } else if (kind === 'container' && card) a = detail.animate([{ clipPath: inset({ x: 0, y: 0, w: phone.clientWidth, h: phone.clientHeight }) }, { clipPath: inset(rel(card)) }], { duration: 300, easing: INOUT });
+    else {
+      if (card) ghost(card.querySelector<HTMLElement>('.mo-thumb')!, $('moHero'), 300, true);
+      a = detail.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: IN });
+    }
+    a!.onfinish = () => { done(); };
+    if (stagger) lab.querySelectorAll<HTMLElement>('.mo-card').forEach((c) => (c.style.opacity = '0'));
+    a!.addEventListener('finish', () => lab.querySelectorAll<HTMLElement>('.mo-card').forEach((c) => (c.style.opacity = '')));
+  }
+
+  list.addEventListener('click', (e) => {
+    const c = (e.target as Element).closest<HTMLElement>('.mo-card');
+    if (c) open(c);
+  });
+  $('moBack').addEventListener('click', close);
+  $('moKind').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    kind = b.dataset.k!;
+    $('moKind').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    $('moTrRead').textContent = reads[kind];
+  });
+  $('moStag').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    stagger = b.dataset.v === 'on';
+    $('moStag').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  });
+  $('moTrRead').textContent = reads[kind];
+</script>

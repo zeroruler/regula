@@ -181,7 +181,7 @@ regula/
 - [x] 심리와 편향 9가지 — `/principles/psychology/` (같은 사실·다른 말 실습, 선택지 수 실습, 편향 → 다크 패턴 표)
 - [x] 제스처 9가지 — `/patterns/gestures/` (알아채기 어려운 순, 대체 수단 열, 밀기 · 길게 누르기 · ⋯ 버튼 실습)
 - [x] AI 화면 9가지 — `/patterns/ai/` (대화의 시점 순, 기다림 요소를 켜고 끄며 답 받기 실습)
-- 움직임 이름 9가지 — 이즈 인 · 이즈 아웃 · 스프링 · 바운스 · 순차 등장 · 페이드 · 슬라이드 · 확대 전환 · 공유 요소 전환. 원리 실습 페이지로 (같은 움직임을 곡선별로 재생, 움직임 줄이기 설정 존중)
+- [x] 움직임 이름 9가지 — `/principles/motion/` (곡선 · 시간 재생 실습, 화면 전환 다섯 가지 실습, 움직임 규칙 표)
 
 ## 8. 콘텐츠 백로그 (출처 후보)
 
@@ -189,7 +189,7 @@ regula/
 - 디자인 시스템: Material 3, Apple HIG, 토스 TDS, 원티드 Montage, IBM Carbon, GOV.UK, GitHub Primer
 - 저장소: alexpate/awesome-design-systems, klaufel/awesome-design-systems, cvega/awesome-design-systems
 - 커뮤니티: Nielsen Norman Group, Steve Schoger(X), Learn UI Design, 디자인 나침반, 토스 기술 블로그, 오빠두 디자인 시스템 갤러리, Mobbin
-- 인스타 릴스에서 본 것: 알림 9가지(§3 반영 완료), 황금비(§1 반영 완료), 비주얼 스타일 9가지(uxwoodytips, 미반영 — §7 이후), uxwoodytips 묶음: 로딩 9가지 · 화면 이동 9가지(빠진 것 반영 완료), 알림과 피드백 9가지(이미 있음), 텍스트 필드 · 셀렉트(입력에 있음), 다크 패턴 · 심리와 편향 · 제스처 · AI 화면(반영 완료), 움직임 이름(미반영 — §7 이후)
+- 인스타 릴스에서 본 것: 알림 9가지(§3 반영 완료), 황금비(§1 반영 완료), 비주얼 스타일 9가지(uxwoodytips, 미반영 — §7 이후), uxwoodytips 묶음: 로딩 9가지 · 화면 이동 9가지(빠진 것 반영 완료), 알림과 피드백 9가지(이미 있음), 텍스트 필드 · 셀렉트(입력에 있음), 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임 이름(반영 완료)
 
 ## 9. Claude Code 작업 시 참고
 

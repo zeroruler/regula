@@ -15,6 +15,7 @@ const refTitles = Object.fromEntries((await getCollection('references')).map((r)
 const rules = [
   { s: '시간', rule: 'UI 움직임은 대개 0.1–0.5초. 작은 것(토글, 아이콘)은 짧게, 화면 전체가 바뀌는 것은 길게', src: 'Nielsen Norman Group 「Executing UX Animations: Duration and Motion Characteristics」 · Material Design 3 Motion (duration 토큰)' },
   { s: '곡선', rule: '들어오는 것은 감속(ease-out), 나가는 것은 가속(ease-in), 화면 안에서 옮기는 것은 둘 다(ease-in-out)', src: 'Material Design 3 Motion (easing 토큰)' },
+  { s: 'M3 토큰', rule: '시간: short 50–200ms · medium 250–400ms · long 450–600ms · extra-long 700–1000ms (각 50ms 또는 100ms 간격 4단계). 곡선: standard cubic-bezier(0.2, 0, 0, 1), standard-decelerate (0, 0, 0, 1), standard-accelerate (0.3, 0, 1, 1)', src: 'Material 3 토큰 md.sys.motion (material-web 저장소 tokens/versions/v0_192)' },
   { s: '줄이기', rule: '움직임 줄이기 설정(prefers-reduced-motion)을 따른다 — 큰 이동 · 확대 · 출렁임은 끄거나 페이드로 바꾼다', src: 'WCAG 2.2 2.3.3 Animation from Interactions (AAA) · W3C Media Queries Level 5' },
   { s: '멈춤', rule: '저절로 5초 넘게 움직이는 것은 멈추거나 숨길 수 있게 한다', src: 'WCAG 2.2 2.2.2 Pause, Stop, Hide (A)' },
   { s: '번쩍임', rule: '1초에 세 번 넘게 번쩍이지 않는다', src: 'WCAG 2.2 2.3.1 Three Flashes or Below Threshold (A)' },

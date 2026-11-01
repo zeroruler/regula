@@ -119,6 +119,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '네 번째 페이지 양식 "대시보드" 추가. 구성 6개와 규칙 14개(출처: NN/g Dashboards (Laubheimer 2017), 영국 Analysis Function 차트 지침, WCAG 1.1.1 · 1.4.1 · 1.4.11, Apple HIG Settings, NN/g 스켈레톤 · 빈 상태). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기간(오늘 · 7일 · 30일)을 바꾸고, 기본 · 불러오는 중 · 데이터 없음 상태와 그래프마다 표로 보기를 볼 수 있음.' },
   { date: '2026-11-01', text: '세 번째 페이지 양식 "설정" 추가. 구성 6개와 규칙 14개(출처: Apple HIG Settings · Dark Mode · Toggles · Alerts, NN/g Toggle-Switch Guidelines, App Store 심사 지침 5.1.1(v), 정보통신망법 제50조, GOV.UK 위험 버튼). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 바로 적용(광고성 정보 스위치를 끄면 처리 결과 표시) · 계정 삭제 확인 상태를 볼 수 있음.' },
   { date: '2026-11-01', text: '두 번째 페이지 양식 "회원가입" 추가. 구성 7개와 규칙 14개(출처: GOV.UK Create accounts · Password input · Ask users for passwords, NIST SP 800-63B-4, WCAG 1.3.5 · 3.3.8, 개인정보 보호법 제22조, deceptive.design). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 입력 오류(오류 요약 + 칸 아래 문구) · 약관 동의(필수만 체크, 선택은 비움) 상태를 볼 수 있음. 양식마다 미리보기 상태와 이어 보기 링크를 콘텐츠 파일에 적도록 바꿈.' },
   { date: '2026-11-01', text: '출처 2차 검증. Apple HIG 본문을 직접 읽어 터치 영역(기본 44pt · 최소 28pt), 탭 바 개수, 리퀴드 글래스 쓰는 곳을 바로잡고, 피츠의 법칙 식의 출처(MacKenzie 1992), 토스트 시간(Carbon 5초), 손실 회피 메타분석 값을 고침. 출처 없는 숫자에는 (어림) 표시. 기록은 docs/source-check.md.' },
@@ -150,5 +151,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '써 본 예시 쌓기 · 대시보드 양식' },
+  { when: '다음', text: '써 본 예시 쌓기 · 랜딩 페이지 · 글 본문 양식' },
 ];

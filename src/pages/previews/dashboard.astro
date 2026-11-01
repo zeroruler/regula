@@ -1,0 +1,211 @@
+---
+// 대시보드 양식 미리보기. ?system=<디자인 시스템>&state=<default|loading|empty> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안). 숫자는 모두 예시 데이터.
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대시보드 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style is:global>
+/* 내용을 스크립트로 그리므로 범위 스타일 대신 전역 스타일 */
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;min-height:100vh;padding:32px 16px}
+.embedded body{min-height:0}
+.page{width:100%;max-width:760px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+h1{margin:0;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:30px;line-height:1.15}
+.seg{display:inline-flex;border:var(--stroke) solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink2);padding:6px 14px;cursor:pointer}
+.seg button + button{border-left:var(--stroke) solid var(--border)}
+.seg button[aria-pressed=true]{background:var(--key);color:var(--on-key)}
+.seg button:focus-visible{outline:2px solid var(--key);outline-offset:-2px}
+.card{background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:18px 20px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.kpi .k{margin:0;font-size:13px;color:var(--ink2);font-weight:600}
+.kpi .v{margin:2px 0 0;font-size:30px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.kpi .d{margin:4px 0 0;font-size:13px;color:var(--ink2)}
+.kpi .d b{color:var(--ink);font-weight:600}
+.bullet{position:relative;height:10px;margin-top:10px;background:var(--bg);border:var(--stroke) solid var(--card-border);border-radius:2px}
+.bullet i{position:absolute;inset:0 auto 0 0;background:var(--key);border-radius:1px}
+.bullet s{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);text-decoration:none}
+.chart h2{margin:0;font-size:17px;line-height:1.35}
+.chart .sub{margin:2px 0 10px;font-size:13px;color:var(--ink3)}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart svg text{font-family:var(--font);font-variant-numeric:tabular-nums}
+details{margin-top:8px;font-size:14px}
+summary{cursor:pointer;color:var(--ink2);font-weight:600;font-size:13px}
+.tablewrap{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 8px;border-bottom:var(--stroke) solid var(--card-border);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--ink2);font-weight:600}
+.foot{margin:0;font-size:12px;color:var(--ink3);text-align:right}
+/* 불러오는 중: 그래프 자리를 잡아 두는 스켈레톤 */
+.sk{background:color-mix(in srgb,var(--ink) 8%,var(--surface));border-radius:4px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.5}}
+@media (prefers-reduced-motion:reduce){ .sk{animation:none} }
+.empty{text-align:center;padding:40px 24px;display:grid;justify-items:center;gap:8px}
+.empty h2{margin:0;font-size:19px}
+.empty p{margin:0 0 8px;color:var(--ink2);font-size:14px;max-width:34em}
+.primary{height:44px;padding:0 20px;border:var(--stroke) solid var(--key);border-radius:var(--radius);background:var(--key);color:var(--on-key);font:inherit;font-weight:600;font-size:15px;box-shadow:var(--button-shadow);cursor:pointer}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="head">
+    <h1>방문 현황</h1>
+    <div class="seg" role="group" aria-label="기간">
+      <button type="button" data-range="1" aria-pressed="false">오늘</button>
+      <button type="button" data-range="7" aria-pressed="true">7일</button>
+      <button type="button" data-range="30" aria-pressed="false">30일</button>
+    </div>
+  </div>
+  <div id="body"></div>
+  <p class="foot" id="updated"></p>
+</main>
+
+<script is:inline define:vars={{ themes }}>
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+
+  const $ = (s) => document.querySelector(s);
+  const state = params.get('state') ?? 'default';
+  const nf = new Intl.NumberFormat('ko-KR');
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+  // ── 예시 데이터 (기간마다 같은 값이 나오게 고정 씨앗) ──
+  const rand = (seed) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const make = (range) => {
+    const r = rand(range * 97 + 13), n = range === 1 ? 24 : range;
+    const base = range === 1 ? 60 : 1400;
+    const wave = (i) => (range === 1 ? Math.sin(((i - 6) / 24) * Math.PI * 2) * 0.6 + 1 : 1 + (i % 7 >= 5 ? -0.25 : 0.05));
+    const now = Array.from({ length: n }, (_, i) => Math.round(base * wave(i) * (0.92 + r() * 0.3) * (1 + i / n * 0.15)));
+    const prev = Array.from({ length: n }, (_, i) => Math.round(base * wave(i) * (0.85 + r() * 0.25)));
+    const labels = Array.from({ length: n }, (_, i) => (range === 1 ? `${i}시` : i === n - 1 ? '어제' : `${n - i}일 전`));
+    const sum = (a) => a.reduce((s, v) => s + v, 0);
+    const visits = sum(now), visitsPrev = sum(prev);
+    const signups = Math.round(visits * 0.031), signupsPrev = Math.round(visitsPrev * 0.033);
+    const target = Math.round(signups * 1.25 / 10) * 10;
+    const sources = [['검색', 0.41], ['직접 방문', 0.24], ['SNS', 0.19], ['메일', 0.09], ['기타', 0.07]]
+      .map(([k, p]) => [k, Math.round(visits * p * (0.9 + r() * 0.2))]).sort((a, b) => b[1] - a[1]);
+    return { n, now, prev, labels, visits, visitsPrev, signups, signupsPrev, target, sources };
+  };
+  const pct = (a, b) => Math.round(((a - b) / b) * 100);
+  const word = { 1: '어제', 7: '지난 7일', 30: '지난 30일' };
+  const cur = { 1: '오늘', 7: '이번 7일', 30: '이번 30일' };
+  // 증감은 기호와 글자로 (색만으로 알리지 않는다)
+  const delta = (d, range) => `<span aria-hidden="true">${d >= 0 ? '▲' : '▼'}</span> ${word[range]}보다 <b>${Math.abs(d)}%</b> ${d >= 0 ? '늘었어요' : '줄었어요'}`;
+
+  // ── 선 그래프: 길이 · 위치로, 선 끝에 직접 라벨, 격자선 옅게 ──
+  const lineChart = (svg, d, range) => {
+    const W = svg.clientWidth || 600, H = W < 420 ? 200 : 240, padL = 44, padR = W < 420 ? 62 : 78, padT = 10, padB = 26;
+    const max = Math.max(...d.now, ...d.prev), step = Math.pow(10, Math.floor(Math.log10(max))) / (max / Math.pow(10, Math.floor(Math.log10(max))) > 5 ? 1 : 2);
+    const top = Math.ceil(max / step) * step;
+    const x = (i) => padL + (i / (d.n - 1)) * (W - padL - padR), y = (v) => padT + (1 - v / top) * (H - padT - padB);
+    const ticks = []; for (let v = 0; v <= top; v += step) ticks.push(v);
+    const path = (a) => a.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+    const xs = [0, Math.floor((d.n - 1) / 2), d.n - 1];
+    const lastNow = y(d.now.at(-1)), lastPrev = y(d.prev.at(-1));
+    // 끝 라벨이 겹치지 않게 벌린다
+    let ly1 = lastNow, ly2 = lastPrev; if (Math.abs(ly1 - ly2) < 16) { const m = (ly1 + ly2) / 2, s = ly1 <= ly2 ? -1 : 1; ly1 = m + s * 8; ly2 = m - s * 8; }
+    svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = `
+      ${ticks.map((v) => `<line x1="${padL}" x2="${W - padR}" y1="${y(v)}" y2="${y(v)}" stroke="var(--card-border)" stroke-width="1"/><text x="${padL - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--ink3)">${nf.format(v)}</text>`).join('')}
+      ${xs.map((i) => `<text x="${x(i)}" y="${H - 6}" text-anchor="${i === 0 ? 'start' : i === d.n - 1 ? 'end' : 'middle'}" font-size="11" fill="var(--ink3)">${d.labels[i]}</text>`).join('')}
+      <path d="${path(d.prev)}" fill="none" stroke="var(--ink3)" stroke-width="2" stroke-dasharray="5 4"/>
+      <path d="${path(d.now)}" fill="none" stroke="var(--key)" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="${x(d.n - 1)}" cy="${lastNow}" r="3.5" fill="var(--key)"/>
+      <text x="${x(d.n - 1) + 8}" y="${ly1 + 4}" font-size="12" font-weight="600" fill="var(--ink)">${cur[range]}</text>
+      <text x="${x(d.n - 1) + 8}" y="${ly2 + 4}" font-size="12" fill="var(--ink2)">${word[range]}</text>`;
+  };
+
+  // ── 막대 그래프: 가로 막대, 큰 순서, 0에서 시작, 끝에 값 ──
+  const barChart = (svg, d) => {
+    const W = svg.clientWidth || 600, row = 30, padL = 74, padR = 64, H = d.sources.length * row;
+    const max = d.sources[0][1];
+    svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = `<line x1="${padL}" x2="${padL}" y1="0" y2="${H}" stroke="var(--border)" stroke-width="1"/>` + d.sources.map(([k, v], i) => {
+      const w = (v / max) * (W - padL - padR), yy = i * row + 6;
+      return `<text x="${padL - 10}" y="${yy + 13}" text-anchor="end" font-size="13" fill="var(--ink)">${k}</text>
+        <rect x="${padL}" y="${yy}" width="${w.toFixed(1)}" height="18" fill="var(--key)"/>
+        <text x="${padL + w + 8}" y="${yy + 13}" font-size="12" fill="var(--ink2)">${nf.format(v)}</text>`;
+    }).join('');
+  };
+
+  const table = (head, rows) => `<div class="tablewrap"><table><thead><tr>${head.map((h) => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c, i) => (i ? `<td>${c}</td>` : `<th scope="row">${c}</th>`)).join('')}</tr>`).join('')}</tbody></table></div>`;
+
+  let range = 7;
+  const render = () => {
+    const body = $('#body');
+    $('#updated').textContent = state === 'default' ? `${new Date().toLocaleString('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })} 기준 · 예시 데이터` : '';
+    if (state === 'loading') {
+      body.setAttribute('aria-busy', 'true');
+      body.innerHTML = `<div style="display:grid;gap:12px"><div class="kpis">${'<div class="card"><div class="sk" style="height:14px;width:40%"></div><div class="sk" style="height:30px;width:60%;margin-top:10px"></div><div class="sk" style="height:12px;width:80%;margin-top:10px"></div></div>'.repeat(3)}</div>
+        <div class="card"><div class="sk" style="height:18px;width:55%"></div><div class="sk" style="height:200px;margin-top:16px"></div></div>
+        <div class="card"><div class="sk" style="height:18px;width:45%"></div><div class="sk" style="height:140px;margin-top:16px"></div></div>
+        <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" role="status">불러오는 중</span></div>`;
+      return;
+    }
+    if (state === 'empty') {
+      body.innerHTML = `<div class="card empty"><h2>아직 모인 방문 기록이 없어요</h2><p>사이트에 추적 코드를 붙이면 다음 방문부터 여기에 숫자와 그래프가 쌓여요.</p><button class="primary" type="button">추적 코드 복사</button></div>`;
+      return;
+    }
+    const d = make(range), dv = pct(d.visits, d.visitsPrev), ds = pct(d.signups, d.signupsPrev);
+    const conv = (d.signups / d.visits * 100).toFixed(1), convPrev = (d.signupsPrev / d.visitsPrev * 100).toFixed(1);
+    const dc = (conv - convPrev).toFixed(1);
+    body.innerHTML = `<div style="display:grid;gap:12px">
+      <div class="kpis">
+        <div class="card kpi"><p class="k">방문자</p><p class="v">${nf.format(d.visits)}</p><p class="d">${delta(dv, range)}</p></div>
+        <div class="card kpi"><p class="k">가입</p><p class="v">${nf.format(d.signups)}</p>
+          <!-- 불릿 차트: 막대 전체 = 목표의 125%, 목표 위치(80%)에 눈금 -->
+          <div class="bullet" role="img" aria-label="목표 ${d.target}명 중 ${d.signups}명"><i style="width:${Math.min(100, (d.signups / (d.target * 1.25)) * 100).toFixed(1)}%"></i><s style="left:calc(80% - 1px)"></s></div>
+          <p class="d">목표 <b>${nf.format(d.target)}</b>명 · ${Math.round(d.signups / d.target * 100)}% 달성</p></div>
+        <div class="card kpi"><p class="k">가입 전환율</p><p class="v">${conv}%</p><p class="d"><span aria-hidden="true">${dc >= 0 ? '▲' : '▼'}</span> ${word[range]}보다 <b>${Math.abs(dc)}%p</b> ${dc >= 0 ? '올랐어요' : '내렸어요'}</p></div>
+      </div>
+      <section class="card chart" aria-labelledby="t1">
+        <h2 id="t1">방문자가 ${word[range]}보다 ${Math.abs(dv)}% ${dv >= 0 ? '늘었어요' : '줄었어요'}</h2>
+        <p class="sub">그림 1. ${range === 1 ? '시간별' : '하루'} 방문자 수, ${cur[range]}과 ${word[range]} 비교 · 예시 데이터</p>
+        <svg id="line" role="img" aria-labelledby="t1"></svg>
+        <details><summary>표로 보기</summary>${table(['', cur[range], word[range]], d.labels.map((l, i) => [l, nf.format(d.now[i]), nf.format(d.prev[i])]))}</details>
+      </section>
+      <section class="card chart" aria-labelledby="t2">
+        <h2 id="t2">방문의 ${Math.round(d.sources[0][1] / d.visits * 100)}%가 ${d.sources[0][0]}에서 왔어요</h2>
+        <p class="sub">그림 2. 유입 경로별 방문자 수, ${cur[range]} · 예시 데이터</p>
+        <svg id="bar" role="img" aria-labelledby="t2"></svg>
+        <details><summary>표로 보기</summary>${table(['경로', '방문자', '비율'], d.sources.map(([k, v]) => [k, nf.format(v), `${Math.round(v / d.visits * 100)}%`]))}</details>
+      </section></div>`;
+    const draw = () => { lineChart($('#line'), d, range); barChart($('#bar'), d); };
+    draw();
+    redraw = draw;
+  };
+  let redraw = () => {}, lastW = 0;
+  // 너비가 바뀔 때만 다시 그린다 (높이 변화로 되풀이되지 않게)
+  new ResizeObserver(() => { const w = $('#body').clientWidth; if (w !== lastW) { lastW = w; redraw(); } }).observe($('#body'));
+
+  document.querySelectorAll('button[data-range]').forEach((b) => b.addEventListener('click', () => {
+    range = Number(b.dataset.range);
+    document.querySelectorAll('button[data-range]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  }));
+  render();
+</script>
+</body>
+</html>

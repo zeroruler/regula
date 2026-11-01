@@ -2,6 +2,24 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-01 — 5차: 화면 구성 패턴 (목록 · 표 · 카드 · 캐러셀 · 아코디언 · 팝오버 · 사이드 시트)
+
+### 원문을 읽고 확인
+
+- Page Laubheimer, 「Cards: UI-Component Definition」 (NN/g, 2016-11-06): 카드는 둘러보기(browse)에 맞고 찾기(search)에는 목록보다 못함, 목록이 더 훑기 쉬움, 여러 항목 견주기에 나쁨(눈이 카드 사이를 오감)
+- Page Laubheimer, 「Data Tables: Four Major User Tasks」 (NN/g, 2022-04-03): 찾기 · 견주기 · 한 줄 보기/고치기/더하기 · 행동하기 네 가지, 열 순서는 중요도순 · 관련 열은 붙여서
+- Amy Schade, 「Mobile Tables: Comparisons and Other Data Tables」 (NN/g, 2017-09-17): 머리글 고정, 볼 데이터 고르게
+- Kara Pernice, 「Designing Effective Carousels」 (NN/g, 2013-09-14, 현재 제목 「Carousel Usability: Effective UI for Content Overload」): 5장 이하, 사람들이 자주 지나침, 다음 장을 살짝 보이게
+- Jakob Nielsen, 「Auto-Forwarding Carousels and Accordions Annoy Users and Reduce Visibility」 (NN/g, 2013-01-20)
+- Huei-Hsin Wang, 「Accordions on Desktop: When and How to Use」 (NN/g, 2023-07-30): 보기 쉬움을 줄이고 조작 비용을 늘림, 여러 칸을 열어야 하면 피함, 모두 펼치기 · 인쇄
+- W3C WAI-ARIA APG Carousel: 자동 회전이면 멈춤 버튼, 키보드 포커스가 들어오면 멈추고 다시 시작하지 않음, 마우스를 올리면 멈춤
+- W3C WAI-ARIA APG Accordion: 머리 버튼에 aria-expanded, aria-controls
+- MDN popover 전역 속성: popover="auto"는 바깥 누르기 · Esc로 닫힘(light dismiss), 다른 auto 팝오버를 닫음
+
+### 직접 읽지 못함
+
+- Material Design 3 Lists · Side sheets, Apple HIG Popovers — 페이지가 스크립트로 그려져 본문을 받지 못했다. 이름(standard · modal side sheet 등)만 쓰고 수치는 인용하지 않았다.
+
 ## 2026-11-01 — 4차: WCAG 2.2 성공 기준 (사용성과 접근성)
 
 W3C 권고안 원문 https://www.w3.org/TR/WCAG22/ (W3C Recommendation 12 December 2024판)을 내려받아 해당 성공 기준의 문장과 수준을 대조했다.

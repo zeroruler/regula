@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
+import Pick from '../../demos/layout/Pick.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const groups = await patternsByGroup();
+const { group, items } = groups.find((x) => x.group.id === 'layout')!;
+
+// 화면 구성 규칙. 원문을 읽고 확인한 것만 적는다(docs/source-check.md 5차).
+const rules = [
+  { s: '카드', rule: '카드는 둘러볼 때 맞고, 하나를 찾거나 여럿을 견줄 때는 목록보다 못하다 — 요소 자리가 카드마다 달라 훑기 어렵다', src: 'Page Laubheimer, 「Cards: UI-Component Definition」 (NN/g, 2016)' },
+  { s: '표', rule: '표는 네 가지 일을 돕는다 — 조건에 맞는 항목 찾기, 견주기, 한 줄 보기 · 고치기, 여러 줄에 한꺼번에 행동하기. 열 순서는 중요한 것부터, 관련 열은 붙여서', src: 'Page Laubheimer, 「Data Tables: Four Major User Tasks」 (NN/g, 2022)' },
+  { s: '좁은 표', rule: '모바일의 큰 표는 머리글을 고정하고, 볼 열 · 행을 고르게 한다', src: 'Amy Schade, 「Mobile Tables」 (NN/g, 2017)' },
+  { s: '캐러셀', rule: '5장 이하로, 지금 몇 번째인지 보이게. 사람들은 첫 장만 보고 지나치기 쉽다', src: 'Kara Pernice, 「Designing Effective Carousels」 (NN/g, 2013)' },
+  { s: '자동 넘김', rule: '자동으로 넘기지 않는다. 넘긴다면 멈춤 버튼을 두고, 키보드 포커스가 들어오거나 마우스를 올리면 멈춘다. 5초 넘게 움직이면 멈출 수단이 필수', src: 'Jakob Nielsen, 「Auto-Forwarding Carousels…」 (NN/g, 2013) · W3C WAI-ARIA APG Carousel · WCAG 2.2 2.2.2 (A)' },
+  { s: '아코디언', rule: '사용자가 몇 칸만 열어 볼 긴 내용에 쓴다. 대부분 다 열어야 하면 펼쳐 둔다. "모두 펼치기"와 인쇄를 챙긴다', src: 'Huei-Hsin Wang, 「Accordions on Desktop」 (NN/g, 2023)' },
+  { s: '접근성', rule: '아코디언 머리는 버튼이고 aria-expanded로 열림을 알린다. 팝오버(popover="auto")는 바깥을 누르거나 Esc로 닫힌다', src: 'W3C WAI-ARIA APG Accordion · MDN popover 전역 속성' },
+];
+---
+<Base title="화면 구성 · UI 패턴 · Regula" current="patterns" description="목록 · 표 · 카드 · 캐러셀 · 아코디언 · 팝오버 · 사이드 시트를 언제 쓰고 피하는지, 같은 상품을 그릇만 바꿔 담아 보는 실습 페이지">
+  <Fragment slot="sub"><PatternSubnav current={['layout']} /></Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>담는 그릇이 읽는 법을 정한다</h1>
+    <p>같은 내용도 목록에 담으면 훑게 되고, 표에 담으면 견주게 되고, 카드에 담으면 둘러보게 됩니다. 접어 두면 화면은 깔끔해지지만 그만큼 덜 보여요. 사용자가 그 화면에서 하려는 일부터 정하고 그릇을 고릅니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 늘어놓기</span>
+      <h2>찾기, 견주기, 둘러보기</h2>
+      <p>할 일을 고르고 보여 주는 방식을 바꿔 보세요. 같은 여섯 상품인데 할 일마다 맞는 그릇이 다릅니다.</p>
+    </header>
+    <Pick />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p class="note-line">모달 · 바텀 시트는 <a href={href('patterns/feedback/')}>알림</a>, 탭 · 내비게이션 드로어는 <a href={href('patterns/navigation/')}>내비게이션</a>에 있어요.</p>
+  </section>
+
+  <PatternSection group={group} items={items} cols={[{ h: '알맞은 양', k: 'fits' }]} />
+</Base>

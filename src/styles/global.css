@@ -1023,3 +1023,61 @@ article.note .prose p:last-child{margin-bottom:0}
 .u-form :focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 6px var(--mark)}
 .u-form.no-ring :focus,.u-form.no-ring :focus-visible{outline:none;box-shadow:none}
 .u-form.swapped .u-field[data-pos="2"]{order:-1}
+
+/* 화면 구성 목업 — 흑백 와이어프레임, 지금 열린 것만 진하게 */
+.lyl{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--rule)}
+.lyl i{width:16px;height:16px;border-radius:50%;background:var(--rule);flex:none}
+.lyl b{height:6px;width:64%;background:var(--ink-3)}
+.lyl s{margin-left:auto;width:18px;height:6px;background:var(--rule)}
+.lyl.on{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.lyt{display:grid;gap:0;border:1px solid var(--ink-3)}
+.lyt span{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;padding:7px 8px;border-top:1px solid var(--rule)}
+.lyt span:first-child{border-top:0}
+.lyt span.h{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.lyt b{height:6px;background:var(--rule)}
+.lyt span.h b{background:var(--ink-3)}
+.lyc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lyc span{display:grid;gap:5px;border:1px solid var(--ink-3);padding:6px;align-content:start}
+.lyc i{height:44px;background:var(--rule)}
+.lyc b{height:6px;width:80%;background:var(--ink-3)}
+.lyc s{height:5px;width:60%;background:var(--rule)}
+.lyk{display:flex;gap:8px;overflow:hidden}
+.lyk span{flex:none;width:78%;height:78px;border:1px solid var(--ink-3);background:var(--rule)}
+.lyk span.on{background:color-mix(in srgb,var(--ink) 18%,var(--paper))}
+.lyd{display:flex;justify-content:center;gap:5px;margin-top:9px}
+.lyd b,.lyd i{width:6px;height:6px;border-radius:50%;background:var(--rule)}
+.lyd b{background:var(--ink)}
+.lya{border:1px solid var(--ink-3)}
+.lya span{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-top:1px solid var(--rule)}
+.lya span:first-child{border-top:0}
+.lya span b{height:6px;width:56%;background:var(--ink-3)}
+.lya span i{font-style:normal;font-size:12px;color:var(--ink-2)}
+.lya span.on b{background:var(--ink)}
+.lyp-b{position:absolute;left:14px;top:46px;border:1px solid var(--ink);padding:2px 8px;font-size:10.5px;color:var(--ink)}
+.lyp{position:absolute;left:14px;top:72px;width:120px;background:var(--surface);border:1px solid var(--ink);padding:5px;display:grid;gap:5px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.lyp span{height:9px;background:var(--rule)}
+.lyp span.on{background:var(--ink-3)}
+.lys{position:absolute;top:0;right:0;bottom:0;width:44%;background:var(--surface);border-left:1px solid var(--ink);padding:12px 10px;display:grid;gap:7px;align-content:start}
+.lys b{height:8px;width:70%;background:var(--ink)}
+.lys span{height:6px;background:var(--rule)}
+
+/* 화면 구성 실습 */
+.ly-stage{background:var(--paper);border:1px solid var(--rule);padding:14px;align-self:start;min-width:0;overflow:hidden}
+.ly-list{display:grid}
+.ly-list .r{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--rule);font-size:13px}
+.ly-list .r i{width:28px;height:28px;background:var(--rule);border-radius:2px}
+.ly-list .r small{display:block;color:var(--ink-3);font-size:11.5px}
+.ly-list .r em{font-style:normal;font-family:var(--mono);font-size:12.5px}
+.ly-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ly-table th,.ly-table td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.ly-table th{font-weight:600;border-bottom:1px solid var(--ink)}
+.ly-table td.n{font-family:var(--mono);text-align:right}
+.ly-table th.n{text-align:right}
+.ly-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ly-cards .c{border:1px solid var(--rule);background:var(--surface);padding:7px;display:grid;gap:4px;font-size:12px;min-width:0}
+.ly-cards .c i{display:block;aspect-ratio:4/3;background:var(--rule)}
+.ly-cards .c b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ly-cards .c span{color:var(--ink-3);font-size:11px}
+.ly-cards .c em{font-style:normal;font-family:var(--mono);font-size:11.5px}
+.ly-cards .c:nth-child(3n+2) span{order:-1}
+.note-line{margin:12px 0 0;font-size:13.5px;color:var(--ink-3)}

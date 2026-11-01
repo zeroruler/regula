@@ -1,0 +1,95 @@
+---
+// 같은 상품 6개를 목록 · 표 · 카드로 바꿔 보고, 할 일(찾기 · 견주기 · 둘러보기)에 맞는지 본다.
+// 판정은 NN/g의 카드(Laubheimer 2016)와 표(Laubheimer 2022) 글을 따른다. 표가 둘러보기에 약하다는 칸은 Regula의 해석.
+const items = [
+  { name: '라운지 체어', kind: '의자', price: 189000, rate: 4.6, ship: 2 },
+  { name: '오크 사이드 테이블', kind: '테이블', price: 129000, rate: 4.2, ship: 5 },
+  { name: '울 러그 160', kind: '러그', price: 98000, rate: 4.8, ship: 3 },
+  { name: '스틸 스툴', kind: '의자', price: 59000, rate: 4.1, ship: 1 },
+  { name: '린넨 쿠션 커버', kind: '소품', price: 24000, rate: 4.5, ship: 2 },
+  { name: '월넛 책장', kind: '수납', price: 249000, rate: 4.4, ship: 7 },
+];
+const won = (n: number) => n.toLocaleString('ko-KR');
+---
+<div class="lab" id="lyPick">
+  <div class="ly-stage">
+    <div class="ly-view" data-v="list">
+      <div class="ly-list">
+        {items.map((it) => <div class="r"><i></i><span>{it.name}<small>{it.kind} · ★ {it.rate}</small></span><em>{won(it.price)}원</em></div>)}
+      </div>
+    </div>
+    <div class="ly-view" data-v="table" hidden>
+      <div class="compare" style="margin:0">
+        <table class="ly-table">
+          <thead><tr><th>상품</th><th>종류</th><th class="n">가격</th><th class="n">평점</th><th class="n">배송</th></tr></thead>
+          <tbody>{items.map((it) => <tr><td>{it.name}</td><td>{it.kind}</td><td class="n">{won(it.price)}</td><td class="n">{it.rate}</td><td class="n">{it.ship}일</td></tr>)}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ly-view" data-v="card" hidden>
+      <div class="ly-cards">
+        {items.map((it) => <div class="c"><i></i><b>{it.name}</b><span>{it.kind} · ★ {it.rate}</span><em>{won(it.price)}원</em></div>)}
+      </div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 담는 그릇</span>
+    <h3>할 일이 그릇을 고른다</h3>
+    <div class="chips" id="lyTask" role="group" aria-label="할 일">
+      <button class="chip" type="button" data-v="find" aria-pressed="true">이름으로 하나 찾기</button>
+      <button class="chip" type="button" data-v="compare" aria-pressed="false">가격 · 배송 견주기</button>
+      <button class="chip" type="button" data-v="browse" aria-pressed="false">사진 보며 둘러보기</button>
+    </div>
+    <div class="chips" id="lyView" role="group" aria-label="보여 주는 방식">
+      <button class="chip" type="button" data-v="list" aria-pressed="true">목록</button>
+      <button class="chip" type="button" data-v="table" aria-pressed="false">표</button>
+      <button class="chip" type="button" data-v="card" aria-pressed="false">카드</button>
+    </div>
+    <p class="g-read" aria-live="polite">맞는 정도: <mark id="lyRead"></mark></p>
+    <p id="lyNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>한 화면에 할 일이 섞이면 기본 보기를 하나 정하고 보기 전환(목록 ↔ 카드)을 둡니다. 판정은 NN/g의 카드 · 표 연구를 따랐고, "표는 둘러보기에 약하다"는 Regula의 해석이에요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#lyPick')!;
+  type K = 'find' | 'compare' | 'browse'; type V = 'list' | 'table' | 'card';
+  const FIT: Record<K, Record<V, [string, string]>> = {
+    find: {
+      list: ['잘 맞음', '이름이 늘 같은 자리(왼쪽)에 있어 위에서 아래로 한 줄만 훑으면 됩니다.'],
+      table: ['맞음', '이름 열을 따라 내려가면 되고, 정렬이나 거르기를 붙이면 더 빨라요. 다만 6개면 목록으로 충분합니다.'],
+      card: ['약함', '카드는 지그재그로 읽어야 하고 요소의 자리가 카드마다 조금씩 달라 훑기 어렵습니다(가운데 열은 일부러 순서를 바꿔 뒀어요).'],
+    },
+    compare: {
+      list: ['보통', '가격은 오른쪽 끝에 맞춰 있어 견줄 만하지만, 배송일처럼 숨은 속성은 볼 수 없어요.'],
+      table: ['잘 맞음', '같은 속성이 한 열에 세로로 놓여 눈이 열을 따라 위아래로만 움직입니다. 숫자는 오른쪽 정렬.'],
+      card: ['약함', '가격이 카드마다 다른 높이에 있어 눈이 카드 사이를 오갑니다. 견주기에는 카드가 가장 나쁜 선택이에요.'],
+    },
+    browse: {
+      list: ['보통', '사진이 작아 그림으로 고르기엔 아쉽지만, 많은 항목을 빨리 훑어보기엔 괜찮습니다.'],
+      table: ['약함', '표는 숫자를 견주는 도구라 사진이 들어갈 자리가 없고, 둘러보는 재미도 없어요.'],
+      card: ['잘 맞음', '사진이 크고 항목마다 덩어리로 나뉘어 하나씩 둘러보기 좋습니다. 카드가 가장 잘하는 일이에요.'],
+    },
+  };
+  let task: K = 'find', view: V = 'list';
+  function render() {
+    lab.querySelectorAll<HTMLElement>('.ly-view').forEach((el) => (el.hidden = el.dataset.v !== view));
+    const [r, n] = FIT[task][view];
+    lab.querySelector('#lyRead')!.textContent = r;
+    lab.querySelector('#lyNote')!.textContent = n;
+  }
+  const bind = (sel: string, set: (v: string) => void) => {
+    const g = lab.querySelector<HTMLElement>(sel)!;
+    g.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button'); if (!b) return;
+      g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      set(b.dataset.v!); render();
+    });
+  };
+  bind('#lyTask', (v) => (task = v as K));
+  bind('#lyView', (v) => (view = v as V));
+  render();
+</script>

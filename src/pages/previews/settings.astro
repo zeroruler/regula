@@ -1,0 +1,140 @@
+---
+// 설정 양식 미리보기. ?system=<디자인 시스템>&state=<default|saved|delete> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안). 구조와 토큰 입히기는 로그인 미리보기와 같다.
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>설정 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style>
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;min-height:100vh;padding:32px 16px}
+.embedded body{min-height:0}
+.page{width:100%;max-width:440px;display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+h1{margin:0;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:30px;line-height:1.15}
+section{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+h2{margin:0 0 0 4px;font-size:13px;font-weight:600;color:var(--ink2)}
+.group{background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 16px;color:var(--ink);text-decoration:none;font-size:15px}
+.row + .row,.row + .result,.result + .row{border-top:var(--stroke) solid var(--card-border)}
+.row .name{flex:1;min-width:0}
+.row .name small{display:block;font-size:13px;color:var(--ink3)}
+.row .value{color:var(--ink2);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}
+.row .chev{color:var(--ink3);flex:none}
+a.row:focus-visible{outline:2px solid var(--key);outline-offset:-2px}
+/* 스위치: 손잡이 위치 + 켬/끔 글자로 상태를 보인다 (색만으로 구분하지 않기) */
+.switch{flex:none;display:flex;align-items:center;gap:8px;border:0;background:none;padding:0;font:inherit;color:var(--ink2);font-size:13px;cursor:pointer}
+.switch .track{position:relative;width:46px;height:28px;border-radius:999px;border:var(--stroke) solid var(--border);background:var(--bg);transition:background .15s}
+.switch .track::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--ink3);transition:transform .15s,background .15s}
+.switch[aria-checked=true] .track{background:var(--key);border-color:var(--key)}
+.switch[aria-checked=true] .track::after{transform:translateX(18px);background:var(--on-key)}
+.switch:focus-visible .track{outline:2px solid var(--key);outline-offset:2px}
+.switch .state{min-width:2em;text-align:right}
+@media (prefers-reduced-motion:reduce){ .switch .track,.switch .track::after{transition:none} }
+.result{margin:0;padding:8px 16px 12px;font-size:13px;color:var(--ink2)}
+.btn{height:46px;border-radius:var(--radius);font:inherit;font-weight:600;font-size:15px;cursor:pointer;box-shadow:var(--button-shadow)}
+.secondary{border:var(--stroke) solid var(--border);background:var(--surface);color:var(--ink)}
+.danger{border:var(--stroke) solid var(--danger);background:var(--surface);color:var(--danger)}
+.danger.fill{background:var(--danger);color:#fff}
+.zone{margin-top:16px;padding-top:20px;border-top:var(--stroke) solid var(--card-border)}
+.zone p{margin:0 4px 4px;font-size:13px;color:var(--ink2)}
+dialog{width:min(360px,calc(100vw - 32px));border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);background:var(--surface);color:var(--ink);padding:24px;box-shadow:0 12px 40px #0003}
+dialog::backdrop{background:#0006}
+dialog h3{margin:0 0 8px;font-size:19px}
+dialog p{margin:0 0 20px;font-size:14px;color:var(--ink2)}
+dialog .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.done{margin:0;padding:12px 14px;border:var(--stroke) solid var(--border);border-radius:var(--radius);font-size:14px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<main class="page">
+  <h1>설정</h1>
+
+  <section aria-labelledby="g-account">
+    <h2 id="g-account">계정</h2>
+    <div class="group">
+      <a class="row" href="#"><span class="name">이메일</span><span class="value">woody@mail.com</span><span class="chev" aria-hidden="true">›</span></a>
+      <a class="row" href="#"><span class="name">비밀번호</span><span class="value">변경</span><span class="chev" aria-hidden="true">›</span></a>
+      <a class="row" href="#"><span class="name">언어</span><span class="value">한국어</span><span class="chev" aria-hidden="true">›</span></a>
+    </div>
+  </section>
+
+  <section aria-labelledby="g-notify">
+    <h2 id="g-notify">알림</h2>
+    <div class="group">
+      <div class="row"><span class="name" id="l-comment">새 댓글 알림<small>내 글에 댓글이 달리면</small></span>
+        <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="l-comment"><span class="state">켬</span><span class="track"></span></button></div>
+      <div class="row"><span class="name" id="l-weekly">주간 요약 메일<small>월요일 아침에 한 번</small></span>
+        <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="l-weekly"><span class="state">끔</span><span class="track"></span></button></div>
+      <div class="row"><span class="name" id="l-ad">이벤트 · 혜택 소식<small>광고성 정보 · 이메일과 앱 푸시</small></span>
+        <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="l-ad" aria-describedby="r-ad" data-ad><span class="state">켬</span><span class="track"></span></button></div>
+      <p class="result" id="r-ad" role="status" hidden></p>
+    </div>
+  </section>
+
+  <button class="btn secondary" type="button">로그아웃</button>
+
+  <div class="zone">
+    <p>계정을 삭제하면 글과 기록이 모두 지워지고 되돌릴 수 없어요.</p>
+    <button class="btn danger" type="button" id="del" style="width:100%">계정 삭제</button>
+  </div>
+  <p class="done" id="done" role="status" hidden>미리보기라 실제 계정은 지우지 않아요.</p>
+</main>
+
+<dialog id="confirm" aria-labelledby="c-title" aria-describedby="c-body">
+  <h3 id="c-title">계정을 삭제할까요?</h3>
+  <p id="c-body">글 128개와 기록이 모두 지워지고, 같은 이메일로 다시 가입해도 되살릴 수 없어요.</p>
+  <form method="dialog" class="actions">
+    <button class="btn secondary" value="cancel" autofocus>취소</button>
+    <button class="btn danger fill" value="delete">계정 삭제</button>
+  </form>
+</dialog>
+
+<script is:inline define:vars={{ themes }}>
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+
+  const $ = (s) => document.querySelector(s);
+  const today = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  // 스위치는 누르는 즉시 적용. 저장 버튼도 확인 대화상자도 없다
+  const toggle = (sw) => {
+    const on = sw.getAttribute('aria-checked') !== 'true';
+    sw.setAttribute('aria-checked', String(on));
+    sw.querySelector('.state').textContent = on ? '켬' : '끔';
+    if (sw.hasAttribute('data-ad')) {
+      // 광고성 정보: 바꾸면 날짜와 처리 결과를 알린다 (정보통신망법 제50조 제7항)
+      const r = $('#r-ad');
+      r.textContent = `${today}, 광고성 정보 수신 ${on ? '동의' : '거부'}가 처리됐어요.`;
+      r.hidden = false;
+    }
+  };
+  document.querySelectorAll('button[role=switch]').forEach((sw) => sw.addEventListener('click', () => toggle(sw)));
+
+  const dlg = $('#confirm');
+  $('#del').addEventListener('click', () => { $('#done').hidden = true; dlg.showModal(); });
+  dlg.addEventListener('close', () => { if (dlg.returnValue === 'delete') $('#done').hidden = false; $('#del').focus(); });
+
+  const state = params.get('state');
+  if (state === 'saved') toggle($('button[data-ad]'));
+  if (state === 'delete') dlg.showModal();
+</script>
+</body>
+</html>

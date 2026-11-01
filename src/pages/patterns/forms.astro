@@ -1,13 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PatternCard from '../../components/PatternCard.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
 import Labels from '../../demos/forms/Labels.astro';
 import Validation from '../../demos/forms/Validation.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 
 const groups = await patternsByGroup();
-const inputs = groups.find((x) => x.group.id === 'forms')!.items;
+const { group, items: inputs } = groups.find((x) => x.group.id === 'forms')!;
 
 // 폼 규칙. 출처가 있는 것만 적는다.
 const rules = [
@@ -22,11 +23,7 @@ const rules = [
 ];
 ---
 <Base title="입력 · UI 패턴 · Regula" current="patterns" description="라벨 위치와 검증 시점을 바꿔 가며 직접 써 보는 폼 실습 페이지">
-  <Fragment slot="sub">
-    {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'forms' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
-    ))}
-  </Fragment>
+  <Fragment slot="sub"><PatternSubnav current={['forms']} /></Fragment>
 
   <header class="pagehead">
     <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
@@ -60,23 +57,5 @@ const rules = [
     </div>
   </section>
 
-  <section>
-    <header>
-      <span class="label">종류</span>
-      <h2>입력 {inputs.length}가지, 수고가 적은 것부터</h2>
-    </header>
-    <div class="patterns">
-      {inputs.map((p) => <PatternCard pattern={p} />)}
-    </div>
-    <div class="compare">
-      <table>
-        <thead><tr><th>입력</th><th>알맞은 답</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
-        <tbody>
-          {inputs.map(({ data: p }) => (
-            <tr><td>{p.name}</td><td>{p.fits}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </section>
+  <PatternSection group={group} items={inputs} cols={[{h: '알맞은 답', k: 'fits'}]} />
 </Base>

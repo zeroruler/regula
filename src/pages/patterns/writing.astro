@@ -2,10 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import ErrorCopy from '../../demos/writing/ErrorCopy.astro';
 import ButtonCopy from '../../demos/writing/ButtonCopy.astro';
-import { patternsByGroup } from '../../lib/patterns';
+import PatternSubnav from '../../components/PatternSubnav.astro';
 import { href } from '../../lib/url';
-
-const groups = await patternsByGroup();
 
 // 문구 규칙. 출처가 있는 것만 적는다. 예시는 Regula가 지은 것.
 const rules = [
@@ -20,11 +18,7 @@ const rules = [
 ];
 ---
 <Base title="문구 · UI 패턴 · Regula" current="patterns" description="나쁜 오류 문구와 버튼 문구를 직접 고쳐 보는 UX 라이팅 실습 페이지">
-  <Fragment slot="sub">
-    {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'writing' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
-    ))}
-  </Fragment>
+  <Fragment slot="sub"><PatternSubnav current={['writing']} /></Fragment>
 
   <header class="pagehead">
     <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>

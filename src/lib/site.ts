@@ -39,14 +39,14 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
   { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
 ];
-// UI 패턴의 카테고리 순서. level은 카드와 눈금에 쓰는 1–9 값의 필드, path가 있으면 실습 페이지가 있다.
-// level이 없는 카테고리(문구)는 카드 없이 실습 페이지로만 연결한다.
+// UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
+// level은 카드와 눈금에 쓰는 1–9 값의 필드. level이 없는 카테고리(문구)는 카드 없이 실습만 있다.
 export const patternGroups: {
-  id: string; name: string; path?: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block'; levelName?: string;
+  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block'; levelName?: string;
   title: string; intro: string; ends?: [string, string];
 }[] = [
   {
-    id: 'feedback', name: '알림', level: 'intrusiveness', levelName: '방해 정도',
+    id: 'feedback', name: '알림', path: 'patterns/feedback/', level: 'intrusiveness', levelName: '방해 정도',
     title: '사용자에게 알려주는 방법',
     intro: '릴스에서 본 9가지를 방해 정도 순으로 다시 놓았습니다. 왼쪽일수록 화면 구석에서 조용히 알리고, 오른쪽일수록 하던 일을 멈추게 합니다. 고를 때는 "이 메시지가 사용자의 흐름을 끊을 자격이 있나"부터 따져 보세요.',
     ends: ['조용함 · 지나쳐도 됨', '멈춤 · 응답해야 함'],
@@ -92,6 +92,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: 'UI 패턴 목록을 정리. /patterns/에 쌓이던 카드와 비교표를 카테고리 페이지로 옮기고 목록은 입구만 남김. 알림에도 자기 페이지(/patterns/feedback/)를 만듦.' },
   { date: '2026-11-01', text: 'v0.5 UI 패턴에 "문구(UX 라이팅)"를 추가하며 v0.5 패턴 확장을 마침. 나쁜 오류 문구를 쉬운 말·구체적으로·고칠 방법·탓하지 않기로 한 단계씩 고쳐 보는 실습, 확인 다이얼로그의 버튼을 확인/취소 · 예/아니요 · 동사로 바꿔 보는 실습과 문구 규칙 표를 붙임.' },
   { date: '2026-11-01', text: 'v0.5 UI 패턴에 "로딩"과 "빈 상태" 추가. 로딩 5가지를 기다리는 시간 순, 빈 상태 4가지를 막힌 정도 순으로 놓고, 실습 페이지에서 걸리는 시간을 정해 로딩 표시를 직접 고르고 불러와 보는 실습, 빈 화면에 설명과 다음 행동을 붙여 보는 실습을 붙임.' },
   { date: '2026-10-31', text: 'v0.5 UI 패턴에 "내비게이션" 추가. 페이지네이션부터 내비게이션 드로어까지 6가지를 다루는 범위 순으로 놓고, 실습 페이지에서 드러난 메뉴와 숨은 메뉴로 같은 목적지에 가 보며 누른 횟수를 세는 실습, 화면 너비에 따라 하단 바·레일·사이드바가 바뀌는 실습을 붙임.' },

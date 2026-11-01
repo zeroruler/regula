@@ -1,13 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PatternCard from '../../components/PatternCard.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
 import Hidden from '../../demos/navigation/Hidden.astro';
 import ByWidth from '../../demos/navigation/ByWidth.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 
 const groups = await patternsByGroup();
-const navs = groups.find((x) => x.group.id === 'navigation')!.items;
+const { group, items: navs } = groups.find((x) => x.group.id === 'navigation')!;
 
 // 내비게이션 규칙. 출처가 있는 것만 적는다.
 const rules = [
@@ -20,11 +21,7 @@ const rules = [
 ];
 ---
 <Base title="내비게이션 · UI 패턴 · Regula" current="patterns" description="드러난 메뉴와 숨은 메뉴, 화면 너비별 내비게이션을 직접 써 보는 실습 페이지">
-  <Fragment slot="sub">
-    {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'navigation' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
-    ))}
-  </Fragment>
+  <Fragment slot="sub"><PatternSubnav current={['navigation']} /></Fragment>
 
   <header class="pagehead">
     <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
@@ -58,23 +55,5 @@ const rules = [
     </div>
   </section>
 
-  <section>
-    <header>
-      <span class="label">종류</span>
-      <h2>내비게이션 {navs.length}가지, 좁은 범위부터</h2>
-    </header>
-    <div class="patterns">
-      {navs.map((p) => <PatternCard pattern={p} />)}
-    </div>
-    <div class="compare">
-      <table>
-        <thead><tr><th>내비게이션</th><th>알맞은 범위</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
-        <tbody>
-          {navs.map(({ data: p }) => (
-            <tr><td>{p.name}</td><td>{p.fits}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </section>
+  <PatternSection group={group} items={navs} cols={[{h: '알맞은 범위', k: 'fits'}]} />
 </Base>

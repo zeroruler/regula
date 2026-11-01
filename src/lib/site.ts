@@ -22,7 +22,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
   {
     group: '기록',
     items: [
-      { key: 'notes', no: 8, title: '기록장', path: 'notes/', blurb: '본 것, 내 메모, 직접 써 본 예시를 날짜별로' },
+      { key: 'notes', no: 8, title: '기록장', path: 'notes/', blurb: '자료를 어디서 봤는지 날짜별로' },
       { key: 'log', no: 6, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
     ],
   },
@@ -119,6 +119,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '방향을 "내 경험 아카이브"에서 "정보 아카이브"로 바꿈. 할 일에서 써 본 예시 쌓기를 빼고 PLAN의 목표 문구를 고침. 기록장은 자료를 어디서 봤는지 남기는 곳으로 남겨 둠.' },
   { date: '2026-11-01', text: '네 번째 페이지 양식 "대시보드" 추가. 구성 6개와 규칙 14개(출처: NN/g Dashboards (Laubheimer 2017), 영국 Analysis Function 차트 지침, WCAG 1.1.1 · 1.4.1 · 1.4.11, Apple HIG Settings, NN/g 스켈레톤 · 빈 상태). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기간(오늘 · 7일 · 30일)을 바꾸고, 기본 · 불러오는 중 · 데이터 없음 상태와 그래프마다 표로 보기를 볼 수 있음.' },
   { date: '2026-11-01', text: '세 번째 페이지 양식 "설정" 추가. 구성 6개와 규칙 14개(출처: Apple HIG Settings · Dark Mode · Toggles · Alerts, NN/g Toggle-Switch Guidelines, App Store 심사 지침 5.1.1(v), 정보통신망법 제50조, GOV.UK 위험 버튼). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 바로 적용(광고성 정보 스위치를 끄면 처리 결과 표시) · 계정 삭제 확인 상태를 볼 수 있음.' },
   { date: '2026-11-01', text: '두 번째 페이지 양식 "회원가입" 추가. 구성 7개와 규칙 14개(출처: GOV.UK Create accounts · Password input · Ask users for passwords, NIST SP 800-63B-4, WCAG 1.3.5 · 3.3.8, 개인정보 보호법 제22조, deceptive.design). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 입력 오류(오류 요약 + 칸 아래 문구) · 약관 동의(필수만 체크, 선택은 비움) 상태를 볼 수 있음. 양식마다 미리보기 상태와 이어 보기 링크를 콘텐츠 파일에 적도록 바꿈.' },
@@ -151,5 +152,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '써 본 예시 쌓기 · 랜딩 페이지 · 글 본문 양식' },
+  { when: '다음', text: '글 본문 양식 · 한글 본문 한 줄 글자 수 근거 · 랜딩 페이지 양식 · 출처 3차 검증' },
 ];

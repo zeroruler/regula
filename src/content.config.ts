@@ -15,6 +15,8 @@ const formulas = defineCollection({
     source: z.string().min(1),
     refs: z.array(z.string()).default([]),
     note: z.string().optional(),
+    // 웹 화면에 옮기는 한 줄. 출처의 문장이 아니라 Regula가 붙인 적용 예다(출처가 따로 있으면 문장 안에 적는다)
+    web: z.string().optional(),
     demo: z.boolean().default(false),
   }),
 });
@@ -92,7 +94,7 @@ const fonts = defineCollection({
   }),
 });
 
-// 기록장: 내가 본 것 · 메모 · 직접 써 본 예시. 파일 하나가 기록 하나.
+// 출처 기록(구 기록장): 자료를 본 곳 · 메모. 파일 하나가 기록 하나. 내비게이션에는 없고 항목 아래 "본 곳"으로 이어진다.
 // about에 "formulas/<id>", "patterns/<카테고리>/<id>", "darkpatterns/<id>", "references/<id>", "fonts/<id>"를 넣으면
 // 그 항목 아래에 이 기록이 붙는다. 없는 항목을 적으면 빌드가 멈춘다(src/lib/items.ts).
 export const noteKinds = ['본 것', '메모', '써 본 예시'] as const;

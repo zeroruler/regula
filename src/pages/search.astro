@@ -59,7 +59,7 @@ const items: Item[] = [
     };
   }),
   ...notes.sort((a, b) => b.data.date.localeCompare(a.data.date)).map((n) => ({
-    kind: '기록', tag: n.data.kind, title: n.data.title, sub: `${n.data.date}${n.data.seen_at ? ` · ${n.data.seen_at}` : ''} — ${(n.body ?? '').trim().split('\n')[0]}`,
+    kind: '출처 기록', tag: n.data.kind, title: n.data.title, sub: `${n.data.date}${n.data.seen_at ? ` · ${n.data.seen_at}` : ''} — ${(n.body ?? '').trim().split('\n')[0]}`,
     url: href(`notes/#n-${n.id}`), text: hay(n.data.title, n.data.kind, n.data.seen_at, n.data.date, n.body),
   })),
   ...fonts.sort(byOrder).map((f) => ({

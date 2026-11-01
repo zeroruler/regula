@@ -14,7 +14,7 @@ const templates = (await getCollection('templates')).sort((a, b) => a.data.order
   </Fragment>
 
   <PageHead current="templates" title="다시 쓸 수 있는 디자인 양식">
-    <p>직접 만든 디자인 시스템과 페이지별 양식을 등록하는 곳입니다. 이름을 누르면 시그니처, 미리보기, 실제 토큰 전체를 볼 수 있어요.</p>
+    <p>Regula가 만든 디자인 시스템과 페이지별 양식을 모은 곳입니다. 이름을 누르면 시그니처, 미리보기, 실제 토큰 전체를 볼 수 있어요.</p>
   </PageHead>
   {templateKinds.map((kind) => (
   <section class="tplkind" id={kind === '디자인 시스템' ? 'k-system' : 'k-page'}>

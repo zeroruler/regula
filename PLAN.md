@@ -176,6 +176,7 @@ regula/
 - 검색 / 태그 필터
 - 각 공식에 "직접 써 본 예시" 붙이기
 - 공부한 날짜별 기록 페이지
+- 비주얼 스타일 9가지 — 이름으로 부르면 원하는 느낌을 정확히 요청할 수 있다는 것. 스큐어모피즘 · 플랫 · 머티리얼 · 뉴모피즘 · 글래스모피즘 · 클레이모피즘 · 네오 브루탈리즘 · 3D 아이콘 · 리퀴드 글래스. 스타일마다 특징(그림자·광택·테두리·깊이), 쓰기 좋은 곳, AI·협업에 넘길 때 쓰는 말. 도해는 흑백 원칙상 그림자·투명도·테두리 차이로만 보여 준다
 
 ## 8. 콘텐츠 백로그 (출처 후보)
 
@@ -183,7 +184,7 @@ regula/
 - 디자인 시스템: Material 3, Apple HIG, 토스 TDS, 원티드 Montage, IBM Carbon, GOV.UK, GitHub Primer
 - 저장소: alexpate/awesome-design-systems, klaufel/awesome-design-systems, cvega/awesome-design-systems
 - 커뮤니티: Nielsen Norman Group, Steve Schoger(X), Learn UI Design, 디자인 나침반, 토스 기술 블로그, 오빠두 디자인 시스템 갤러리, Mobbin
-- 인스타 릴스에서 본 것: 알림 9가지(§3 반영 완료), 황금비(§1 반영 완료)
+- 인스타 릴스에서 본 것: 알림 9가지(§3 반영 완료), 황금비(§1 반영 완료), 비주얼 스타일 9가지(uxwoodytips, 미반영 — §7 이후)
 
 ## 9. Claude Code 작업 시 참고
 

@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Curves from '../../demos/motion/Curves.astro';
+import Transitions from '../../demos/motion/Transitions.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const T = '움직임';
+const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+
+// 움직임 규칙. 출처가 있는 것만 적는다.
+const rules = [
+  { s: '시간', rule: 'UI 움직임은 대개 0.1–0.5초. 작은 것(토글, 아이콘)은 짧게, 화면 전체가 바뀌는 것은 길게', src: 'Nielsen Norman Group 「Executing UX Animations: Duration and Motion Characteristics」 · Material Design 3 Motion (duration 토큰)' },
+  { s: '곡선', rule: '들어오는 것은 감속(ease-out), 나가는 것은 가속(ease-in), 화면 안에서 옮기는 것은 둘 다(ease-in-out)', src: 'Material Design 3 Motion (easing 토큰)' },
+  { s: '줄이기', rule: '움직임 줄이기 설정(prefers-reduced-motion)을 따른다 — 큰 이동 · 확대 · 출렁임은 끄거나 페이드로 바꾼다', src: 'WCAG 2.2 2.3.3 Animation from Interactions (AAA) · W3C Media Queries Level 5' },
+  { s: '멈춤', rule: '저절로 5초 넘게 움직이는 것은 멈추거나 숨길 수 있게 한다', src: 'WCAG 2.2 2.2.2 Pause, Stop, Hide (A)' },
+  { s: '번쩍임', rule: '1초에 세 번 넘게 번쩍이지 않는다', src: 'WCAG 2.2 2.3.1 Three Flashes or Below Threshold (A)' },
+  { s: '뜻', rule: '움직임은 관계를 말할 때 쓴다 — 어디서 왔는지, 무엇이 바뀌었는지. 꾸밈만을 위한 움직임은 덜어낸다', src: 'Material Design 3 Motion · Apple HIG Motion' },
+];
+---
+<Base title="움직임 · 원리와 공식 · Regula" current="principles" description="이즈 인 · 이즈 아웃 · 스프링 같은 움직임의 이름을 곡선과 시간으로 재생해 보고, 화면 전환 다섯 가지를 직접 눌러 보는 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>부드럽게 말고, 이름으로</h1>
+    <p>"부드럽게 해 주세요"는 사람마다 다르게 들립니다. 움직임에는 이름과 숫자가 있어요 — 곡선(이즈 아웃), 시간(250ms), 전환의 종류(확대 전환). 이름으로 말하면 원하는 움직임이 그대로 나옵니다. 아래 실습은 움직임 줄이기 설정을 켜 두면 움직이지 않고 결과만 보여 줘요.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 곡선과 시간</span>
+      <h2>같은 거리, 다른 속도</h2>
+      <p>곡선을 바꾸고 시간을 늘려 재생해 보세요. 아래 줄의 점들은 같은 시간 간격마다 찍은 위치라, 점이 몰린 곳이 느린 구간입니다.</p>
+    </header>
+    <Curves />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 화면 전환</span>
+      <h2>새 화면은 어디서 왔나</h2>
+      <p>같은 목록 → 상세를 다섯 가지 전환으로 열어 봅니다. 전환마다 두 화면의 관계를 다르게 말해요.</p>
+    </header>
+    <Transitions />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">이름</span>
+      <h2>움직임 이름 {formulas.length}가지</h2>
+      <p>AI나 개발자에게 넘길 때는 이름과 함께 시간과 곡선 값을 같이 적으세요. "카드 확대 전환, 300ms, ease-in-out"처럼.</p>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

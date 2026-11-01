@@ -44,6 +44,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
   { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
   { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드' },
+  { name: '움직임', path: 'principles/motion/', blurb: '이즈 인 · 아웃, 스프링, 순차 등장, 페이드, 슬라이드, 화면 전환' },
   { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
 ];
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
@@ -116,6 +117,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '원리에 "움직임" 실습 페이지(/principles/motion/)를 추가. 움직임 이름 9가지(이즈 인 · 이즈 아웃 · 스프링 · 바운스 · 순차 등장 · 페이드 · 슬라이드 · 확대 전환 · 공유 요소 전환)를 곡선 값과 함께 정리하고, 곡선과 시간을 바꿔 재생해 보는 실습과 목록 → 상세 화면 전환 다섯 가지를 직접 열어 보는 실습을 붙임. 움직임 줄이기 설정을 따름.' },
   { date: '2026-11-01', text: 'UI 패턴에 "제스처"(/patterns/gestures/)와 "AI 화면"(/patterns/ai/)을 추가. 제스처 9가지는 알아채기 어려운 순으로 놓고 대체 수단을 붙였고, 목록 항목을 밀기 · 길게 누르기 · ⋯ 버튼으로 지워 보는 실습. AI 화면 9가지는 대화의 시점 순으로 놓고, 생각 중 표시 · 단계 · 스트리밍 · 출처 · 멈춤을 켜고 끄며 같은 답을 받아 보는 실습. 레퍼런스에 Microsoft의 Human-AI Interaction 가이드라인 추가.' },
   { date: '2026-11-01', text: '원리에 "심리와 편향" 실습 페이지(/principles/psychology/), UI 패턴에 "다크 패턴"(/patterns/dark/)을 추가. 편향 9가지(앵커링·손실 회피·기본값·사회적 증거·희소성·프레이밍·선택 과부하·피크엔드·자이가르닉)마다 정직하게 쓰는 선을 적고, 같은 사실을 다른 말로 바꿔 보는 실습과 선택지 수 실습을 붙임. 다크 패턴 9가지는 속이는 화면과 정직한 화면을 나란히 그리고, 결제 화면의 속임 여섯 가지를 하나씩 꺼 보는 실습과 규제 표를 붙임. 두 페이지는 편향 ↔ 다크 패턴으로 서로 링크.' },
   { date: '2026-11-01', text: '릴스(uxwoodytips)에서 본 이름 모음을 반영. 로딩에 로딩 버튼 · 블러 업 · 스트리밍 텍스트 · 진행 링 · 단계 표시, 내비게이션에 무한 스크롤 · 고정 헤더 · 뒤로 가기를 추가(로딩 10가지, 내비게이션 9가지). 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임은 할 일로.' },
@@ -138,5 +140,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일 · 움직임' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일' },
 ];

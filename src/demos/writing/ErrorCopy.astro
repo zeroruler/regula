@@ -1,0 +1,82 @@
+---
+// 나쁜 오류 문구를 네 가지 기준으로 한 단계씩 고친다. 문구는 기준을 켤 때마다 조각을 바꿔 끼워 만든다.
+const cases = [
+  { k: 'email', n: '이메일 형식', field: '이메일 주소', value: 'name.example.com',
+    code: 'Error 422: invalid input', vague: '입력한 내용이 올바르지 않습니다.', what: '이메일 주소에 @가 빠졌어요.',
+    blame: '잘못 입력하셨습니다.', fix: 'name@example.com처럼 써 주세요.' },
+  { k: 'password', n: '비밀번호 조건', field: '새 비밀번호', value: 'abc123',
+    code: 'PW_POLICY_VIOLATION', vague: '비밀번호를 사용할 수 없습니다.', what: '비밀번호가 6자예요. 8자 이상이어야 해요.',
+    blame: '규칙에 맞지 않는 비밀번호를 입력하셨습니다.', fix: '두 글자 이상 더 써 주세요.' },
+  { k: 'card', n: '결제 실패', field: '카드 번호', value: '•••• 4821',
+    code: 'PG_ERR_51 Transaction declined', vague: '결제를 처리할 수 없습니다.', what: '카드 한도가 부족해 결제되지 않았어요. 돈은 빠져나가지 않았어요.',
+    blame: '사용할 수 없는 카드를 입력하셨습니다.', fix: '다른 카드를 쓰거나 카드사에 한도를 확인해 주세요.' },
+  { k: 'server', n: '서버 오류', field: '', value: '',
+    code: '500 Internal Server Error', vague: '알 수 없는 오류가 발생했습니다.', what: '지금 저장하지 못했어요. 쓰던 글은 이 기기에 남아 있어요.',
+    blame: '요청이 거부되었습니다.', fix: '잠시 뒤 다시 저장해 주세요.' },
+];
+const rules = [
+  { k: 'plain', n: '쉬운 말' },
+  { k: 'what', n: '무엇이 잘못됐는지' },
+  { k: 'fix', n: '어떻게 고칠지' },
+  { k: 'kind', n: '탓하지 않기' },
+];
+---
+<div class="lab wrlab" id="errCopy" data-cases={JSON.stringify(cases)}>
+  <div class="wr-frame">
+    <div class="lf-row has-err" id="ecRow">
+      <label id="ecField"></label>
+      <span class="vf-err" id="ecMsg"></span>
+      <div class="wr-input" id="ecValue"></div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 오류 문구 고치기</span>
+    <h3>한 기준씩 켜 보기</h3>
+    <div class="chips" id="ecCases">
+      {cases.map((c, i) => <button class="chip" type="button" data-k={c.k} aria-pressed={String(i === 0)}>{c.n}</button>)}
+    </div>
+    <div class="chips" id="ecRules">
+      {rules.map((r) => <button class="chip" type="button" data-k={r.k} aria-pressed="false">{r.n}</button>)}
+    </div>
+    <p class="g-read">갖춘 것: <mark id="ecRead"></mark></p>
+    <p>처음 문구는 개발자가 로그에 남기는 말입니다. 사람에게 보여 줄 때는 무슨 일이 생겼는지, 무엇을 하면 되는지를 그 사람의 말로 적어요.</p>
+    <div class="g-ui">
+      <span class="label">규칙</span>
+      <p>오류 문구 = 무엇이 잘못됐는지 + 어떻게 고칠지. 코드와 "올바르지 않음" 같은 판정 대신, 사용자가 다음에 할 일을 적는다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#errCopy')!;
+  type Case = { k: string; field: string; value: string; code: string; vague: string; what: string; blame: string; fix: string };
+  const cases: Case[] = JSON.parse(lab.dataset.cases!);
+  let cur = cases[0];
+  const on = (k: string) => lab.querySelector(`#ecRules [data-k="${k}"]`)!.getAttribute('aria-pressed') === 'true';
+
+  function render() {
+    // 구체적으로 쓰면 자연히 쉬운 말이 된다. 탓하는 문장은 "탓하지 않기"를 켜기 전까지 앞에 붙는다.
+    const head = on('what') ? cur.what : on('plain') ? cur.vague : cur.code;
+    const msg = [on('kind') ? '' : cur.blame, head, on('fix') ? cur.fix : ''].filter(Boolean).join(' ');
+    lab.querySelector('#ecMsg')!.textContent = `⚠ ${msg}`;
+    lab.querySelector('#ecField')!.textContent = cur.field || '글 저장';
+    const v = lab.querySelector<HTMLElement>('#ecValue')!;
+    v.textContent = cur.value; v.hidden = !cur.value;
+    const n = ['plain', 'what', 'fix', 'kind'].filter((k) => on(k) || (k === 'plain' && on('what'))).length;
+    lab.querySelector('#ecRead')!.textContent = `${n} / 4${n === 4 ? ' — 안내가 됨' : n === 0 ? ' — 로그 메시지' : ''}`;
+  }
+  lab.querySelector('#ecCases')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    cur = cases.find((c) => c.k === b.dataset.k)!;
+    lab.querySelectorAll('#ecCases button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  lab.querySelector('#ecRules')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+    render();
+  });
+  render();
+</script>

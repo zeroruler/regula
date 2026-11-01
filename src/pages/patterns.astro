@@ -10,7 +10,7 @@ const groups = await patternsByGroup();
 ---
 <Base title="UI 패턴 · Regula" current="patterns">
   <Fragment slot="sub">
-    {groups.map(({ group: g, items }) => <a href={g.path ? href(g.path) : `#${g.id}`}>{g.name} · {items.length}{g.path && ' →'}</a>)}
+    {groups.map(({ group: g, items }) => <a href={g.path ? href(g.path) : `#${g.id}`}>{g.level ? `${g.name} · ${items.length}` : g.name}{g.path && ' →'}</a>)}
   </Fragment>
 
   <PageHead current="patterns" title="언제 쓰고, 언제 피하나">
@@ -21,14 +21,18 @@ const groups = await patternsByGroup();
     <section id={g.id}>
       <header>
         <span class="label">{g.name}</span>
-        <h2>{g.title} {items.length}가지</h2>
+        <h2>{g.title}{g.level && ` ${items.length}가지`}</h2>
         <p>{g.intro}</p>
         {g.path && <a class="open" href={href(g.path)}>실습 페이지로 →</a>}
       </header>
-      <IntrusivenessScale names={items.map((p) => p.data.name)} ends={g.ends} />
-      <div class="patterns">
-        {items.map((p) => <PatternCard pattern={p} />)}
-      </div>
+      {g.level && (
+        <>
+          <IntrusivenessScale names={items.map((p) => p.data.name)} ends={g.ends} />
+          <div class="patterns">
+            {items.map((p) => <PatternCard pattern={p} />)}
+          </div>
+        </>
+      )}
       {g.level === 'intrusiveness' && (
         <div class="compare">
           <table>

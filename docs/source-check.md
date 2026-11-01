@@ -2,6 +2,32 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-01 — 6차: 비율과 간격 (간격 스케일 · 간격의 위계 · 부품/레이아웃 간격 · 수직 리듬 · 8pt 그리드 · 황금비)
+
+### 원문을 읽고 확인
+
+- IBM Carbon, Spacing (carbondesignsystem.com, 2026-09-30 갱신판): 스케일은 2 · 4 · 8의 배수, 토큰 $spacing-01–13 = 2 · 4 · 8 · 12 · 16 · 24 · 32 · 40 · 48 · 64 · 80 · 96 · 160px. 「Designing with space」 — 가까운 요소는 관련 있어 보이고 멀어질수록 약해짐, 주위 여백이 많은 요소가 더 중요해 보임(상위 제목일수록 여백 크게), 섹션 나누기에 선 대신 여백. FAQ — 스케일 밖 값은 되도록 피함, 토큰은 반응형이 아니지만 브레이크포인트에서 한두 단계 건너뛰어도 됨
+- Atlassian Design System, Spacing: 8px 기본 단위, space.0–space.1000(0–80px). 「Spacing usage」 — Small 0–8px(아이콘–글자, 배지 · 아이콘 버튼 · 표 칸 안쪽, 입력칸 안쪽), Medium 12–24px(버튼 안쪽, 카드 속 요소 사이), Large 32–80px(페이지 구역 사이). 「Group by proximity」 「Create order and hierarchy」 「Introduce visual rhythm」 「Use optical adjustment」
+- Adobe Spectrum, Spacing: layout spacing(컴포넌트 위)과 component spacing(컴포넌트 안) 두 갈래, 서로 다른 속도로 커짐. 근접성에 기댄다고 명시
+- U.S. Web Design System, Spacing units: 8px 배수 토큰(작은 값 1 · 2 · 4 · 12px 등 추가)
+- GitHub Primer, Size primitives: --base-size-2 … 128. 4px 간격이 이어지는 구간(28 · 32 · 36 · 40 · 44)이 있어 "인접 25%" 기준과는 맞지 않음 → 간격 스케일 refs에서 뺌
+- W3C, CSS Rhythmic Sizing Module Level 1 (Working Draft, 2026-02-17) §1.1 Vertical Rhythms: 동아시아의 느슨한 수직 리듬(테두리 · 여백이 끼면 리듬을 밀어냄), block-step · line-height-step은 초안
+- MDN, `<length>`: lh = 그 요소의 계산된 line-height, rlh = 루트 요소의 lh
+- 유클리드 『원론』 6권 정의 3(외중비: 전체 : 긴 쪽 = 긴 쪽 : 짧은 쪽) · 명제 30 (D. E. Joyce 판, Clark University)
+- 『Refactoring UI』 목차(refactoringui.com): 「Start with too much white space」 p.56, 「Establish a spacing and sizing system」 p.60, 「Avoid ambiguous spacing」 p.83
+
+### 고친 것
+
+- 8pt 그리드: 출처를 "Material Design · Refactoring UI"에서 원문으로 확인한 Atlassian · USWDS · Carbon으로 바꾸고, Material 3 문서는 읽지 못했다고 적음
+- 황금비: 의미를 『원론』의 정의(외중비)에 맞게 다시 쓰고 출처에 권 · 정의 번호를 붙임. "위 실험처럼"은 실험이 이 페이지로 옮겨지며 원리 목록에서는 맞지 않아 뺌
+- 간격 스케일의 25% 기준: Carbon 스케일도 40→48, 80→96이 20%라 "어림"으로 적음
+
+### 직접 읽지 못함
+
+- 『Refactoring UI』 본문 — 유료 책이라 목차만 확인. "인접한 값은 25% 이상 차이"는 책 본문의 기준으로 알려져 있지만 문장을 대조하지 못했다
+- Material Design 3 Spacing · Material 2 Spacing methods(4dp 기준선 격자) — 스크립트로 그려져 본문을 받지 못함
+- 르 코르뷔지에 『Modulor』 — 원문을 보지 못함
+
 ## 2026-11-01 — 5차: 화면 구성 패턴 (목록 · 표 · 카드 · 캐러셀 · 아코디언 · 팝오버 · 사이드 시트)
 
 ### 원문을 읽고 확인

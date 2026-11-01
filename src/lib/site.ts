@@ -42,7 +42,7 @@ export const sections = [...nav.flatMap((g) => g.items), ...unlisted];
 
 // 원리와 공식의 주제 순서. path가 있는 주제는 실습이 붙은 별도 페이지가 있다.
 export const topics: { name: string; path?: string; blurb: string }[] = [
-  { name: '비율과 간격', blurb: '황금비, 8pt 그리드' },
+  { name: '비율과 간격', path: 'principles/spacing/', blurb: '황금비, 8pt 그리드, 간격 스케일, 간격의 위계, 수직 리듬' },
   { name: '타이포그래피', path: 'principles/typography/', blurb: '타입 스케일, 줄 길이, 행간, 제목 계층, 양식에 쓴 서체' },
   { name: '색', path: 'principles/color/', blurb: '색상환과 배색, 60-30-10, 동시 대비, 명도 대비' },
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
@@ -130,6 +130,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '원리의 마지막 주제 "비율과 간격"에 실습 페이지(/principles/spacing/)를 만듦. 간격 스케일 · 간격의 위계 · 부품 간격과 레이아웃 간격 · 수직 리듬 4개를 더하고, 8pt 그리드 출처를 원문으로 확인한 것(Atlassian · USWDS · Carbon)으로 바꿈. 같은 카드에 임의 값 · 한 값 · 스케일 값을 넣어 보는 실습, 문단 사이 여백을 바꿔 글줄이 박자에서 밀리는 걸 보는 수직 리듬 실습을 붙이고, 원리 목록 맨 위에 있던 황금비 실험을 이 페이지로 옮김. 출처는 6차 검증으로 기록.' },
   { date: '2026-11-01', text: 'UI 패턴에 "화면 구성"(/patterns/layout/) 추가. 목록 · 표 · 카드 · 캐러셀 · 아코디언 · 팝오버 · 사이드 시트 7가지를 내용이 가려진 정도 순으로 놓고, 같은 상품 6개를 목록 · 표 · 카드로 바꿔 담으며 찾기 · 견주기 · 둘러보기에 맞는지 보는 실습을 붙임. 규칙 7개는 NN/g · W3C APG · MDN 원문을 읽고 확인(출처 5차 검증).' },
   { date: '2026-11-01', text: '출처 4차 검증: WCAG 2.2 원문(2024-12-12판)과 사용성 · 접근성 공식의 기준 번호 · 수준 · 수치를 대조. 모두 맞았고, 터치 영역의 Inline 예외 표현을 바로잡고 2.5.5(44px, AAA)와 리플로 높이 256px를 더함. 레퍼런스에 "WCAG 2.2"를 추가하고 관련 공식 14개를 연결.' },
   { date: '2026-11-01', text: '원리의 "사용성"을 "사용성과 접근성"으로 넓히고 실습 페이지(/principles/usability/)를 만듦. WCAG 2.2 기준으로 포커스 표시 · 포커스 가림 · 포커스 순서 · 컴포넌트 대비 3:1 · 색에만 기대지 않기 · 리플로 320px · 움직임 줄이기 · 대체 텍스트 · 끌기의 대안 9개를 더하고, 터치 영역에 24px 간격 예외를 적음. 눌리는 영역과 간격을 바꿔 2.5.8 통과 여부를 보는 실습, 실제 폼을 Tab으로 지나가며 포커스 표시를 끄고 순서를 어긋나게 해 보는 실습을 붙임.' },

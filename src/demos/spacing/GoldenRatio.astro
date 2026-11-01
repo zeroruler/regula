@@ -8,7 +8,7 @@ const ratios = [
 ];
 const initial = 2;
 ---
-<div class="lab" data-ratios={JSON.stringify(ratios)} data-initial={initial}>
+<div class="lab" id="goldenLab" data-ratios={JSON.stringify(ratios)} data-initial={initial}>
   <svg id="golden" viewBox="0 0 480 300" role="img" aria-label="비율별 사각형 분할 도해"></svg>
   <div class="lab-side">
     <span class="label">실험 · 정사각형을 떼어내면</span>
@@ -21,7 +21,7 @@ const initial = 2;
 </div>
 
 <script>
-  const lab = document.querySelector<HTMLElement>('.lab')!;
+  const lab = document.querySelector<HTMLElement>('#goldenLab')!;
   const ratios: { r: number; note: string }[] = JSON.parse(lab.dataset.ratios!);
   let cur = +lab.dataset.initial!;
   const chips = lab.querySelector('#ratioChips')!;

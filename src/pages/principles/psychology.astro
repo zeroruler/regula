@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Frame from '../../demos/psychology/Frame.astro';
+import Choices from '../../demos/psychology/Choices.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const T = '심리와 편향';
+const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+const dark = (await getCollection('darkpatterns')).sort((a, b) => a.data.order - b.data.order);
+// 편향마다 그 편향에 기대는 다크 패턴
+const abuse = formulas.map((f) => ({ f, ds: dark.filter((d) => d.data.bias.includes(f.id)) }));
+---
+<Base title="심리와 편향 · 원리와 공식 · Regula" current="principles" description="앵커링, 손실 회피, 기본값 효과 같은 심리 편향을 같은 사실·다른 말 실습과 선택지 수 실습으로 보고, 정직하게 쓰는 선을 정리한 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>사람은 생각보다 기분으로 고른다</h1>
+    <p>숫자는 같아도 보여 주는 순서와 말에 따라 다르게 고릅니다. 이 편향들은 화면을 더 이해하기 쉽게 만드는 데도, 사용자를 속이는 데도 쓰여요. 그래서 편향마다 정직하게 쓰는 선을 같이 적고, 그 선을 넘은 화면은 <a href={href('patterns/dark/')}>다크 패턴</a>에 모았습니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 앵커링 · 프레이밍 · 손실 회피</span>
+      <h2>같은 사실, 다른 말</h2>
+      <p>상품도 가격도 만족률도 그대로 두고, 보여 주는 방식만 바꿔 봅니다. 어느 쪽이 더 끌리는지, 그리고 어디서부터 속임이 되는지 보세요.</p>
+    </header>
+    <Frame />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 선택 과부하 · 기본값 효과</span>
+      <h2>많을수록 못 고른다</h2>
+      <p>요금제 수를 늘려 보세요. 견줄 것이 늘수록 결정에 드는 정보량이 늘고, 추천 하나가 그 짐을 덜어 줍니다 — 그만큼 추천은 책임이 커요.</p>
+    </header>
+    <Choices />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">편향</span>
+      <h2>심리와 편향 {formulas.length}가지</h2>
+      <p>항목마다 설명 아래 메모가 정직하게 쓰는 선입니다. 심리학 실험 결과는 조건에 따라 크기가 다르고, 일부는 재현이 엇갈려요. 출처에 연도를 남겨 두었습니다.</p>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th>편향</th><th>선을 넘으면</th></tr></thead>
+        <tbody>
+          {abuse.map(({ f, ds }) => (
+            <tr><td><a href={`#f-${f.id}`}>{f.data.name}</a></td><td>{ds.length ? ds.map((d, i) => <>{i > 0 && ' · '}<a href={href(`patterns/dark/#d-${d.id}`)}>{d.data.name}</a></>) : <span class="src-cell">— (UI에서 쓰는 법은 위 메모)</span>}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

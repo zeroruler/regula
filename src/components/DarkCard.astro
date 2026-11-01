@@ -1,0 +1,22 @@
+---
+// 다크 패턴 하나: 속이는 화면과 정직한 화면을 나란히. 기대는 편향은 원리 페이지로 잇는다.
+import type { CollectionEntry } from 'astro:content';
+import { href } from '../lib/url';
+
+interface Props { item: CollectionEntry<'darkpatterns'>; biasNames: Record<string, string> }
+const { item, biasNames } = Astro.props;
+const d = item.data;
+---
+<article class="dkc" id={`d-${item.id}`}>
+  <div class="dk-pair" aria-hidden="true">
+    <figure><div class="mock dk-m" set:html={d.mock} /><figcaption>속임</figcaption></figure>
+    <figure><div class="mock dk-m" set:html={d.fix} /><figcaption>정직하게</figcaption></figure>
+  </div>
+  <h3><span class="mono">{String(d.order).padStart(2, '0')}</span> {d.name}<small>{d.en}</small></h3>
+  <dl>
+    <dt>속이는 법</dt><dd>{d.trick}</dd>
+    <dt>정직하게</dt><dd>{d.honest}</dd>
+    {d.bias.length > 0 && <><dt>기대는 심리</dt><dd>{d.bias.map((b, i) => <>{i > 0 && ' · '}<a href={href(`principles/psychology/#f-${b}`)}>{biasNames[b] ?? b}</a></>)}</dd></>}
+  </dl>
+  <p class="src">{d.source}</p>
+</article>

@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
+import DarkCard from '../../components/DarkCard.astro';
+import Checkout from '../../demos/dark/Checkout.astro';
+import { patternGroups } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const group = patternGroups.find((g) => g.id === 'dark')!;
+const items = (await getCollection('darkpatterns')).sort((a, b) => a.data.order - b.data.order);
+const biasNames = Object.fromEntries((await getCollection('formulas', (f) => f.data.topic === '심리와 편향')).map((f) => [f.id, f.data.name]));
+
+// 다크 패턴 규칙과 규제. 출처가 있는 것만 적는다.
+const rules = [
+  { s: '정의', rule: '사용자가 원하지 않았을 결정을 하게 만드는 인터페이스. 설득은 정보를 주고, 속임은 정보를 숨기거나 비튼다', src: 'Harry Brignull, deceptive.design · Gray 외, 「The Dark (Patterns) Side of UX Design」 (CHI, 2018)' },
+  { s: '실태', rule: '쇼핑몰 약 1만 1천 곳을 훑어 1,800여 건의 다크 패턴을 찾았다 — 가짜 마감, 가짜 희소성, 끼워 팔기가 흔했다', src: 'Mathur 외, 「Dark Patterns at Scale」 (CSCW, 2019)' },
+  { s: '동의', rule: '침묵, 미리 체크된 상자, 아무것도 안 함은 동의가 아니다', src: 'GDPR 전문 32항 · 유럽사법재판소 Planet49 판결 (C-673/17, 2019)' },
+  { s: '규제', rule: '온라인 플랫폼은 사용자가 자유롭게 정보를 갖고 결정하는 것을 해치도록 인터페이스를 설계해서는 안 된다', src: 'EU 디지털서비스법(DSA) 제25조' },
+  { s: '규제', rule: '숨은 갱신, 단계마다 늘어나는 가격, 미리 고른 옵션, 취소·탈퇴 방해, 반복 간섭 같은 화면을 금지한다', src: '전자상거래법 개정 (2025년 2월 시행)' },
+  { s: '규제', rule: '숨은 자동 결제, 해지 방해, 숨은 비용을 미국 연방거래위원회가 단속 대상으로 정리했다', src: 'FTC 「Bringing Dark Patterns to Light」 (2022)' },
+];
+---
+<Base title="다크 패턴 · UI 패턴 · Regula" current="patterns" description="사용자를 속이는 화면 9가지를 정직한 화면과 나란히 보고, 결제 화면의 속임을 하나씩 꺼 보는 페이지">
+  <Fragment slot="sub"><PatternSubnav current={['dark']} /></Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 피할 것</span>
+    <h1>설득과 속임 사이</h1>
+    <p>{group.intro} 대부분은 <a href={href('principles/psychology/')}>심리와 편향</a>에 기대고 있어서, 같은 원리를 정직하게 쓰는 법도 함께 적었습니다. 예시 화면과 금액은 Regula가 지은 것이에요.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 실습</span>
+      <h2>결제 화면 하나에 여섯 가지 속임</h2>
+      <p>흔한 결제 화면에 속임 여섯 가지가 켜져 있습니다. 하나씩 꺼 보면서 보이는 가격과 실제로 내는 돈, 모르고 하게 되는 동의가 어떻게 달라지는지 보세요.</p>
+    </header>
+    <Checkout />
+  </section>
+
+  <section id="dark">
+    <header>
+      <span class="label">종류</span>
+      <h2>다크 패턴 {items.length}가지</h2>
+      <p>왼쪽이 속이는 화면, 오른쪽이 같은 목적의 정직한 화면입니다. 이름은 Harry Brignull의 분류(deceptive.design)를 따랐고, 옛 이름이 더 알려진 것은 괄호에 같이 적었어요.</p>
+    </header>
+    <div class="dkcards">
+      {items.map((d) => <DarkCard item={d} biasNames={biasNames} />)}
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

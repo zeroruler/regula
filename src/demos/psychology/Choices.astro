@@ -1,0 +1,60 @@
+---
+// 선택지 수를 늘려 보며 결정에 드는 정보량(힉의 법칙 log₂(n+1))과 추천 하나의 효과를 본다.
+---
+<div class="lab pslab" id="psChoice">
+  <div class="ps-frame">
+    <div class="ps-grid" id="pcGrid" aria-hidden="true"></div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 선택 과부하와 기본값</span>
+    <h3>몇 개까지 고를 수 있나</h3>
+    <div class="row">
+      <label class="label" for="pcN">요금제 수</label>
+      <input type="range" id="pcN" min="2" max="24" value="6" style="flex:1">
+      <span class="mono" id="pcNVal"></span>
+    </div>
+    <div class="chips" id="pcRec">
+      <button class="chip" type="button" data-v="off" aria-pressed="true">추천 없음</button>
+      <button class="chip" type="button" data-v="on" aria-pressed="false">추천 하나 표시</button>
+    </div>
+    <p class="g-read" aria-live="polite">결정 정보량 log₂(n+1) = <span id="pcBits"></span>비트 · 3개일 때의 <span id="pcRel"></span>배: <mark id="pcRead"></mark></p>
+    <p id="pcNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>많이 팔수록 고르기 쉽게: 추천 하나와 비교 기준을 주고, 나머지는 "모두 보기"나 필터 뒤로. 판정의 구간(5 · 9개)은 Regula의 어림이에요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#psChoice')!;
+  const $ = (id: string) => lab.querySelector<HTMLElement>(`#${id}`)!;
+  const range = $('pcN') as HTMLInputElement;
+  let rec = false;
+  const bits = (n: number) => Math.log2(n + 1);
+
+  function render() {
+    const n = +range.value;
+    const pick = Math.min(1, n - 1);
+    $('pcGrid').innerHTML = Array.from({ length: n }, (_, i) =>
+      `<span class="${rec && i === pick ? 'rec' : ''}"><i></i><i></i>${rec && i === pick ? '<b>추천</b>' : ''}</span>`).join('');
+    $('pcGrid').style.setProperty('--cols', String(n <= 4 ? n : n <= 9 ? 3 : n <= 16 ? 4 : 6));
+    $('pcNVal').textContent = `${n}개`;
+    $('pcBits').textContent = bits(n).toFixed(2);
+    $('pcRel').textContent = (bits(n) / bits(3)).toFixed(1);
+    $('pcRead').textContent = rec ? (n > 9 ? '추천이 출발점이 되지만, 나머지는 걸러 보게' : '추천에서 출발해 한두 개만 견줌')
+      : n <= 5 ? '한눈에 견줄 수 있음' : n <= 9 ? '견주기가 버거워지기 시작' : '고르기를 미루기 쉬움 — 묶거나 거를 것';
+    $('pcNote').textContent = rec
+      ? '추천은 기본값처럼 작동합니다. 대부분 그대로 고르니, 정말 이 사람에게 맞는 것을 추천해야 해요. 가장 비싼 것을 추천으로 칠하면 다크 패턴에 가까워집니다.'
+      : '잼 실험에서는 24종보다 6종일 때 실제로 산 사람이 훨씬 많았습니다. 다만 메타분석에선 상품이 낯설고 비교 기준이 없을 때 효과가 컸어요.';
+  }
+  range.addEventListener('input', render);
+  $('pcRec').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    rec = b.dataset.v === 'on';
+    $('pcRec').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  render();
+</script>

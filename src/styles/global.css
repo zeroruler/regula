@@ -632,3 +632,83 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .backm span{color:var(--ink-3)}
 .backm b{margin-left:auto;margin-right:auto;transform:translateX(-20px)}
 @media (prefers-reduced-motion:no-preference){ .spinbtn{animation:spin .8s linear infinite} }
+
+/* 다크 패턴 — 속임과 정직을 나란히. 흑백, 속임 쪽은 흐린 글씨가 핵심 */
+.dkcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.dkc{background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.dkc h3{font-size:21px}
+.dkc h3 .mono{font-size:12px;font-weight:400;color:var(--ink-3);margin-right:4px}
+.dkc h3 small{font-family:var(--mono);font-size:11.5px;font-weight:400;color:var(--ink-3);margin-left:6px;letter-spacing:.02em}
+.dkc dl{margin:0;display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;font-size:13.5px}
+.dkc dt{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:2px}
+.dkc dd{margin:0;color:var(--ink-2)}
+.dkc .src{margin:0;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.dk-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dk-pair figure{margin:0;display:grid;gap:5px;min-width:0}
+.dk-pair figcaption{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.dk-pair figure + figure figcaption{color:var(--ink)}
+.dk-m{height:146px;padding:12px;font-size:10px}
+.dk{display:flex;flex-direction:column;gap:5px;min-width:0}
+.dk > b{font-size:10.5px}
+.dk.dk-c{align-items:center;text-align:center;justify-content:center;height:100%}
+.dk-b1,.dk-b2{display:block;padding:4px 8px;border-radius:4px;text-align:center;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-self:stretch}
+.dk-b1{background:var(--ink);color:var(--paper)}
+.dk-b2{border:1.2px solid var(--ink)}
+.dk-tx{font-size:9.5px;font-weight:600;text-decoration:underline;text-underline-offset:2px;align-self:center}
+.dk-faint{font-size:7.5px;color:var(--ink-3);opacity:.7}
+.dk-note{font-size:9.5px;color:var(--ink-2)}
+.dk-big{font-family:var(--mono);font-size:19px;font-weight:500;line-height:1.1}
+.dk-row{display:flex;justify-content:space-between;gap:6px;font-size:9.5px}
+.dk-row i{font-style:normal}
+.dk-sum{border-top:1px solid var(--ink);padding-top:4px;font-weight:600}
+.dk-bar{display:block;height:5px;border:1px solid var(--ink)}
+.dk-bar i{display:block;height:100%;background:var(--ink)}
+.dk-ck{display:flex;align-items:center;gap:5px;font-size:9.5px}
+.dk-ck::before{content:"";flex:none;width:9px;height:9px;border:1.2px solid var(--ink-2);border-radius:2px;display:grid;place-items:center;font-size:8px;line-height:1;color:var(--paper)}
+.dk-ck.on::before{content:"✓";background:var(--ink);border-color:var(--ink)}
+.dk-dim{position:absolute;inset:0;background:color-mix(in srgb,var(--ink) 30%,var(--paper));display:grid;place-items:center;padding:10px}
+.dk-pop{background:var(--surface);padding:10px;border-radius:6px;align-self:center;width:100%}
+.dk-pop b small{font-weight:400;color:var(--ink-3)}
+/* 결제 화면 실습 */
+.dk-frame{background:var(--surface);border:1px solid var(--rule);padding:22px;display:flex;flex-direction:column;gap:14px;align-self:start;min-width:0}
+.dk-urg{display:none;font-size:13px;font-weight:600;border:1.5px solid var(--ink);padding:6px 10px;align-self:flex-start}
+.t-urgency .dk-urg{display:block}
+.dk-head{display:grid;gap:2px}
+.dk-price{font-family:var(--mono);font-size:30px;font-weight:500;line-height:1.2}
+.dk-sub{font-size:13px;color:var(--ink-2);min-height:1.4em}
+.dk-lines{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.dk-lines li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.dk-lines li span:last-child{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.dk-lines .dk-total{font-weight:600;border-bottom:none}
+.t-hidden .dk-fee{font-size:10.5px;color:var(--ink-3);opacity:.7}
+.dk-frame .dk-ck{font-size:14px;gap:8px}
+.dk-frame .dk-ck::before{width:15px;height:15px;font-size:11px}
+.dk-frame .dk-opt .dk-ck{font-size:14px}
+.dk-subline{margin:0;font-size:13.5px;color:var(--ink-2)}
+.t-sub .dk-subline{font-size:9.5px;color:var(--ink-3);opacity:.7}
+.dk-acts{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.dk-decline{text-align:center;font-size:13px;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px}
+.t-shame .dk-decline{font-size:11px;color:var(--ink-3)}
+@media (max-width:640px){
+  .dkcards{grid-template-columns:minmax(0,1fr)}
+}
+
+/* 심리와 편향 실습 */
+.ps-frame{background:var(--paper);border:1px solid var(--rule);padding:24px;display:grid;place-items:center;min-height:300px;align-self:start;min-width:0}
+.ps-card{background:var(--surface);border:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px}
+.ps-price{display:flex;flex-direction:column;gap:2px}
+.ps-price s{font-family:var(--mono);font-size:13px;color:var(--ink-3)}
+.ps-price s[hidden]{display:none}
+.ps-price b{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1.1}
+.ps-review{margin:0;font-size:14px}
+.ps-small{font-size:12px;color:var(--ink-2);text-align:center}
+.ps-tg{gap:8px 12px}
+.ps-tg > .label{width:72px}
+.ps-grid{--cols:3;display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:6px;width:100%;max-width:340px}
+.ps-grid span{position:relative;border:1px solid var(--rule);background:var(--surface);padding:8px 6px;display:grid;gap:4px;min-width:0}
+.ps-grid i{display:block;height:5px;background:var(--rule)}
+.ps-grid i + i{width:60%}
+.ps-grid span.rec{border:2px solid var(--ink)}
+.ps-grid span.rec i{background:var(--ink-3)}
+.ps-grid b{position:absolute;top:-8px;left:4px;white-space:nowrap;font-size:9.5px;background:var(--ink);color:var(--paper);padding:0 5px;line-height:15px}
+.pslab input[type=range]{accent-color:var(--ink);min-width:0}

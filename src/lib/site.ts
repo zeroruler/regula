@@ -9,7 +9,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     items: [
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
-      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 문구 — 언제 쓰고 언제 피하는지' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
       { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
     ],
   },
@@ -43,6 +43,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
   { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
+  { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드' },
   { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
 ];
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
@@ -88,6 +89,11 @@ export const patternGroups: {
     ends: ['다 끝냄 · 잘된 일', '오류 · 막힘'],
   },
   {
+    id: 'dark', name: '다크 패턴', path: 'patterns/dark/',
+    title: '피해야 할 화면 — 다크 패턴',
+    intro: '사용자를 속여 원하지 않는 결정을 하게 만드는 화면입니다. 쓰는 법이 아니라 알아보고 피하는 법을 모읍니다. 속이는 화면과 같은 목적의 정직한 화면을 나란히 두었어요.',
+  },
+  {
     id: 'writing', name: '문구', path: 'patterns/writing/',
     title: 'UX 라이팅 — 오류 문구와 버튼 문구',
     intro: '컴포넌트가 아니라 그 안에 들어가는 말입니다. 같은 오류 메시지도 무엇이 잘못됐고 어떻게 고칠지를 말하면 막다른 길이 안내가 됩니다. 실습 페이지에서 나쁜 문구를 직접 고쳐 봅니다.',
@@ -98,6 +104,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '원리에 "심리와 편향" 실습 페이지(/principles/psychology/), UI 패턴에 "다크 패턴"(/patterns/dark/)을 추가. 편향 9가지(앵커링·손실 회피·기본값·사회적 증거·희소성·프레이밍·선택 과부하·피크엔드·자이가르닉)마다 정직하게 쓰는 선을 적고, 같은 사실을 다른 말로 바꿔 보는 실습과 선택지 수 실습을 붙임. 다크 패턴 9가지는 속이는 화면과 정직한 화면을 나란히 그리고, 결제 화면의 속임 여섯 가지를 하나씩 꺼 보는 실습과 규제 표를 붙임. 두 페이지는 편향 ↔ 다크 패턴으로 서로 링크.' },
   { date: '2026-11-01', text: '릴스(uxwoodytips)에서 본 이름 모음을 반영. 로딩에 로딩 버튼 · 블러 업 · 스트리밍 텍스트 · 진행 링 · 단계 표시, 내비게이션에 무한 스크롤 · 고정 헤더 · 뒤로 가기를 추가(로딩 10가지, 내비게이션 9가지). 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임은 할 일로.' },
   { date: '2026-11-01', text: '찾기 페이지(/search/) 추가. 공식·패턴·레퍼런스·양식·실습 페이지를 한 목록에 모아 검색어(이름·설명·출처, 띄어쓰기 무시)와 종류·태그로 거르고, 찾은 말에 형광펜을 칠함. 거른 상태는 주소에 남아 링크로 보낼 수 있음.' },
   { date: '2026-11-01', text: 'UI 패턴 목록을 정리. /patterns/에 쌓이던 카드와 비교표를 카테고리 페이지로 옮기고 목록은 입구만 남김. 알림에도 자기 페이지(/patterns/feedback/)를 만듦.' },
@@ -118,5 +125,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일 · 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일 · 제스처 · AI 화면 · 움직임' },
 ];

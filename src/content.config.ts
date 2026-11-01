@@ -9,7 +9,7 @@ const formulas = defineCollection({
     name: z.string(),
     order: z.number(),
     // 원리와 공식 페이지에서 묶는 단위. 실습 페이지가 있는 주제는 src/lib/site.ts의 topics에 등록
-    topic: z.enum(['비율과 간격', '타이포그래피', '색', '게슈탈트', '그리드', '사용성', '좋은 디자인']),
+    topic: z.enum(['비율과 간격', '타이포그래피', '색', '게슈탈트', '그리드', '사용성', '심리와 편향', '좋은 디자인']),
     equation: z.string(),
     meaning: z.string(),
     source: z.string().min(1),
@@ -45,6 +45,24 @@ const patterns = defineCollection({
     source: z.string().min(1),
     refs: z.array(z.string()).default([]),
     mock: z.string(),
+  }),
+});
+
+// 다크 패턴: 피해야 할 화면. 속이는 화면(mock)과 정직한 화면(fix)을 나란히 둔다.
+// bias에는 그 속임이 기대는 심리 편향(공식 slug)을 넣어 원리 페이지와 잇는다.
+const darkpatterns = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/darkpatterns' }),
+  schema: z.object({
+    name: z.string(),
+    en: z.string(),
+    order: z.number(),
+    trick: z.string(),
+    honest: z.string(),
+    bias: z.array(z.string()).default([]),
+    source: z.string().min(1),
+    refs: z.array(z.string()).default([]),
+    mock: z.string(),
+    fix: z.string(),
   }),
 });
 
@@ -100,4 +118,4 @@ const templates = defineCollection({
   }),
 });
 
-export const collections = { formulas, patterns, references, templates };
+export const collections = { formulas, patterns, darkpatterns, references, templates };

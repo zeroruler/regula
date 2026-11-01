@@ -2,6 +2,32 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-01 — 3차: Material 3 토큰 값 · 스낵바 시간 · 클레이모피즘 이름
+
+m3.material.io는 스크립트로 그려져 직접 못 읽으므로, Google이 공개한 구현 저장소의 소스에서 값을 확인했다.
+
+### 원문(소스)을 읽고 확인
+
+- M3 motion 토큰 — material-components/material-web `tokens/versions/v0_192/_md-sys-motion.scss` (자동 생성 파일, "Design system version: v0.192", Apache-2.0, 2026-10-29 커밋 기준):
+  - duration: short1–4 = 50 · 100 · 150 · 200ms, medium1–4 = 250 · 300 · 350 · 400ms, long1–4 = 450 · 500 · 550 · 600ms, extra-long1–4 = 700 · 800 · 900 · 1000ms
+  - easing: standard (0.2, 0, 0, 1), standard-decelerate (0, 0, 0, 1), standard-accelerate (0.3, 0, 1, 1), emphasized (0.2, 0, 0, 1), emphasized-decelerate (0.05, 0.7, 0.1, 1), emphasized-accelerate (0.3, 0, 0.8, 0.15), legacy (0.4, 0, 0.2, 1), linear (0, 0, 1, 1)
+  - emphasized는 원래 경로(path) 곡선인데 CSS로는 standard와 같은 값으로 들어가 있음("motion_path is not supported")
+- M3 창 크기 구간 — androidx `window/window-core/.../WindowSizeClass.kt`: WIDTH_DP_MEDIUM_LOWER_BOUND = 600, WIDTH_DP_EXPANDED_LOWER_BOUND = 840 (그 위로 EXTRA_LARGE 1600도 있음)
+- M3 Navigation bar 목적지 수 — material-components-android `docs/components/BottomNavigation.md`: "Navigation bars can have three to five destinations"
+- 스낵바 시간:
+  - material-components-web `packages/mdc-snackbar/constants.ts` · `foundation.ts`: 자동으로 닫히는 시간은 4000–10000ms만 허용(범위 밖이면 오류), 기본 5000ms, 닫지 않음(-1)도 가능
+  - androidx Compose Material3 `SnackbarHost.kt`: Short = 4000ms, Long = 10000ms, Indefinite. 접근성 서비스가 켜져 있으면 접근성 관리자가 시간을 조정
+  - 반대로 material-components-android(View) `SnackbarManager.java`는 SHORT 1500ms · LONG 2750ms — 같은 Material이라도 구현마다 다름
+  - → 사이트의 "4–10초"는 MDC Web의 허용 범위와 Compose M3의 두 값으로 출처를 바꿈. "호버하면 멈춤"은 MDC Web 소스에 없음 → (어림)으로 표시
+- 클레이모피즘: Michał Malewicz 「Claymorphism in User Interfaces」 (Hype4 Academy) 원문을 읽음. 두 겹 안쪽 그림자(위 왼쪽 밝게 · 아래 오른쪽 어둡게) + 큰 바깥 그림자, 크게 둥근 모서리. 원문은 이 이름을 자기가 지었다고 말하지 않음(스스로는 "fluffy 3d"라 부르고, 뉴모피즘 · 글래스모피즘 등을 만드는 데 참여했다고만 씀). Smashing Magazine 「Claymorphism: Will It Stick Around?」 (Adrian Bece, 2022-03-16)는 "이 용어는 Michal Malewicz가 지었다"고 씀
+
+### 확인 못 한 것
+
+- 클레이모피즘 원문의 게시 날짜(페이지에 날짜 없음, 웨이백 조회는 이 환경에서 막힘). "2021년"은 2차 자료에만 있음
+- 처음 이 이름을 쓴 사람: 원문과 2차 자료가 엇갈려 확정하지 않음
+- m3.material.io 문서 본문 자체(용도 설명 · 권장 문구)는 여전히 직접 읽지 못함. 위 값은 구현 소스 기준
+- 3D 아이콘이라는 스타일 이름의 기원
+
 ## 2026-11-01 — 랜딩 페이지 양식에 단 출처
 
 ### 원문을 읽고 확인
@@ -116,9 +142,9 @@
 
 ### 아직 확인 못 한 것
 
-- 스낵바 4–10초: Material 공식 문서에서 숫자를 찾지 못함 (Compose 구현의 짧게 ≈ 4초 · 길게 ≈ 10초로 알려짐)
-- Material 3 Navigation bar의 목적지 수(3–5), M3 easing · duration 토큰 값 — m3.material.io가 스크립트로 그려져 읽지 못함
-- 클레이모피즘 · 3D 아이콘이라는 이름을 처음 쓴 곳
+- ~~스낵바 4–10초~~ → 3차에서 MDC Web · Compose 소스로 확인
+- ~~Material 3 Navigation bar의 목적지 수(3–5), M3 easing · duration 토큰 값~~ → 3차에서 공개 저장소 소스로 확인
+- 클레이모피즘 · 3D 아이콘이라는 이름을 처음 쓴 곳 → 3차: 클레이모피즘은 널리 알린 글만 확인, 처음 쓴 사람은 미확정
 - 60-30-10의 기원 ("인테리어 디자인 관례"로만 표기)
 - 고전 서적의 쪽수 단위 인용(Bringhurst 45–75자 · 66자, Itten 12색상환)은 책을 직접 보지 않음 — 널리 인용되는 내용
 
@@ -154,7 +180,7 @@
 
 ### 아직 확인 못 한 것
 
-- Material 3 easing · duration 토큰의 구체적인 값 (페이지가 스크립트로 그려져 읽지 못함 — 사이트에는 숫자를 적지 않고 "토큰"으로만 인용)
+- ~~Material 3 easing · duration 토큰의 구체적인 값~~ → 3차에서 material-web 토큰 파일로 확인, 움직임 규칙 표 · ease-in · ease-out에 값 추가
 - Apple HIG의 각 페이지 본문 (이름만 확인. Gestures는 지금 Inputs › Gestures 아래)
 - Redelmeier & Kahneman (1996) 대장 내시경 연구의 서지
 - 고전 서적(Fitts 1954, Hick 1952, Hyman 1953, Koffka 1935, Albers 1963, Itten, Müller-Brockmann 1981, Bringhurst, Cialdini 1984)은 널리 알려진 서지라 이번에 따로 대조하지 않음

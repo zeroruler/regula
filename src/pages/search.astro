@@ -9,12 +9,13 @@ import { href } from '../lib/url';
 // 스크립트가 없어도 전체 목록은 보인다.
 type Item = { kind: string; tag: string; title: string; sub?: string; url: string; text: string };
 
-const [formulas, patterns, darks, references, templates] = await Promise.all([
+const [formulas, patterns, darks, references, templates, notes] = await Promise.all([
   getCollection('formulas'),
   getCollection('patterns'),
   getCollection('darkpatterns'),
   getCollection('references'),
   getCollection('templates'),
+  getCollection('notes'),
 ]);
 
 const hay = (...parts: (string | undefined)[]) => parts.filter(Boolean).join(' ').toLowerCase();
@@ -56,6 +57,10 @@ const items: Item[] = [
       text: hay(d.title, d.author, d.group, d.summary),
     };
   }),
+  ...notes.sort((a, b) => b.data.date.localeCompare(a.data.date)).map((n) => ({
+    kind: '기록', tag: n.data.kind, title: n.data.title, sub: `${n.data.date}${n.data.seen_at ? ` · ${n.data.seen_at}` : ''} — ${(n.body ?? '').trim().split('\n')[0]}`,
+    url: href(`notes/#n-${n.id}`), text: hay(n.data.title, n.data.kind, n.data.seen_at, n.data.date, n.body),
+  })),
   ...templates.sort(byOrder).map((t) => {
     const d = t.data;
     return {

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { patternGroups } from '../lib/site';
+import ItemNotes from './ItemNotes.astro';
 
 interface Props { pattern: CollectionEntry<'patterns'> }
 const { pattern } = Astro.props;
@@ -18,4 +19,5 @@ const level = (group?.level ? p[group.level] : p.intrusiveness) ?? 0;
     </span>
   </div>
   <dl><dt>쓸 때</dt><dd>{p.use_when}</dd><dt>피할 때</dt><dd>{p.avoid_when}</dd></dl>
+  <ItemNotes ref={`patterns/${pattern.id}`} />
 </article>

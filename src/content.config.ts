@@ -69,6 +69,24 @@ const darkpatterns = defineCollection({
   }),
 });
 
+// 기록장: 내가 본 것 · 메모 · 직접 써 본 예시. 파일 하나가 기록 하나.
+// about에 "formulas/<id>", "patterns/<카테고리>/<id>", "darkpatterns/<id>", "references/<id>"를 넣으면
+// 그 항목 아래에 이 기록이 붙는다. 없는 항목을 적으면 빌드가 멈춘다(src/lib/items.ts).
+export const noteKinds = ['본 것', '메모', '써 본 예시'] as const;
+
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
+  schema: z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    kind: z.enum(noteKinds),
+    title: z.string(),
+    about: z.array(z.string()).default([]),
+    // 어디서 봤나 (계정, 책, 사이트). 링크가 있으면 link에
+    seen_at: z.string().optional(),
+    link: z.url().optional(),
+  }),
+});
+
 export const refGroups = ['책', '공개 디자인 시스템', 'GitHub 저장소', '커뮤니티 · 글 · 디자이너'] as const;
 
 const references = defineCollection({
@@ -121,4 +139,4 @@ const templates = defineCollection({
   }),
 });
 
-export const collections = { formulas, patterns, darkpatterns, references, templates };
+export const collections = { formulas, patterns, darkpatterns, references, templates, notes };

@@ -5,12 +5,13 @@ import { nav, log, type SectionKey } from '../lib/site';
 import { href } from '../lib/url';
 
 // 홈은 입구만 둔다. 내용은 각 페이지에서 본다.
-const [formulas, patterns, darks, references, templates] = await Promise.all([
+const [formulas, patterns, darks, references, templates, notes] = await Promise.all([
   getCollection('formulas'),
   getCollection('patterns'),
   getCollection('darkpatterns'),
   getCollection('references'),
   getCollection('templates'),
+  getCollection('notes'),
 ]);
 const counts: Record<SectionKey, string> = {
   principles: `공식 ${formulas.length} · 실험 ${formulas.filter((f) => f.data.demo).length}`,
@@ -19,6 +20,7 @@ const counts: Record<SectionKey, string> = {
   references: `레퍼런스 ${references.length}`,
   templates: `양식 ${templates.length}`,
   log: `기록 ${log.length}`,
+  notes: `기록 ${notes.length}`,
   search: `항목 ${formulas.length + patterns.length + darks.length + references.length + templates.length}`,
 };
 ---

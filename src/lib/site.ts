@@ -1,7 +1,7 @@
 // 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
 export const version = 'v0.5';
 
-export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search';
+export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes';
 
 export const nav: { group: string; items: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] }[] = [
   {
@@ -22,6 +22,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
   {
     group: '기록',
     items: [
+      { key: 'notes', no: 8, title: '기록장', path: 'notes/', blurb: '본 것, 내 메모, 직접 써 본 예시를 날짜별로' },
       { key: 'log', no: 6, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
     ],
   },
@@ -117,6 +118,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '기록장(/notes/)을 만듦. 본 것 · 메모 · 써 본 예시를 파일 하나씩 날짜별로 쌓고, 기록이 가리키는 공식 · 패턴 · 다크 패턴 아래에 "내 기록"으로 붙게 함. 오늘 본 릴스 10개를 첫 기록으로 남김. 찾기에도 기록이 들어감.' },
   { date: '2026-11-01', text: '출처 1차 검증. 확인이 필요한 출처를 원문과 대조해 틀린 저자(햄버거 메뉴 글), 연도(당겨서 새로고침), 바뀐 NN/g 제목 4개, 전자상거래법 규제 유형을 고치고, 재현이 엇갈린 연구(자이가르닉, 선택 과부하, 손실 회피 계수)의 설명을 바로잡음. 기록은 docs/source-check.md.' },
   { date: '2026-11-01', text: '원리에 "움직임" 실습 페이지(/principles/motion/)를 추가. 움직임 이름 9가지(이즈 인 · 이즈 아웃 · 스프링 · 바운스 · 순차 등장 · 페이드 · 슬라이드 · 확대 전환 · 공유 요소 전환)를 곡선 값과 함께 정리하고, 곡선과 시간을 바꿔 재생해 보는 실습과 목록 → 상세 화면 전환 다섯 가지를 직접 열어 보는 실습을 붙임. 움직임 줄이기 설정을 따름.' },
   { date: '2026-11-01', text: 'UI 패턴에 "제스처"(/patterns/gestures/)와 "AI 화면"(/patterns/ai/)을 추가. 제스처 9가지는 알아채기 어려운 순으로 놓고 대체 수단을 붙였고, 목록 항목을 밀기 · 길게 누르기 · ⋯ 버튼으로 지워 보는 실습. AI 화면 9가지는 대화의 시점 순으로 놓고, 생각 중 표시 · 단계 · 스트리밍 · 출처 · 멈춤을 켜고 끄며 같은 답을 받아 보는 실습. 레퍼런스에 Microsoft의 Human-AI Interaction 가이드라인 추가.' },

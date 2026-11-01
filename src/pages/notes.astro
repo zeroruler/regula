@@ -12,13 +12,13 @@ const rows = await Promise.all(notes.map(async (n) => ({ n, items: await Promise
 const dates = [...new Set(notes.map((n) => n.data.date))];
 const count = (k: string) => notes.filter((n) => n.data.kind === k).length;
 ---
-<Base title="기록장 · Regula" current="notes" description="본 것, 내 메모, 직접 써 본 예시를 날짜별로 모으는 기록장">
+<Base title="기록장 · Regula" current="notes" description="자료를 어디서 봤는지 날짜별로 남기는 기록장">
   <Fragment slot="sub">
     {dates.map((d) => <a href={`#d-${d}`}>{d}</a>)}
   </Fragment>
 
-  <PageHead current="notes" title="본 것, 써 본 것, 남긴 말">
-    <p>Regula의 규칙이 어디서 왔는지 남기는 곳입니다. 릴스나 책에서 <b>본 것</b>, 쓰다가 든 생각인 <b>메모</b>, 실제 작업에 적용해 본 <b>써 본 예시</b>를 날짜별로 쌓아요. 기록이 가리키는 공식 · 패턴 아래에도 "내 기록"으로 붙습니다.</p>
+  <PageHead current="notes" title="어디서 봤는지 남긴 말">
+    <p>Regula의 자료가 어디서 왔는지 남기는 곳입니다. 릴스나 책에서 <b>본 것</b>을 날짜별로 두고, 기록이 가리키는 공식 · 패턴 아래에도 "내 기록"으로 붙습니다.</p>
   </PageHead>
 
   <section class="notes">
@@ -48,15 +48,15 @@ const count = (k: string) => notes.filter((n) => n.data.kind === k).length;
 
     <div class="note-how">
       <span class="label">기록 남기는 법</span>
-      <p><code>src/content/notes/날짜-이름.md</code> 파일 하나를 만들면 됩니다. 아직 <b>메모</b>와 <b>써 본 예시</b>는 없어요 — 공식이나 패턴을 실제 작업에 써 본 날, 무엇을 만들었고 값이 어땠는지 한두 줄이면 충분합니다.</p>
+      <p><code>src/content/notes/날짜-이름.md</code> 파일 하나를 만들면 됩니다. <code>kind</code>는 본 것 · 메모 · 써 본 예시 가운데 하나이고, <code>about</code>에 이어 붙일 항목을 적습니다.</p>
       <pre><code>{`---
 date: "2026-11-02"
-kind: "써 본 예시"        # 본 것 · 메모 · 써 본 예시
-title: "포트폴리오 카드에 타입 스케일 1.25"
+kind: "본 것"            # 본 것 · 메모 · 써 본 예시
+title: "타입 스케일 비율 비교 릴스"
 about: ["formulas/type-scale"]
-seen_at: "내 포트폴리오"   # 어디서 봤나 / 어디에 썼나 (선택)
+seen_at: "인스타그램 릴스"  # 어디서 봤나 (선택)
 ---
-본문 16px에 1.25배. 제목이 너무 커 보여서 1.2로 다시 낮춤.`}</code></pre>
+본 내용을 한두 줄로 요약.`}</code></pre>
     </div>
   </section>
 </Base>

@@ -1,0 +1,55 @@
+---
+// 같은 문단을 서체 · 크기 · 행간 · 줄 길이만 바꿔 본다. 서체는 내 양식에서 쓰는 한글 서체만.
+interface Props { fonts: { id: string; name: string; family: string }[] }
+const { fonts } = Astro.props;
+---
+<div class="lab tylab" id="tyPara" data-fonts={JSON.stringify(fonts)}>
+  <div class="ty-frame">
+    <div class="ty-para" id="tyText">
+      <h4>감으로 고르던 값을 이유가 있는 값으로</h4>
+      <p>디자인을 공부하면서 찾은 공식과 화면 패턴을 한 곳에 쌓는다. 글자 크기, 행간, 한 줄의 길이는 각각 따로 정하는 것 같지만 서로 묶여 있다. 글자가 커지면 행간 배수는 줄여도 되고, 줄이 길어지면 행간을 넓혀야 다음 줄을 찾기 쉽다. Typography 1.25 · 2026.</p>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 본문 조절</span>
+    <h3>읽기 편한 문단 찾기</h3>
+    <div class="chips" id="tyFonts">
+      {fonts.map((f, i) => <button class="chip" type="button" data-i={i} aria-pressed={String(i === 0)} style={`font-family:'${f.family}'`}>{f.name}</button>)}
+    </div>
+    <div class="row"><label class="label" for="tySize">크기</label><input type="range" id="tySize" min="13" max="22" value="16" style="flex:1"><span class="mono" id="tySizeV"></span></div>
+    <div class="row"><label class="label" for="tyLh">행간</label><input type="range" id="tyLh" min="1.1" max="2.2" step="0.05" value="1.6" style="flex:1"><span class="mono" id="tyLhV"></span></div>
+    <div class="row"><label class="label" for="tyMeasure">줄 길이</label><input type="range" id="tyMeasure" min="14" max="60" value="34" style="flex:1"><span class="mono" id="tyMeasureV"></span></div>
+    <p class="g-read" aria-live="polite">행간: <mark id="tyRead"></mark></p>
+    <p id="tyNote"></p>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#tyPara')!;
+  const fonts: { family: string }[] = JSON.parse(lab.dataset.fonts!);
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => lab.querySelector<T>(`#${id}`)!;
+  const text = $('tyText');
+  let font = fonts[0];
+
+  function render() {
+    const size = +$<HTMLInputElement>('tySize').value, lh = +$<HTMLInputElement>('tyLh').value, ms = +$<HTMLInputElement>('tyMeasure').value;
+    text.style.fontFamily = `'${font.family}', sans-serif`;
+    text.style.fontSize = `${size}px`;
+    text.style.lineHeight = String(lh);
+    text.style.maxWidth = `${ms}em`;
+    $('tySizeV').textContent = `${size}px`;
+    $('tyLhV').textContent = lh.toFixed(2);
+    $('tyMeasureV').textContent = `${ms}자`;
+    $('tyRead').textContent = lh < 1.4 ? '좁음 — 줄이 붙어 보임' : lh <= 1.7 ? '본문 범위 (1.4–1.7)' : '넓음 — 문단이 흩어져 보임';
+    $('tyNote').textContent = `한 줄에 한글 약 ${ms}자(글자 폭을 1em으로 셈). 라틴 문자는 45–75자가 기준인데, 한글은 글자 하나가 넓어 그보다 적게 잡습니다 — 몇 자가 알맞은지는 Regula에 아직 근거를 모으지 못했어요. 줄이 길수록 행간을 조금 더 넓혀 보세요.`;
+  }
+  $('tyFonts').addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    font = fonts[+b.dataset.i!];
+    $('tyFonts').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  lab.querySelectorAll('input').forEach((i) => i.addEventListener('input', render));
+  render();
+</script>

@@ -69,8 +69,31 @@ const darkpatterns = defineCollection({
   }),
 });
 
+// 서체: 내가 쓰는 · 눈여겨본 서체. used_in에 양식 이름(templates의 id)과 역할을 적는다.
+// 견본은 load(google: Google Fonts 패밀리 / css: 서체를 내려받는 CSS 주소)로 서체 페이지에서만 불러온다.
+export const fontKinds = ['산세리프', '세리프', '디스플레이', '모노'] as const;
+
+const fonts = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/fonts' }),
+  schema: z.object({
+    name: z.string(),
+    family: z.string(),
+    order: z.number(),
+    kind: z.enum(fontKinds),
+    script: z.enum(['한글 · 라틴', '라틴']),
+    maker: z.string(),
+    license: z.string(),
+    weights: z.string(),
+    status: z.enum(['쓰는 중', '눈여겨봄']),
+    used_in: z.array(z.object({ template: z.string(), role: z.string() })).default([]),
+    traits: z.string(),
+    url: z.url(),
+    load: z.object({ google: z.string().optional(), css: z.url().optional() }),
+  }),
+});
+
 // 기록장: 내가 본 것 · 메모 · 직접 써 본 예시. 파일 하나가 기록 하나.
-// about에 "formulas/<id>", "patterns/<카테고리>/<id>", "darkpatterns/<id>", "references/<id>"를 넣으면
+// about에 "formulas/<id>", "patterns/<카테고리>/<id>", "darkpatterns/<id>", "references/<id>", "fonts/<id>"를 넣으면
 // 그 항목 아래에 이 기록이 붙는다. 없는 항목을 적으면 빌드가 멈춘다(src/lib/items.ts).
 export const noteKinds = ['본 것', '메모', '써 본 예시'] as const;
 
@@ -139,4 +162,4 @@ const templates = defineCollection({
   }),
 });
 
-export const collections = { formulas, patterns, darkpatterns, references, templates, notes };
+export const collections = { formulas, patterns, darkpatterns, references, templates, notes, fonts };

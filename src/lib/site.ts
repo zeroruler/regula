@@ -39,7 +39,7 @@ export const sections = nav.flatMap((g) => g.items);
 // 원리와 공식의 주제 순서. path가 있는 주제는 실습이 붙은 별도 페이지가 있다.
 export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '비율과 간격', blurb: '황금비, 8pt 그리드' },
-  { name: '타이포그래피', blurb: '타입 스케일, 줄 길이, 행간' },
+  { name: '타이포그래피', path: 'principles/typography/', blurb: '타입 스케일, 줄 길이, 행간, 내가 쓰는 서체' },
   { name: '색', path: 'principles/color/', blurb: '색상환과 배색, 60-30-10, 동시 대비, 명도 대비' },
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
@@ -118,6 +118,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '원리에 "타이포그래피" 실습 페이지(/principles/typography/)를 만듦. 내 디자인 시스템 4개에서 실제로 쓰는 서체 12개를 서체 목록(fonts 컬렉션)으로 정리하고 견본을 그 서체로 보여 줌. 서체 · 크기 · 행간 · 줄 길이를 바꿔 보는 본문 실습, 비례 숫자와 고정폭 숫자 비교를 붙임.' },
   { date: '2026-11-01', text: '기록장(/notes/)을 만듦. 본 것 · 메모 · 써 본 예시를 파일 하나씩 날짜별로 쌓고, 기록이 가리키는 공식 · 패턴 · 다크 패턴 아래에 "내 기록"으로 붙게 함. 오늘 본 릴스 10개를 첫 기록으로 남김. 찾기에도 기록이 들어감.' },
   { date: '2026-11-01', text: '출처 1차 검증. 확인이 필요한 출처를 원문과 대조해 틀린 저자(햄버거 메뉴 글), 연도(당겨서 새로고침), 바뀐 NN/g 제목 4개, 전자상거래법 규제 유형을 고치고, 재현이 엇갈린 연구(자이가르닉, 선택 과부하, 손실 회피 계수)의 설명을 바로잡음. 기록은 docs/source-check.md.' },
   { date: '2026-11-01', text: '원리에 "움직임" 실습 페이지(/principles/motion/)를 추가. 움직임 이름 9가지(이즈 인 · 이즈 아웃 · 스프링 · 바운스 · 순차 등장 · 페이드 · 슬라이드 · 확대 전환 · 공유 요소 전환)를 곡선 값과 함께 정리하고, 곡선과 시간을 바꿔 재생해 보는 실습과 목록 → 상세 화면 전환 다섯 가지를 직접 열어 보는 실습을 붙임. 움직임 줄이기 설정을 따름.' },

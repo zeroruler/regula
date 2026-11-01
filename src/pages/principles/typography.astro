@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import ItemNotes from '../../components/ItemNotes.astro';
+import Paragraph from '../../demos/typography/Paragraph.astro';
+import Numbers from '../../demos/typography/Numbers.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const T = '타이포그래피';
+const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+const templates = Object.fromEntries((await getCollection('templates')).map((t) => [t.id, t.data.name]));
+for (const f of fonts) for (const u of f.data.used_in) if (!templates[u.template]) throw new Error(`서체 ${f.id}: 없는 양식 "${u.template}"`);
+
+// 견본용 서체는 이 페이지에서만 불러온다
+const google = fonts.map((f) => f.data.load.google).filter(Boolean);
+const googleUrl = `https://fonts.googleapis.com/css2?${google.map((g) => `family=${g}`).join('&')}&display=swap`;
+const cssUrls = fonts.map((f) => f.data.load.css).filter(Boolean) as string[];
+const korean = fonts.filter((f) => f.data.script === '한글 · 라틴').map((f) => ({ id: f.id, name: f.data.name, family: f.data.family }));
+const byTemplate = Object.entries(templates).map(([id, name]) => ({ id, name, fonts: fonts.filter((f) => f.data.used_in.some((u) => u.template === id)) })).filter((t) => t.fonts.length);
+
+const rules = [
+  { s: '간격 조절', rule: '사용자가 행간 1.5배, 문단 간격 2배, 자간 0.12em, 단어 간격 0.16em으로 바꿔도 글이 잘리거나 겹치지 않게', src: 'WCAG 2.2 1.4.12 Text Spacing (AA)' },
+  { s: '확대', rule: '글자를 200%까지 키워도 내용과 기능을 잃지 않게 — 크기는 px로 못 박지 않는다', src: 'WCAG 2.2 1.4.4 Resize Text (AA)' },
+  { s: '대비', rule: '본문 4.5:1, 큰 글자 3:1 이상', src: 'WCAG 2.2 1.4.3 Contrast (Minimum) (AA)' },
+  { s: '숫자', rule: '표 · 금액 · 시계처럼 세로로 줄 서는 숫자는 고정폭 숫자로', src: 'W3C CSS Fonts Module Level 4 (font-variant-numeric: tabular-nums)' },
+  { s: '서체 수', rule: '역할(본문 · 제목 · 숫자/코드)마다 하나씩, 양식 하나에 2–3개', src: 'Regula 양식 4개의 공통점 (DESIGN.md)' },
+  { s: '라이선스', rule: '여기 서체는 모두 SIL OFL — 상업적 사용 · 수정 · 재배포는 되고, 서체만 따로 파는 것은 안 된다', src: 'SIL Open Font License 1.1' },
+];
+---
+<Base title="타이포그래피 · 원리와 공식 · Regula" current="principles" description="내 디자인 시스템에서 쓰는 서체 12개를 견본과 함께 정리하고, 본문의 크기 · 행간 · 줄 길이와 숫자 폭을 직접 바꿔 보는 페이지">
+  <Fragment slot="head">
+    <link rel="stylesheet" href={googleUrl}>
+    {cssUrls.map((u) => <link rel="stylesheet" href={u}>)}
+  </Fragment>
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>글자는 읽히려고 있다</h1>
+    <p>서체를 고르는 일과 크기 · 행간 · 줄 길이를 정하는 일은 따로가 아닙니다. 위에서는 같은 문단을 바꿔 보고, 아래에는 내 디자인 시스템 네 개에서 실제로 쓰는 서체를 모았어요. 견본은 모두 그 서체로 그렸습니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 본문</span>
+      <h2>크기, 행간, 줄 길이는 한 묶음</h2>
+      <p>내 양식에서 쓰는 한글 서체로 같은 문단을 바꿔 봅니다. 서체마다 같은 16px이라도 크게 또는 작게 보이는 차이가 있어요.</p>
+    </header>
+    <Paragraph fonts={korean} />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 숫자</span>
+      <h2>숫자는 자리를 맞춘다</h2>
+    </header>
+    <Numbers />
+  </section>
+
+  <section id="fonts">
+    <header>
+      <span class="label">서체</span>
+      <h2>내가 쓰는 서체 {fonts.length}개</h2>
+      <p>내 양식(디자인 시스템)에서 실제로 쓰고 있는 서체입니다. 눈여겨본 서체가 생기면 "눈여겨봄"으로 더해 가요. 이름을 누르면 서체를 받을 수 있는 곳으로 갑니다.</p>
+    </header>
+    <div class="ty-bytpl">
+      {byTemplate.map((t) => (
+        <a href={href(`templates/${t.id}/`)}><b>{t.name}</b>{t.fonts.map((f) => <span>{f.data.name} <small>{f.data.used_in.find((u) => u.template === t.id)!.role}</small></span>)}</a>
+      ))}
+    </div>
+    <div class="fontlist">
+      {fonts.map((f) => (
+        <article class="font" id={`font-${f.id}`}>
+          <p class="font-sample" style={`font-family:'${f.data.family}', ${f.data.kind === '모노' ? 'monospace' : f.data.kind === '세리프' ? 'serif' : 'sans-serif'}`}>{f.data.script === '라틴' ? 'Regula 0123 Aa Gg' : '다람쥐 헌 쳇바퀴 Aa 0123'}</p>
+          <div class="font-meta">
+            <h3><a href={f.data.url}>{f.data.name}</a><small>{f.data.family !== f.data.name && f.data.family}</small></h3>
+            <p>{f.data.traits}</p>
+            <dl>
+              <dt>분류</dt><dd>{f.data.kind} · {f.data.script}</dd>
+              <dt>굵기</dt><dd>{f.data.weights}</dd>
+              <dt>만든 곳</dt><dd>{f.data.maker} · {f.data.license}</dd>
+              <dt>쓰는 곳</dt><dd>{f.data.status} — {f.data.used_in.map((u, i) => <>{i > 0 && ', '}<a href={href(`templates/${u.template}/`)}>{templates[u.template]}</a> {u.role}</>)}</dd>
+            </dl>
+            <ItemNotes ref={`fonts/${f.id}`} />
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">공식</span>
+      <h2>타이포그래피 공식 {formulas.length}개</h2>
+      <p>글자 크기를 정하는 비율은 <a href={href('tools/')}>계산 도구</a>의 타입 스케일에서 바로 계산해 볼 수 있어요.</p>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

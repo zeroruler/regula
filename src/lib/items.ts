@@ -9,8 +9,8 @@ let cache: Map<string, Item> | null = null;
 
 async function all() {
   if (cache) return cache;
-  const [formulas, patterns, darks, refs] = await Promise.all([
-    getCollection('formulas'), getCollection('patterns'), getCollection('darkpatterns'), getCollection('references'),
+  const [formulas, patterns, darks, refs, fonts] = await Promise.all([
+    getCollection('formulas'), getCollection('patterns'), getCollection('darkpatterns'), getCollection('references'), getCollection('fonts'),
   ]);
   const m = new Map<string, Item>();
   for (const f of formulas) {
@@ -23,6 +23,7 @@ async function all() {
   }
   for (const d of darks) m.set(`darkpatterns/${d.id}`, { ref: `darkpatterns/${d.id}`, kind: '다크 패턴', name: d.data.name, url: href(`patterns/dark/#d-${d.id}`) });
   for (const r of refs) m.set(`references/${r.id}`, { ref: `references/${r.id}`, kind: '레퍼런스', name: r.data.title, url: href(`references/${r.id}/`) });
+  for (const f of fonts) m.set(`fonts/${f.id}`, { ref: `fonts/${f.id}`, kind: '서체', name: f.data.name, url: href(`principles/typography/#font-${f.id}`) });
   cache = m;
   return m;
 }

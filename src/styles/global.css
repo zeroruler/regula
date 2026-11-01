@@ -878,3 +878,38 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
   .note{grid-template-columns:minmax(0,1fr)}
   .note-about{grid-column:1}
 }
+
+/* 타이포그래피 — 견본은 그 서체로, 나머지는 Regula 서체 그대로 */
+.ty-frame{background:var(--surface);border:1px solid var(--rule);padding:24px;align-self:start;min-width:0;overflow:hidden}
+.ty-para h4{margin:0 0 .5em;font-size:1.35em;line-height:1.25;font-weight:700}
+.ty-para p{margin:0}
+.tylab input[type=range]{accent-color:var(--ink);min-width:0}
+.tylab .row > .label{width:52px}
+.tylab #tyFonts .chip{font-size:13px;letter-spacing:0}
+.ty-nums{min-width:0;width:auto;font-family:'IBM Plex Sans KR',var(--body);font-size:20px;border-collapse:collapse}
+.ty-nums td{padding:6px 0;border-bottom:1px solid var(--rule)}
+.ty-nums td:first-child{font-weight:400;padding-right:32px;font-size:15px;color:var(--ink-2)}
+.ty-nums td:last-child{text-align:right}
+.ty-nums tr:last-child td{border-top:1px solid var(--ink);border-bottom:none;font-weight:600}
+.ty-bytpl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:28px}
+.ty-bytpl a{background:var(--surface);padding:14px 16px;display:grid;gap:4px;align-content:start;text-decoration:none;font-size:13.5px}
+.ty-bytpl a:hover{background:var(--surface)}
+.ty-bytpl a:hover b{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:2px}
+.ty-bytpl b{font-family:var(--display);font-size:18px;margin-bottom:4px}
+.ty-bytpl small{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:4px}
+.fontlist{border-top:1px solid var(--ink)}
+.font{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:8px 32px;padding:22px 0;border-bottom:1px solid var(--rule);align-items:start}
+.font-sample{margin:0;font-size:34px;line-height:1.2;overflow-wrap:anywhere;color:var(--ink)}
+.font-meta{display:grid;gap:8px;min-width:0}
+.font-meta h3{font-family:var(--body);font-size:17px;font-weight:600;letter-spacing:0}
+.font-meta h3 small{font-family:var(--mono);font-size:11.5px;font-weight:400;color:var(--ink-3);margin-left:8px}
+.font-meta > p{margin:0;font-size:14px;color:var(--ink-2)}
+.font-meta dl{margin:0;display:grid;grid-template-columns:56px minmax(0,1fr);gap:3px 10px;font-size:13px}
+.font-meta dt{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:1px}
+.font-meta dd{margin:0;color:var(--ink-2)}
+@media (max-width:980px){ .ty-bytpl{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:640px){
+  .font{grid-template-columns:minmax(0,1fr)}
+  .font-sample{font-size:28px}
+  .ty-bytpl{grid-template-columns:minmax(0,1fr)}
+}

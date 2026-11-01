@@ -9,9 +9,10 @@ import { href } from '../lib/url';
 // 스크립트가 없어도 전체 목록은 보인다.
 type Item = { kind: string; tag: string; title: string; sub?: string; url: string; text: string };
 
-const [formulas, patterns, references, templates] = await Promise.all([
+const [formulas, patterns, darks, references, templates] = await Promise.all([
   getCollection('formulas'),
   getCollection('patterns'),
+  getCollection('darkpatterns'),
   getCollection('references'),
   getCollection('templates'),
 ]);
@@ -41,6 +42,13 @@ const items: Item[] = [
         };
       }),
   ),
+  ...darks.sort(byOrder).map((d) => {
+    const x = d.data;
+    return {
+      kind: '패턴', tag: '다크 패턴', title: `${x.name} · ${x.en}`, sub: x.trick, url: href(`patterns/dark/#d-${d.id}`),
+      text: hay(x.name, x.en, '다크 패턴 피할 것', x.trick, x.honest, x.source),
+    };
+  }),
   ...references.sort(byOrder).map((r) => {
     const d = r.data;
     return {
@@ -73,7 +81,7 @@ const tags = kinds.flatMap((k) => [...new Set(items.filter((i) => i.kind === k).
 ---
 <Base title="찾기 · Regula" current="search" description="Regula의 공식, 패턴, 레퍼런스, 양식을 검색어와 태그로 찾기">
   <PageHead current="search" title="찾아서 바로 가기">
-    <p>공식 {formulas.length} · 패턴 {patterns.length} · 레퍼런스 {references.length} · 양식 {templates.length}개를 한 목록에 모았습니다. 검색어는 이름뿐 아니라 설명·출처까지 찾고, 띄어쓰기는 달라도 됩니다. 종류와 태그로 좁힐 수 있어요.</p>
+    <p>공식 {formulas.length} · 패턴 {patterns.length + darks.length} · 레퍼런스 {references.length} · 양식 {templates.length}개를 한 목록에 모았습니다. 검색어는 이름뿐 아니라 설명·출처까지 찾고, 띄어쓰기는 달라도 됩니다. 종류와 태그로 좁힐 수 있어요.</p>
   </PageHead>
 
   <section class="search">

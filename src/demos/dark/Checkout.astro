@@ -1,0 +1,101 @@
+---
+// 결제 화면 하나에 속임 여섯 가지를 켜 두고, 하나씩 꺼서 정직한 화면으로 바꿔 본다.
+// 금액은 Regula가 지은 예시.
+const tricks = [
+  { k: 'hidden', n: '숨은 비용' },
+  { k: 'sneak', n: '끼워 팔기' },
+  { k: 'pre', n: '미리 체크된 동의' },
+  { k: 'sub', n: '몰래 자동 결제' },
+  { k: 'urgency', n: '가짜 마감 시계' },
+  { k: 'shame', n: '죄책감 버튼' },
+];
+---
+<div class="lab dklab" id="dkLab">
+  <div class="dk-frame" id="dkFrame">
+    <div class="dk-urg" data-on="urgency">오늘만 이 가격 · <span class="mono" id="dkClock">00:04:59</span></div>
+    <div class="dk-head">
+      <span class="label">포트폴리오 리뷰 · 7일 체험 포함</span>
+      <b class="dk-price" id="dkPrice"></b>
+      <span class="dk-sub" id="dkPriceNote"></span>
+    </div>
+    <ul class="dk-lines">
+      <li><span>포트폴리오 리뷰</span><span>29,000원</span></li>
+      <li class="dk-opt"><span class="dk-ck" id="dkIns">파손 보험</span><span>+3,000원</span></li>
+      <li class="dk-fee"><span>결제 수수료</span><span>+4,500원</span></li>
+      <li class="dk-total"><span>오늘 결제</span><span id="dkTotal"></span></li>
+    </ul>
+    <span class="dk-ck" id="dkMkt">마케팅 정보 수신 (선택)</span>
+    <p class="dk-subline" id="dkSub"></p>
+    <div class="dk-acts">
+      <span class="btn-x fill">결제하기</span>
+      <span class="dk-decline" id="dkNo"></span>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 결제 화면 고쳐 보기</span>
+    <h3>속임을 하나씩 끄기</h3>
+    <div class="chips" id="dkChips">
+      {tricks.map((t) => <button class="chip" type="button" data-k={t.k} aria-pressed="true">{t.n}</button>)}
+    </div>
+    <div class="row">
+      <button class="chip" type="button" id="dkAllOff">모두 끄기</button>
+      <button class="chip" type="button" id="dkAllOn">모두 켜기</button>
+    </div>
+    <p class="g-read" aria-live="polite">보이는 가격 <span id="dkSeen"></span> → 오늘 결제 <span id="dkPay"></span>: <mark id="dkRead"></mark></p>
+    <p id="dkNote"></p>
+    <div class="g-ui">
+      <span class="label">점검 질문</span>
+      <p>사용자가 나중에 알게 됐을 때 "그런 줄 몰랐다"고 할 만한 것이 있나? 있으면 그건 설득이 아니라 속임입니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#dkLab')!;
+  const frame = lab.querySelector<HTMLElement>('#dkFrame')!;
+  const on = new Set(['hidden', 'sneak', 'pre', 'sub', 'urgency', 'shame']);
+  const won = (n: number) => `${n.toLocaleString('ko-KR')}원`;
+  const $ = (id: string) => lab.querySelector<HTMLElement>(`#${id}`)!;
+
+  function render() {
+    const fee = 4500, ins = on.has('sneak') ? 3000 : 0;
+    const pay = 29000 + fee + ins;
+    const seen = on.has('hidden') ? 29000 : 29000 + fee;
+    for (const k of ['hidden', 'sneak', 'pre', 'sub', 'urgency', 'shame']) frame.classList.toggle(`t-${k}`, on.has(k));
+    $('dkPrice').textContent = won(seen);
+    $('dkPriceNote').textContent = on.has('hidden') ? '' : '수수료 4,500원 포함';
+    $('dkIns').classList.toggle('on', on.has('sneak'));
+    $('dkIns').textContent = on.has('sneak') ? '파손 보험' : '파손 보험 추가 (선택)';
+    $('dkMkt').classList.toggle('on', on.has('pre'));
+    $('dkTotal').textContent = won(pay);
+    $('dkSub').textContent = on.has('sub') ? '7일 뒤 월 9,900원이 자동 결제됩니다.' : '7일 체험이 끝나면 11월 8일부터 월 9,900원. 끝나기 3일 전에 알려 드리고, 그 전에 해지하면 결제되지 않아요.';
+    $('dkNo').textContent = on.has('shame') ? '아니요, 포트폴리오가 별로여도 괜찮아요' : '다음에 할게요';
+    $('dkSeen').textContent = won(seen);
+    $('dkPay').textContent = won(pay);
+    const unaware = [on.has('sneak') && '보험 3,000원', on.has('pre') && '마케팅 수신', on.has('sub') && '월 9,900원 자동 결제'].filter(Boolean);
+    $('dkRead').textContent = on.size === 0 ? '모르고 내는 돈도, 모르고 한 동의도 없음' : `차이 ${won(pay - seen)}${unaware.length ? ` · 모르고 동의: ${unaware.join(', ')}` : ''}`;
+    $('dkNote').textContent = on.size === 0
+      ? '모두 끄면 가격은 처음부터 실제 금액이고, 선택은 비어 있고, 거절도 평범한 말입니다. 결제 버튼은 그대로예요 — 정직한 화면도 충분히 팔 수 있습니다.'
+      : `켜진 속임 ${on.size}개. 하나하나는 작아 보여도, 합치면 사용자는 생각보다 더 내고 원하지 않은 것에 동의합니다.`;
+    lab.querySelectorAll<HTMLButtonElement>('#dkChips button').forEach((b) => b.setAttribute('aria-pressed', String(on.has(b.dataset.k!))));
+  }
+  lab.querySelector('#dkChips')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    const k = b.dataset.k!;
+    on.has(k) ? on.delete(k) : on.add(k);
+    render();
+  });
+  $('dkAllOff').addEventListener('click', () => { on.clear(); render(); });
+  $('dkAllOn').addEventListener('click', () => { ['hidden', 'sneak', 'pre', 'sub', 'urgency', 'shame'].forEach((k) => on.add(k)); render(); });
+
+  // 가짜 시계: 0이 되면 다시 처음부터 — 가짜라는 것이 보이게
+  let left = 299;
+  const clock = $('dkClock');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) setInterval(() => {
+    left = left <= 0 ? 299 : left - 1;
+    clock.textContent = `00:0${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  }, 1000);
+  render();
+</script>

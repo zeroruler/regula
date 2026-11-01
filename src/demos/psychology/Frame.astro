@@ -1,0 +1,67 @@
+---
+// 같은 상품, 같은 사실을 앵커 · 프레이밍 · 손실 문구로만 바꿔 본다. 숫자는 Regula가 지은 예시.
+const toggles = [
+  { k: 'anchor', n: '앵커링', off: '가격만', on: '정가에 취소선' },
+  { k: 'frame', n: '프레이밍', off: '만족 80%', on: '불만족 20%' },
+  { k: 'loss', n: '손실 회피', off: '얻는 말', on: '잃는 말' },
+];
+import { href } from '../../lib/url';
+---
+<div class="lab pslab" id="psFrame">
+  <div class="ps-frame">
+    <div class="ps-card">
+      <span class="label">무선 이어폰</span>
+      <div class="ps-price"><s id="pfAnchor">300,000원</s><b>129,000원</b></div>
+      <p class="ps-review" id="pfReview"></p>
+      <span class="btn-x fill" id="pfCta"></span>
+      <span class="ps-small" id="pfSmall"></span>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 같은 사실, 다른 말</span>
+    <h3>무엇이 바뀌었나</h3>
+    {toggles.map((t) => (
+      <div class="row ps-tg">
+        <span class="label">{t.n}</span>
+        <div class="chips" data-k={t.k}>
+          <button class="chip" type="button" data-v="off" aria-pressed="true">{t.off}</button>
+          <button class="chip" type="button" data-v="on" aria-pressed="false">{t.on}</button>
+        </div>
+      </div>
+    ))}
+    <p class="g-read" aria-live="polite">사실: <mark>129,000원 · 구매자 80% 만족 · 쿠폰 3,000원</mark> <span id="pfSame"></span></p>
+    <p id="pfNote"></p>
+    <div class="g-ui">
+      <span class="label">선</span>
+      <p>앵커가 실제로 팔던 정가이고, 만족률이 실제 숫자이고, 쿠폰이 실제로 사라진다면 설득입니다. 하나라도 지어냈다면 <a href={href('patterns/dark/')}>다크 패턴</a>이에요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#psFrame')!;
+  const st: Record<string, boolean> = { anchor: false, frame: false, loss: false };
+  const $ = (id: string) => lab.querySelector<HTMLElement>(`#${id}`)!;
+
+  function render() {
+    $('pfAnchor').hidden = !st.anchor;
+    $('pfReview').textContent = st.frame ? '구매자 20%가 불만족했어요' : '구매자 80%가 만족했어요';
+    $('pfCta').textContent = st.loss ? '쿠폰 놓치지 않기' : '쿠폰 받고 구매';
+    $('pfSmall').textContent = st.loss ? '지금 안 받으면 3,000원 손해예요' : '3,000원 쿠폰을 드려요';
+    const n = Object.values(st).filter(Boolean).length;
+    $('pfSame').textContent = `— 바뀐 말 ${n}곳, 바뀐 사실 0곳`;
+    $('pfNote').textContent = [
+      st.anchor ? '취소선 정가가 기준점이 되어 129,000원이 "싸게" 보입니다.' : '기준점이 없으면 129,000원은 그냥 129,000원이에요.',
+      st.frame ? '같은 숫자를 불만족으로 말하면 덜 사게 됩니다. 경쟁 상품만 이렇게 말하면 비교를 비트는 것.' : '만족으로 말하는 쪽이 보통 더 끌립니다.',
+      st.loss ? '잃는 말이 얻는 말보다 세게 움직입니다 — 그래서 남용되기 쉬워요.' : '',
+    ].filter(Boolean).join(' ');
+  }
+  lab.querySelectorAll<HTMLElement>('.chips[data-k]').forEach((g) => g.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    st[g.dataset.k!] = b.dataset.v === 'on';
+    g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  }));
+  render();
+</script>

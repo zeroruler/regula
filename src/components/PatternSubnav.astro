@@ -1,0 +1,12 @@
+---
+// UI 패턴 페이지들의 하위 내비게이션. current에 든 카테고리를 현재 페이지로 표시한다.
+import { patternsByGroup } from '../lib/patterns';
+import { href } from '../lib/url';
+
+interface Props { current?: string[] }
+const { current = [] } = Astro.props;
+const groups = await patternsByGroup();
+---
+{groups.map(({ group: g, items }) => (
+  <a href={href(g.path)} aria-current={current.includes(g.id) ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
+))}

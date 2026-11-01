@@ -1,13 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PatternCard from '../../components/PatternCard.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
 import Hierarchy from '../../demos/buttons/Hierarchy.astro';
 import States from '../../demos/buttons/States.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 
 const groups = await patternsByGroup();
-const buttons = groups.find((x) => x.group.id === 'buttons')!.items;
+const { group, items: buttons } = groups.find((x) => x.group.id === 'buttons')!;
 
 // 상태별 규칙. 출처가 있는 것만 적는다.
 const stateRules = [
@@ -20,11 +21,7 @@ const stateRules = [
 ];
 ---
 <Base title="버튼 · UI 패턴 · Regula" current="patterns" description="버튼의 위계와 상태를 직접 정해 보고 눌러 보는 실습 페이지">
-  <Fragment slot="sub">
-    {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'buttons' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
-    ))}
-  </Fragment>
+  <Fragment slot="sub"><PatternSubnav current={['buttons']} /></Fragment>
 
   <header class="pagehead">
     <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
@@ -58,23 +55,5 @@ const stateRules = [
     </div>
   </section>
 
-  <section>
-    <header>
-      <span class="label">종류</span>
-      <h2>버튼 {buttons.length}가지, 가벼운 것부터</h2>
-    </header>
-    <div class="patterns">
-      {buttons.map((p) => <PatternCard pattern={p} />)}
-    </div>
-    <div class="compare">
-      <table>
-        <thead><tr><th>버튼</th><th>한 화면에</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
-        <tbody>
-          {buttons.map(({ data: p }) => (
-            <tr><td>{p.name}</td><td>{p.per_view}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </section>
+  <PatternSection group={group} items={buttons} cols={[{h: '한 화면에', k: 'per_view'}]} />
 </Base>

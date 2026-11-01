@@ -1,14 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PatternCard from '../../components/PatternCard.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
 import Wait from '../../demos/states/Wait.astro';
 import Empty from '../../demos/states/Empty.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 
 const groups = await patternsByGroup();
-const loading = groups.find((x) => x.group.id === 'loading')!.items;
-const empty = groups.find((x) => x.group.id === 'empty')!.items;
+const loading = groups.find((x) => x.group.id === 'loading')!;
+const empty = groups.find((x) => x.group.id === 'empty')!;
 
 // 로딩·빈 상태 규칙. 출처가 있는 것만 적는다.
 const rules = [
@@ -19,14 +20,9 @@ const rules = [
   { s: '움직임', rule: '반짝이는 스켈레톤과 회전 애니메이션은 움직임 줄이기 설정을 따른다', src: 'WCAG 2.2 2.3.3 Animation from Interactions (AAA)' },
   { s: '빈 상태', rule: '왜 비었는지와 다음 행동을 함께. "결과 없음"과 "오류"를 다른 말로', src: 'Nielsen Norman Group 「Designing Empty States in Complex Applications」' },
 ];
-const ids = ['loading', 'empty'];
 ---
 <Base title="로딩과 빈 상태 · UI 패턴 · Regula" current="patterns" description="걸리는 시간에 맞는 로딩 표시를 고르고, 빈 화면에 설명과 다음 행동을 붙여 보는 실습 페이지">
-  <Fragment slot="sub">
-    {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={ids.includes(g.id) ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
-    ))}
-  </Fragment>
+  <Fragment slot="sub"><PatternSubnav current={['loading', 'empty']} /></Fragment>
 
   <header class="pagehead">
     <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
@@ -60,25 +56,6 @@ const ids = ['loading', 'empty'];
     </div>
   </section>
 
-  {[{ name: '로딩', items: loading, col: '알맞은 시간' }, { name: '빈 상태', items: empty, col: '언제' }].map((g) => (
-    <section>
-      <header>
-        <span class="label">종류</span>
-        <h2>{g.name} {g.items.length}가지</h2>
-      </header>
-      <div class="patterns">
-        {g.items.map((p) => <PatternCard pattern={p} />)}
-      </div>
-      <div class="compare">
-        <table>
-          <thead><tr><th>{g.name}</th><th>{g.col}</th><th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
-          <tbody>
-            {g.items.map(({ data: p }) => (
-              <tr><td>{p.name}</td><td>{p.fits}</td><td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  ))}
+  <PatternSection group={loading.group} items={loading.items} cols={[{ h: '알맞은 시간', k: 'fits' }]} />
+  <PatternSection group={empty.group} items={empty.items} cols={[{ h: '언제', k: 'fits' }]} />
 </Base>

@@ -4,6 +4,7 @@ import { refGroups } from '../../content.config';
 import Base from '../../layouts/Base.astro';
 import SeenSync from '../../components/SeenSync.astro';
 import { href } from '../../lib/url';
+import { patternGroups } from '../../lib/site';
 
 type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
 const imported = import.meta.glob<Imported>('../../imported/*.json', { eager: true, import: 'default' });
@@ -28,7 +29,7 @@ const usedIn = [
   ...(await getCollection('formulas', (f) => f.data.refs.includes(reference.id)))
     .map((f) => ({ label: '§1 공식', name: f.data.name, to: href(`principles/#f-${f.id}`) })),
   ...(await getCollection('patterns', (p) => p.data.refs.includes(reference.id)))
-    .map((p) => ({ label: '§3 패턴', name: p.data.name, to: href(`patterns/#p-${p.id.split('/').pop()}`) })),
+    .map((p) => ({ label: '§3 패턴', name: p.data.name, to: href(`${patternGroups.find((g) => g.name === p.data.category)?.path ?? 'patterns/'}#p-${p.id.split('/').pop()}`) })),
 ];
 ---
 <Base title={`${r.title} · Regula`} description={r.summary} current="references">

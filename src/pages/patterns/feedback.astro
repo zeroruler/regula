@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const { group, items } = (await patternsByGroup()).find((x) => x.group.id === 'feedback')!;
+---
+<Base title="알림 · UI 패턴 · Regula" current="patterns" description="토스트부터 모달까지, 사용자에게 알리는 방법 9가지를 방해 정도 순으로">
+  <Fragment slot="sub"><PatternSubnav current={['feedback']} /></Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 알림</span>
+    <h1>흐름을 끊을 자격이 있나</h1>
+    <p>알림은 사용자가 하던 일에 끼어듭니다. 얼마나 끼어들지는 메시지의 무게에 맞춰야 해요. 화면 구석에서 지나가는 것부터 모든 걸 멈추게 하는 것까지, 방해 정도 순으로 놓았습니다.</p>
+  </header>
+
+  <PatternSection group={group} items={items} cols={[{ h: '사라지는 방식', k: 'dismiss' }, { h: '액션', k: 'actions' }]} />
+</Base>

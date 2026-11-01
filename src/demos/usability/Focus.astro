@@ -1,0 +1,78 @@
+---
+// 포커스: 실제로 포커스를 받는 작은 폼. 포커스 표시를 끄거나, 보이는 순서와 HTML 순서를 어긋나게 해 본다.
+// 터치 기기에서도 해 볼 수 있게 "다음 칸으로" 버튼이 HTML 순서대로 포커스를 옮긴다.
+const fields = [
+  { id: 'name', label: '이름', pos: 1 },
+  { id: 'mail', label: '이메일', pos: 2 },
+  { id: 'phone', label: '전화번호', pos: 3 },
+];
+---
+<div class="lab uslab" id="uFocus">
+  <div class="u-fig">
+    <form class="u-form" onsubmit="return false" aria-label="포커스 실험용 폼">
+      {fields.map((f) => (
+        <label class="u-field" data-pos={f.pos}><span>{f.label}</span><input type="text" data-name={f.label} autocomplete="off"></label>
+      ))}
+      <button type="button" class="u-submit" data-name="보내기">보내기</button>
+    </form>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 키보드</span>
+    <h3>마우스 없이 지나가 보기</h3>
+    <div class="chips" id="ufRing" role="group" aria-label="포커스 표시">
+      <button class="chip" type="button" data-v="on" aria-pressed="true">포커스 표시 켬</button>
+      <button class="chip" type="button" data-v="off" aria-pressed="false">outline: none</button>
+    </div>
+    <div class="chips" id="ufOrder" role="group" aria-label="배치">
+      <button class="chip" type="button" data-v="same" aria-pressed="true">보이는 순서 = HTML 순서</button>
+      <button class="chip" type="button" data-v="swap" aria-pressed="false">CSS로 순서 바꿈</button>
+    </div>
+    <div class="row"><button class="chip" type="button" id="ufNext">다음 칸으로 (Tab) →</button></div>
+    <p class="g-read" aria-live="polite">지금 포커스: <mark id="ufRead">없음 — 폼을 누르거나 Tab</mark></p>
+    <p id="ufNote">왼쪽 폼에서 Tab 키(터치 기기는 "다음 칸으로")로 이동해 보세요. 그다음 표시를 끄고 다시 해 봅니다.</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>테두리가 디자인과 안 맞으면 지우지 말고 :focus-visible로 다시 그립니다. 배치를 CSS로 바꿨다면 HTML 순서도 같이 옮겨요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#uFocus')!;
+  const form = lab.querySelector<HTMLElement>('.u-form')!;
+  const read = lab.querySelector<HTMLElement>('#ufRead')!;
+  const note = lab.querySelector<HTMLElement>('#ufNote')!;
+  const focusables = () => [...form.querySelectorAll<HTMLElement>('input, button')];
+  let ringOff = false, swapped = false;
+
+  function describe(el: HTMLElement | null) {
+    if (!el || !form.contains(el)) { read.textContent = '폼 밖'; return; }
+    const list = focusables();
+    const htmlNo = list.indexOf(el) + 1;
+    // 화면에서 위에서 몇 번째인가
+    const byY = [...list].sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+    const seenNo = byY.indexOf(el) + 1;
+    read.textContent = `${el.dataset.name} — Tab ${htmlNo}번째${seenNo !== htmlNo ? ` · 화면에선 ${seenNo}번째` : ''}`;
+    note.textContent = ringOff
+      ? '포커스는 분명 어딘가에 있지만 화면에선 보이지 않습니다. 키보드 사용자에게는 커서를 숨긴 것과 같아요.'
+      : swapped ? '이메일 칸이 화면 맨 위로 올라갔지만 Tab은 HTML 순서대로 이름 → 이메일 → 전화번호를 지나 위아래로 건너뜁니다.'
+      : '보이는 순서대로, 지금 어디 있는지 보이며 이동합니다.';
+  }
+  let last: HTMLElement | null = null;
+  form.addEventListener('focusin', (e) => { last = e.target as HTMLElement; describe(last); });
+  lab.querySelector('#ufNext')!.addEventListener('click', () => {
+    const list = focusables();
+    const cur = last ? list.indexOf(last) : -1;
+    list[(cur + 1) % list.length].focus();
+  });
+  const toggle = (sel: string, fn: (v: string) => void) => {
+    const g = lab.querySelector<HTMLElement>(sel)!;
+    g.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button'); if (!b) return;
+      g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      fn(b.dataset.v!);
+    });
+  };
+  toggle('#ufRing', (v) => { ringOff = v === 'off'; form.classList.toggle('no-ring', ringOff); });
+  toggle('#ufOrder', (v) => { swapped = v === 'swap'; form.classList.toggle('swapped', swapped); });
+</script>

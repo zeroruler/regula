@@ -1,0 +1,75 @@
+---
+// 터치 영역: 아이콘 버튼 네 개의 눌리는 영역 크기와 간격을 바꾼다.
+// WCAG 2.5.8: 24px 이상이면 통과. 작으면 각 중심에 지름 24px 원을 그려 이웃 목표·원과 겹치지 않아야 통과.
+// 한 줄로 같은 크기가 놓이면 원끼리 겹치는 조건(중심 거리 < 24)이 가장 먼저 걸리므로 판정은 size + gap ≥ 24.
+---
+<div class="lab uslab" id="uTarget">
+  <div class="u-fig">
+    <svg viewBox="0 0 280 110" role="img" aria-label="아이콘 버튼 네 개와 눌리는 영역"><g class="u-row"></g></svg>
+    <div class="chips" id="utShow" role="group" aria-label="겹쳐 보기">
+      <button class="chip" type="button" data-v="circle" aria-pressed="true">24px 원</button>
+      <button class="chip" type="button" data-v="finger" aria-pressed="false">손가락 끝(약 10mm)</button>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 터치 영역</span>
+    <h3>작은 버튼을 몇 개까지 붙일 수 있나</h3>
+    <div class="row">
+      <label class="label" for="utSize">눌리는 영역</label>
+      <input type="range" id="utSize" min="12" max="48" value="20" style="flex:1">
+      <span class="mono" id="utSizeVal"></span>
+    </div>
+    <div class="row">
+      <label class="label" for="utGap">간격</label>
+      <input type="range" id="utGap" min="0" max="24" value="2" style="flex:1">
+      <span class="mono" id="utGapVal"></span>
+    </div>
+    <p class="g-read" aria-live="polite">WCAG 2.5.8 (AA): <mark id="utWcag"></mark><br>Apple 권장 44pt: <span id="utApple"></span></p>
+    <p id="utNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>아이콘 그림(16px)은 그대로 두고 버튼 상자만 키웁니다. 툴바처럼 작은 버튼을 줄 세울 땐 영역을 키울 수 없으면 간격으로 벌려요. 손가락 끝은 Regula의 어림(10mm ≈ 38px)입니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#uTarget')!;
+  const $ = <T extends HTMLElement>(s: string) => lab.querySelector<T>(s)!;
+  const size = $<HTMLInputElement>('#utSize'), gap = $<HTMLInputElement>('#utGap');
+  let show = 'circle';
+  const N = 4, ICON = 16, FINGER = 38;
+
+  function render() {
+    const s = +size.value, g = +gap.value;
+    const step = s + g, total = step * (N - 1);
+    const x0 = 140 - total / 2, cy = 55;
+    let out = '';
+    for (let i = 0; i < N; i++) {
+      const cx = x0 + i * step;
+      out += `<rect class="u-hit" x="${cx - s / 2}" y="${cy - s / 2}" width="${s}" height="${s}" rx="3"/>`;
+      out += `<rect class="u-icon" x="${cx - ICON / 2}" y="${cy - ICON / 2}" width="${ICON}" height="${ICON}" rx="2"/>`;
+    }
+    for (let i = 0; i < N; i++) {
+      const cx = x0 + i * step;
+      if (show === 'circle' && s < 24) out += `<circle class="u-ring" cx="${cx}" cy="${cy}" r="12"/>`;
+    }
+    if (show === 'finger') out += `<circle class="u-finger" cx="${x0 + step}" cy="${cy}" r="${FINGER / 2}"/>`;
+    $('.u-row').innerHTML = out;
+    $('#utSizeVal').textContent = `${s}px`;
+    $('#utGapVal').textContent = `${g}px`;
+    const pass = s >= 24 || s + g >= 24;
+    $('#utWcag').textContent = s >= 24 ? '통과 — 영역이 24px 이상' : pass ? `통과 — 간격 예외 (중심 거리 ${s + g}px ≥ 24)` : `미달 — 중심 거리 ${s + g}px < 24, 원이 겹침`;
+    $('#utApple').textContent = s >= 44 ? '충족' : `미달 (${44 - s}px 부족)`;
+    $('#utNote').textContent = show === 'finger'
+      ? (step < FINGER ? '손가락 끝 하나가 버튼 두세 개를 한꺼번에 덮습니다. 통과 기준을 넘겨도 누르기 편한 것과는 다를 수 있어요.' : '손가락 끝이 버튼 하나에만 닿습니다.')
+      : '점선 원은 24px보다 작은 목표에만 그립니다. 원끼리 겹치면 옆 버튼을 잘못 누르기 쉽다는 뜻이에요.';
+  }
+  [size, gap].forEach((el) => el.addEventListener('input', render));
+  $('#utShow').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button'); if (!b) return;
+    $('#utShow').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    show = b.dataset.v!; render();
+  });
+  render();
+</script>

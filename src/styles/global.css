@@ -1008,3 +1008,18 @@ article.note .prose p:last-child{margin-bottom:0}
   .c-steps small{display:none}
   .c-steps .c-links{grid-column:2}
 }
+
+/* 사용성과 접근성 실습 — 눌리는 영역은 옅은 면, 판정만 형광펜 */
+.uslab input[type=range]{accent-color:var(--ink);min-width:0}
+.uslab .u-fig{background:var(--paper);border:1px solid var(--rule);padding:16px;align-self:start;min-width:0;display:grid;gap:12px}
+.uslab .u-hit{fill:color-mix(in srgb,var(--ink) 10%,transparent);stroke:var(--ink-3);stroke-width:1}
+.uslab .u-icon{fill:var(--ink)}
+.uslab .u-ring{fill:none;stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3}
+.uslab .u-finger{fill:color-mix(in srgb,var(--mark) 45%,transparent);stroke:var(--ink);stroke-width:1}
+.u-form{display:flex;flex-direction:column;gap:14px;padding:8px}
+.u-field{display:grid;gap:6px;font-size:13.5px;color:var(--ink-2)}
+.u-field input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--ink-3);padding:9px 10px;border-radius:2px;min-width:0}
+.u-submit{font:inherit;font-weight:600;align-self:start;padding:9px 18px;background:var(--ink);color:var(--paper);border:0;border-radius:2px;cursor:pointer}
+.u-form :focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 6px var(--mark)}
+.u-form.no-ring :focus,.u-form.no-ring :focus-visible{outline:none;box-shadow:none}
+.u-form.swapped .u-field[data-pos="2"]{order:-1}

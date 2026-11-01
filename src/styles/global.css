@@ -482,3 +482,56 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .vf-summary{border:2px solid var(--error);padding:12px 14px;display:grid;gap:4px;background:var(--surface)}
 .vf-summary a{color:var(--error);font-size:14px}
 .vf-summary[hidden]{display:none}
+
+/* 내비게이션 — 미니 목업과 실습. 흑백, 현재 위치는 굵기와 표시선 */
+.pg{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:center;gap:4px;font-family:var(--mono);font-size:10px}
+.pg span{min-width:18px;height:18px;display:grid;place-items:center;border:1px solid var(--rule);background:var(--surface)}
+.pg span.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tabs{display:flex;gap:14px;border-bottom:1px solid var(--rule);font-size:10.5px}
+.tabs span{padding:4px 2px 6px;color:var(--ink-3)}
+.tabs span.on{color:var(--ink);font-weight:600;box-shadow:inset 0 -2px 0 var(--ink)}
+.crumbs{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ink-2)}
+.crumbs i{font-style:normal;color:var(--ink-3)}
+.crumbs b{color:var(--ink)}
+.sbar{position:absolute;left:0;top:0;bottom:0;width:34%;border-right:1px solid var(--rule);background:var(--surface);padding:14px 10px;display:flex;flex-direction:column;gap:9px}
+.sbar span{display:block;height:6px;width:80%;background:var(--ink-3)}
+.sbar span.on{background:var(--ink);box-shadow:-10px 0 0 -2px var(--ink)}
+.sbody{margin-left:38%}
+.tbar{position:absolute;left:0;right:0;bottom:0;height:38px;border-top:1px solid var(--rule);background:var(--surface);display:flex;font-size:9px;color:var(--ink-3)}
+.tbar span{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.tbar i{width:11px;height:11px;border:1.5px solid currentColor;border-radius:3px}
+.tbar span.on{color:var(--ink);font-weight:600}
+.tbar span.on i{background:var(--ink)}
+.drw{position:absolute;left:0;top:0;bottom:0;width:58%;background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:9px}
+.drw b{font-size:14px;line-height:1}
+.drw span{display:block;height:6px;width:75%;background:var(--ink-3)}
+.drw span.on{background:var(--ink)}
+.phone-wrap{display:grid;place-items:center;min-width:0}
+.phone{position:relative;width:260px;max-width:100%;height:440px;border:2px solid var(--ink);border-radius:22px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column}
+.phone button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.ph-top{display:flex;align-items:center;gap:8px;height:52px;padding:0 14px;border-bottom:1px solid var(--rule);background:var(--surface);font-size:15px}
+.ph-menu{display:none;font-size:20px !important;width:32px;height:32px}
+.phone.m-drawer .ph-menu{display:block}
+.ph-body{flex:1;padding:18px 16px}
+.ph-bar{display:flex;border-top:1px solid var(--rule);background:var(--surface)}
+.ph-bar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 10px;font-size:11px;color:var(--ink-3)}
+.ph-bar i{width:16px;height:16px;border:1.5px solid currentColor;border-radius:4px}
+.ph-bar button[aria-current]{color:var(--ink);font-weight:600}
+.ph-bar button[aria-current] i{background:var(--ink)}
+.phone.m-drawer .ph-bar{display:none}
+.ph-drawer{position:absolute;inset:0 30% 0 0;background:var(--surface);border-right:1px solid var(--ink);display:flex;flex-direction:column;padding:10px 0;box-shadow:12px 0 0 color-mix(in srgb,var(--ink) 25%,transparent)}
+.ph-drawer[hidden]{display:none}
+.ph-drawer button{text-align:left;padding:12px 18px;font-size:14px}
+.ph-drawer button[aria-current]{font-weight:700;box-shadow:inset 3px 0 0 var(--ink)}
+.ph-close{align-self:flex-end;padding:6px 14px !important}
+.nh-goal{font-size:15px}
+.nh-goal b{background:var(--mark);color:var(--mark-ink);padding:1px 6px}
+.navlab svg{max-height:420px}
+.navlab input[type=range]{accent-color:var(--ink);min-width:0}
+.navlab .nf{fill:var(--paper);stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.navlab .nt,.navlab .nn{fill:var(--surface);stroke:var(--rule);vector-effect:non-scaling-stroke}
+.navlab .nl{fill:var(--ink-3)}
+.navlab .nc{fill:none;stroke:var(--ink-3);stroke-dasharray:6 6;vector-effect:non-scaling-stroke}
+.navlab .ni{fill:none;stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}
+.navlab .ni.on{fill:var(--ink)}
+.navlab .nsel{fill:color-mix(in srgb,var(--ink) 12%,transparent)}

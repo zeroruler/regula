@@ -1,0 +1,73 @@
+---
+// 화면 너비에 따라 같은 네 목적지를 하단 바 · 레일 · 사이드바로 바꿔 그린다. 경계는 그리드 실습과 같은 600 · 840.
+const MIN = 320, MAX = 1440;
+---
+<div class="lab navlab" id="navWidth">
+  <svg role="img" aria-label="화면 너비별 내비게이션 와이어프레임"></svg>
+  <div class="lab-side">
+    <span class="label">실험 · 너비별 내비게이션</span>
+    <h3>좁으면 아래, 넓으면 옆</h3>
+    <div class="row">
+      <label class="label" for="nwW">화면 너비</label>
+      <input type="range" id="nwW" min={MIN} max={MAX} step="8" value="1024" style="flex:1">
+      <span class="mono" id="nwVal"></span>
+    </div>
+    <dl class="gridread">
+      <dt>구간</dt><dd id="nwClass"></dd>
+      <dt>내비게이션</dt><dd><mark id="nwKind"></mark></dd>
+      <dt>본문 너비</dt><dd id="nwBody"></dd>
+    </dl>
+    <p id="nwNote"></p>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#navWidth')!;
+  const w = lab.querySelector<HTMLInputElement>('#nwW')!;
+  const svg = lab.querySelector<SVGSVGElement>('svg')!;
+  const items = ['홈', '검색', '저장', '설정'];
+  const kinds = [
+    { min: 0, cls: 'compact', kind: '하단 탭 바', side: 0, note: '엄지가 닿는 아래쪽에 목적지를 늘 보이게 둡니다. 세로로 긴 화면에서 높이 72 정도를 내줘요.' },
+    { min: 600, cls: 'medium', kind: '내비게이션 레일', side: 80, note: '가로가 넉넉해지면 아이콘과 짧은 라벨만 왼쪽 세로 띠로 옮깁니다. 높이를 본문에 돌려줘요.' },
+    { min: 840, cls: 'expanded', kind: '사이드바', side: 240, note: '충분히 넓으면 라벨을 다 펼친 사이드바. 하위 항목도 바로 보여 줄 수 있습니다.' },
+  ];
+
+  function render() {
+    const W = +w.value, H = 560;
+    const k = [...kinds].reverse().find((x) => W >= x.min)!;
+    const top = 56, bar = k.side ? 0 : 72;
+    const out: string[] = [`<rect class="nf" x="0" y="0" width="${W}" height="${H}"/>`, `<rect class="nt" x="0" y="0" width="${W}" height="${top}"/>`, `<rect class="nl" x="${k.side + 20}" y="22" width="${Math.min(160, W * 0.3)}" height="12"/>`];
+    // 본문
+    const bx = k.side + 24, bw = W - k.side - 48;
+    [0.6, 1, 0.9, 1, 0.75].forEach((f, i) => out.push(`<rect class="nl" x="${bx}" y="${top + 32 + i * 26}" width="${bw * f}" height="10"/>`));
+    out.push(`<rect class="nc" x="${bx}" y="${top + 172}" width="${bw}" height="${H - top - bar - 200}"/>`);
+    if (!k.side) {
+      out.push(`<rect class="nn" x="0" y="${H - bar}" width="${W}" height="${bar}"/>`);
+      items.forEach((_, i) => {
+        const cx = (W / items.length) * (i + 0.5);
+        out.push(`<circle class="${i ? 'ni' : 'ni on'}" cx="${cx}" cy="${H - bar + 26}" r="11"/><rect class="nl" x="${cx - 16}" y="${H - bar + 46}" width="32" height="7"/>`);
+      });
+    } else {
+      out.push(`<rect class="nn" x="0" y="0" width="${k.side}" height="${H}"/>`);
+      items.forEach((_, i) => {
+        const y = top + 24 + i * (k.side > 100 ? 48 : 72);
+        if (k.side > 100) {
+          if (!i) out.push(`<rect class="nsel" x="12" y="${y - 6}" width="${k.side - 24}" height="36" rx="18"/>`);
+          out.push(`<circle class="ni" cx="40" cy="${y + 12}" r="10"/><rect class="nl" x="62" y="${y + 8}" width="${90 - i * 8}" height="8"/>`);
+        } else {
+          out.push(`<circle class="${i ? 'ni' : 'ni on'}" cx="40" cy="${y + 12}" r="12"/><rect class="nl" x="24" y="${y + 32}" width="32" height="7"/>`);
+        }
+      });
+    }
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = out.join('');
+    lab.querySelector('#nwVal')!.textContent = `${W}px`;
+    lab.querySelector('#nwClass')!.textContent = k.cls;
+    lab.querySelector('#nwKind')!.textContent = k.kind;
+    lab.querySelector('#nwBody')!.textContent = `${W - k.side}px`;
+    lab.querySelector('#nwNote')!.textContent = k.note;
+  }
+  w.value = String(Math.min(1440, Math.max(320, Math.round(innerWidth / 8) * 8)));
+  w.addEventListener('input', render);
+  render();
+</script>

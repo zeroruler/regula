@@ -25,10 +25,11 @@ const patterns = defineCollection({
     name: z.string(),
     en: z.string(),
     category: z.string(),
-    // 카테고리마다 1–9 눈금 하나로 정렬한다. 알림은 방해 정도, 버튼은 시각적 무게, 입력은 입력 수고 (src/lib/site.ts patternGroups)
+    // 카테고리마다 1–9 눈금 하나로 정렬한다. 알림은 방해 정도, 버튼은 시각적 무게, 입력은 입력 수고, 내비게이션은 다루는 범위 (src/lib/site.ts patternGroups)
     intrusiveness: z.number().int().min(1).max(9).optional(),
     emphasis: z.number().int().min(1).max(9).optional(),
     effort: z.number().int().min(1).max(9).optional(),
+    scope: z.number().int().min(1).max(9).optional(),
     use_when: z.string(),
     avoid_when: z.string(),
     // 알림
@@ -36,7 +37,7 @@ const patterns = defineCollection({
     actions: z.string().optional(),
     // 버튼: 한 화면(영역)에 몇 개까지
     per_view: z.string().optional(),
-    // 입력: 알맞은 선택지 수나 답의 길이
+    // 입력: 알맞은 선택지 수나 답의 길이 · 내비게이션: 알맞은 목적지 수
     fits: z.string().optional(),
     confused_with: z.string(),
     source: z.string().min(1),

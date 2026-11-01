@@ -119,6 +119,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '다섯 번째 페이지 양식 "글 본문" 추가. 구성 8개와 규칙 14개(출처: WCAG 1.4.8 · 1.4.10 · 1.4.12 · 1.1.1 · F73 · F88, W3C WAI Headings, CSS Text 3 word-break, WHATWG HTML blockquote · figure · pre, GOV.UK Lists, NN/g How Users Read on the Web). 타이포그래피 페이지에 비어 있던 한글 한 줄 글자 수 근거를 채움 — 상한은 WCAG 1.4.8의 CJK 40자, 하한 쪽은 신종현 · 박민용(2003)의 한글 웹 문서 실험(10자가 30 · 50자보다 느림). 30–40자를 직접 권한 출처는 못 찾았다고 적음. 미리보기는 기본 · 간격 늘림(1.4.12) · 줄 길이 제한 없음 · 글자 단위 줄바꿈 상태를 볼 수 있음.' },
   { date: '2026-11-01', text: '방향을 "내 경험 아카이브"에서 "정보 아카이브"로 바꿈. 할 일에서 써 본 예시 쌓기를 빼고 PLAN의 목표 문구를 고침. 기록장은 자료를 어디서 봤는지 남기는 곳으로 남겨 둠.' },
   { date: '2026-11-01', text: '네 번째 페이지 양식 "대시보드" 추가. 구성 6개와 규칙 14개(출처: NN/g Dashboards (Laubheimer 2017), 영국 Analysis Function 차트 지침, WCAG 1.1.1 · 1.4.1 · 1.4.11, Apple HIG Settings, NN/g 스켈레톤 · 빈 상태). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기간(오늘 · 7일 · 30일)을 바꾸고, 기본 · 불러오는 중 · 데이터 없음 상태와 그래프마다 표로 보기를 볼 수 있음.' },
   { date: '2026-11-01', text: '세 번째 페이지 양식 "설정" 추가. 구성 6개와 규칙 14개(출처: Apple HIG Settings · Dark Mode · Toggles · Alerts, NN/g Toggle-Switch Guidelines, App Store 심사 지침 5.1.1(v), 정보통신망법 제50조, GOV.UK 위험 버튼). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 바로 적용(광고성 정보 스위치를 끄면 처리 결과 표시) · 계정 삭제 확인 상태를 볼 수 있음.' },
@@ -152,5 +153,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '글 본문 양식 · 한글 본문 한 줄 글자 수 근거 · 랜딩 페이지 양식 · 출처 3차 검증' },
+  { when: '다음', text: '랜딩 페이지 양식 · 출처 3차 검증 (Material 3 토큰 값 · 스낵바 시간 · 클레이모피즘 용어 기원)' },
 ];

@@ -2,6 +2,37 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-01 — 4차: WCAG 2.2 성공 기준 (사용성과 접근성)
+
+W3C 권고안 원문 https://www.w3.org/TR/WCAG22/ (W3C Recommendation 12 December 2024판)을 내려받아 해당 성공 기준의 문장과 수준을 대조했다.
+
+### 원문을 읽고 확인 — 맞음
+
+- 1.1.1 Non-text Content (A) · 1.4.1 Use of Color (A) · 2.4.3 Focus Order (A) · 2.2.2 Pause, Stop, Hide (A, 저절로 시작해 5초 넘게 다른 내용과 함께 움직이면 멈출 수단)
+- 1.4.3 Contrast (Minimum) (AA): 4.5:1, 큰 글자 3:1. 큰 글자 정의 18pt 또는 굵은 14pt(= 24px · 18.66px)
+- 1.4.10 Reflow (AA): 세로 스크롤 콘텐츠는 폭 320 CSS px, 가로 스크롤 콘텐츠는 높이 256 CSS px. 320px = 1280px의 400% 확대
+- 1.4.11 Non-text Contrast (AA): UI 컴포넌트 · 그래픽 3:1, 비활성 컴포넌트와 브라우저 기본 모양은 예외
+- 1.4.8 Visual Presentation (AAA): 80자, CJK 40자
+- 2.4.7 Focus Visible (AA)
+- 2.4.11 Focus Not Obscured (Minimum) (AA, New): 포커스 받은 컴포넌트가 작성자 콘텐츠에 "전부" 가려지지 않을 것
+- 2.4.13 Focus Appearance (AAA, New): 2 CSS px 두께 둘레만큼의 면적, 포커스 전후 같은 픽셀 대비 3:1
+- 2.3.3 Animation from Interactions (AAA)
+- 2.5.7 Dragging Movements (AA, New)
+- 2.5.8 Target Size (Minimum) (AA, New): 24 × 24 CSS px. 간격 예외 — 작은 목표마다 중심에 지름 24px 원을 그려 다른 목표나 다른 작은 목표의 원과 겹치지 않으면 통과. 그 밖에 Equivalent · Inline · User Agent Control · Essential 예외
+- 2.5.5 Target Size (Enhanced) (AAA): 44 × 44 CSS px
+- 2.2에서 새로 생긴 기준(3.2.6 · 3.3.7 · 3.3.8 · 3.3.9 · 2.4.12 포함)과 4.1.1 Parsing 삭제("Obsolete and removed")
+- AAA를 전체 목표로 요구하지 말라는 문장("It is not recommended that Level AAA conformance be required...")
+
+### 고친 것
+
+- 터치 영역 note의 Inline 예외를 "줄 길이 안의 링크"에서 "크기가 글줄 높이에 묶인 문장 속 목표"로 바로잡음(원문: constrained by the line-height of non-target text)
+- 터치 영역 출처에 2.5.5 (AAA, 44px)를 더함. 리플로 공식에 높이 256px를 더함
+
+### 함께 확인
+
+- MDN prefers-reduced-motion: `reduce`는 기기에서 움직임 줄이기를 켰다는 뜻, `@media (prefers-reduced-motion)`과 같음
+- W3C WAI Images Tutorial — Decorative Images: 장식 이미지는 alt=""
+
 ## 2026-11-01 — 3차: Material 3 토큰 값 · 스낵바 시간 · 클레이모피즘 이름
 
 m3.material.io는 스크립트로 그려져 직접 못 읽으므로, Google이 공개한 구현 저장소의 소스에서 값을 확인했다.

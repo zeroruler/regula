@@ -575,3 +575,14 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
   .wl-item.sk i,.wl-item.sk b,.wl-item.sk span{animation:skpulse 1.4s ease-in-out infinite}
 }
 @keyframes skpulse{50%{opacity:.45}}
+
+/* 문구 실습 */
+.wr-frame{background:var(--paper);border:1px solid var(--rule);padding:24px;display:flex;flex-direction:column;justify-content:center;min-height:240px;align-self:start;min-width:0}
+.wr-frame.dim-bg{background:color-mix(in srgb,var(--ink) 30%,var(--paper))}
+.wr-input{padding:9px 11px;background:var(--surface);border:1.5px solid var(--error);font-size:15px}
+.wr-input[hidden]{display:none}
+.wr-dialog{background:var(--surface);padding:22px;display:grid;gap:8px;max-width:340px;width:100%;margin:0 auto;border-radius:4px}
+.wr-dialog b{font-size:17px}
+.wr-dialog > span{font-size:14px;color:var(--ink-2)}
+.wr-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap}
+.wr-acts .btn-x{cursor:default;font-size:14px;padding:8px 16px}

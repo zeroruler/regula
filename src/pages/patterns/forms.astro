@@ -24,7 +24,7 @@ const rules = [
 <Base title="입력 · UI 패턴 · Regula" current="patterns" description="라벨 위치와 검증 시점을 바꿔 가며 직접 써 보는 폼 실습 페이지">
   <Fragment slot="sub">
     {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'forms' ? 'page' : undefined}>{g.name} · {items.length}</a>
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'forms' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
     ))}
   </Fragment>
 

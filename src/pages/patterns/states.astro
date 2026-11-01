@@ -24,7 +24,7 @@ const ids = ['loading', 'empty'];
 <Base title="로딩과 빈 상태 · UI 패턴 · Regula" current="patterns" description="걸리는 시간에 맞는 로딩 표시를 고르고, 빈 화면에 설명과 다음 행동을 붙여 보는 실습 페이지">
   <Fragment slot="sub">
     {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={ids.includes(g.id) ? 'page' : undefined}>{g.name} · {items.length}</a>
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={ids.includes(g.id) ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
     ))}
   </Fragment>
 

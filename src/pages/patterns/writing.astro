@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import ErrorCopy from '../../demos/writing/ErrorCopy.astro';
+import ButtonCopy from '../../demos/writing/ButtonCopy.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const groups = await patternsByGroup();
+
+// 문구 규칙. 출처가 있는 것만 적는다. 예시는 Regula가 지은 것.
+const rules = [
+  { s: '오류', rule: '무엇이 잘못됐는지와 어떻게 고칠지를 쉬운 말로. 코드와 판정어("올바르지 않음") 대신', ex: '이메일 주소에 @가 빠졌어요. name@example.com처럼 써 주세요.', src: 'Jakob Nielsen, 「Error Message Guidelines」 (NN/g) · GOV.UK Design System Error message' },
+  { s: '오류', rule: '사용자를 탓하지 않는다. 시스템의 일이면 시스템이 주어', ex: '지금 저장하지 못했어요.', src: 'Jakob Nielsen, 「Error Message Guidelines」 (NN/g)' },
+  { s: '오류', rule: '고칠 방법을 제안한다', ex: '두 글자 이상 더 써 주세요.', src: 'WCAG 2.2 3.3.3 Error Suggestion' },
+  { s: '버튼', rule: '"확인" 대신 누르면 일어나는 일을 동사로', ex: '삭제 · 계속 쓰기 · 해지하기', src: 'Apple HIG Alerts' },
+  { s: '링크', rule: '"여기"나 "더 보기"만 쓰지 않고 목적지를 말한다', ex: '환불 규정 보기', src: 'WCAG 2.2 2.4.4 Link Purpose (In Context)' },
+  { s: '용어', rule: '같은 것은 끝까지 같은 말로. "저장"과 "보관"을 섞지 않는다', ex: '저장 → 저장한 글', src: 'Jakob Nielsen, 10 Usability Heuristics (1994) #4 Consistency and standards' },
+  { s: '용어', rule: '시스템의 말이 아니라 사용자의 말로', ex: '세션 만료 → 오래 쉬어서 다시 로그인해야 해요', src: 'Jakob Nielsen, 10 Usability Heuristics (1994) #2 Match between system and the real world' },
+  { s: '읽기', rule: '사람들은 읽지 않고 훑는다. 핵심을 문장 앞에', ex: '결제되지 않았어요. 카드 한도가…', src: 'Nielsen Norman Group 「How Users Read on the Web」 (1997)' },
+];
+---
+<Base title="문구 · UI 패턴 · Regula" current="patterns" description="나쁜 오류 문구와 버튼 문구를 직접 고쳐 보는 UX 라이팅 실습 페이지">
+  <Fragment slot="sub">
+    {groups.map(({ group: g, items }) => (
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'writing' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>판정 말고 안내</h1>
+    <p>컴포넌트를 잘 골라도 그 안의 말이 막혀 있으면 사람은 멈춥니다. 오류 문구는 다음에 할 일을, 버튼 문구는 누르면 일어날 일을 말하게 고쳐 봅니다. 예시 문장은 Regula가 지은 것이에요.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 오류 문구</span>
+      <h2>로그 메시지를 사람의 말로</h2>
+      <p>상황을 하나 고르고 기준을 하나씩 켜 보세요. 네 가지를 다 켜면 같은 오류가 막다른 길이 아니라 안내가 됩니다.</p>
+    </header>
+    <ErrorCopy />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 버튼 문구</span>
+      <h2>확인 말고 동사</h2>
+      <p>확인 다이얼로그는 대개 버튼만 읽힙니다. 버튼 문구를 바꿔 가며 본문 없이도 결과를 알 수 있는지 보세요.</p>
+    </header>
+    <ButtonCopy />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>예</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td>{r.ex}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

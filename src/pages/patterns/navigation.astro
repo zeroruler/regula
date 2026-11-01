@@ -22,7 +22,7 @@ const rules = [
 <Base title="내비게이션 · UI 패턴 · Regula" current="patterns" description="드러난 메뉴와 숨은 메뉴, 화면 너비별 내비게이션을 직접 써 보는 실습 페이지">
   <Fragment slot="sub">
     {groups.map(({ group: g, items }) => (
-      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'navigation' ? 'page' : undefined}>{g.name} · {items.length}</a>
+      <a href={g.path ? href(g.path) : href(`patterns/#${g.id}`)} aria-current={g.id === 'navigation' ? 'page' : undefined}>{g.level ? `${g.name} · ${items.length}` : g.name}</a>
     ))}
   </Fragment>
 

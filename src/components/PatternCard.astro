@@ -7,7 +7,7 @@ const { pattern } = Astro.props;
 const p = pattern.data;
 const slug = pattern.id.split('/').pop();
 const group = patternGroups.find((g) => g.name === p.category);
-const level = (group ? p[group.level] : p.intrusiveness) ?? 0;
+const level = (group?.level ? p[group.level] : p.intrusiveness) ?? 0;
 ---
 <article class="p" id={`p-${slug}`}>
   <div class="mock" aria-hidden="true" set:html={p.mock} />

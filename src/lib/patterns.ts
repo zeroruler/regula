@@ -6,6 +6,6 @@ export async function patternsByGroup() {
   const all = await getCollection('patterns');
   return patternGroups.map((g) => ({
     group: g,
-    items: all.filter((p) => p.data.category === g.name).sort((a, b) => (a.data[g.level] ?? 0) - (b.data[g.level] ?? 0)),
+    items: g.level ? all.filter((p) => p.data.category === g.name).sort((a, b) => (a.data[g.level!] ?? 0) - (b.data[g.level!] ?? 0)) : [],
   }));
 }

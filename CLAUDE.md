@@ -14,6 +14,7 @@
 - 필드는 `src/content.config.ts` 스키마를 따른다. `source`는 필수.
 - 공식·패턴의 `refs`에 레퍼런스 slug를 넣으면 레퍼런스 상세 페이지의 "Regula에서 쓴 곳"에 자동으로 연결된다.
 - 디자인 시스템 원본은 `DESIGN/<이름>/`(DESIGN.md · DESIGN.html · preview.html). 양식 항목은 `src/content/templates/<이름>.md`에 `design: <이름>`으로 연결한다. 토큰 표는 DESIGN.md의 ```css 블록에서 빌드 때 읽고, 파일들은 `public/design/`으로 자동 복사된다(직접 고치지 말 것).
+- 기록장: `src/content/notes/<날짜>-<이름>.md` (kind: 본 것 · 메모 · 써 본 예시). `about`에 `formulas/<id>`, `patterns/<카테고리>/<id>`, `darkpatterns/<id>`, `references/<id>`를 넣으면 그 항목 아래 "내 기록"에 붙는다. 사용자가 무언가를 보여 주거나 써 봤다고 하면 기록을 남긴다 — 사용자가 하지 않은 일을 지어내지 않는다.
 - 레퍼런스 `embed: true`는 iframe 안에서 실제로 열리는지 확인한 사이트에만 켠다.
 
 ## 규칙

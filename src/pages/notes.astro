@@ -1,0 +1,74 @@
+---
+import { render } from 'astro:content';
+import { noteKinds } from '../content.config';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { allNotes, resolve } from '../lib/items';
+import { href } from '../lib/url';
+
+// 기록장: 날짜별로 묶는다. 위가 최신.
+const notes = await allNotes();
+const rows = await Promise.all(notes.map(async (n) => ({ n, items: await Promise.all(n.data.about.map(resolve)), Content: (await render(n)).Content })));
+const dates = [...new Set(notes.map((n) => n.data.date))];
+const count = (k: string) => notes.filter((n) => n.data.kind === k).length;
+---
+<Base title="기록장 · Regula" current="notes" description="본 것, 내 메모, 직접 써 본 예시를 날짜별로 모으는 기록장">
+  <Fragment slot="sub">
+    {dates.map((d) => <a href={`#d-${d}`}>{d}</a>)}
+  </Fragment>
+
+  <PageHead current="notes" title="본 것, 써 본 것, 남긴 말">
+    <p>Regula의 규칙이 어디서 왔는지 남기는 곳입니다. 릴스나 책에서 <b>본 것</b>, 쓰다가 든 생각인 <b>메모</b>, 실제 작업에 적용해 본 <b>써 본 예시</b>를 날짜별로 쌓아요. 기록이 가리키는 공식 · 패턴 아래에도 "내 기록"으로 붙습니다.</p>
+  </PageHead>
+
+  <section class="notes">
+    <div class="chips" id="noteKinds" role="group" aria-label="종류">
+      <button type="button" class="chip" data-k="" aria-pressed="true">전체 {notes.length}</button>
+      {noteKinds.map((k) => <button type="button" class="chip" data-k={k} aria-pressed="false">{k} {count(k)}</button>)}
+    </div>
+
+    {dates.map((d) => (
+      <div class="note-day" id={`d-${d}`}>
+        <h2 class="label"><time>{d}</time></h2>
+        {rows.filter(({ n }) => n.data.date === d).map(({ n, items, Content }) => (
+          <article class="note" id={`n-${n.id}`} data-k={n.data.kind}>
+            <header>
+              <span class="note-kind">{n.data.kind}</span>
+              <h3>{n.data.title}</h3>
+              {n.data.seen_at && <span class="note-at">{n.data.link ? <a href={n.data.link}>{n.data.seen_at}</a> : n.data.seen_at}</span>}
+            </header>
+            <div class="prose"><Content /></div>
+            {items.length > 0 && (
+              <p class="note-about"><span class="label">이어진 항목 {items.length}</span>{items.map((it) => <a href={it.url}>{it.name}</a>)}</p>
+            )}
+          </article>
+        ))}
+      </div>
+    ))}
+
+    <div class="note-how">
+      <span class="label">기록 남기는 법</span>
+      <p><code>src/content/notes/날짜-이름.md</code> 파일 하나를 만들면 됩니다. 아직 <b>메모</b>와 <b>써 본 예시</b>는 없어요 — 공식이나 패턴을 실제 작업에 써 본 날, 무엇을 만들었고 값이 어땠는지 한두 줄이면 충분합니다.</p>
+      <pre><code>{`---
+date: "2026-11-02"
+kind: "써 본 예시"        # 본 것 · 메모 · 써 본 예시
+title: "포트폴리오 카드에 타입 스케일 1.25"
+about: ["formulas/type-scale"]
+seen_at: "내 포트폴리오"   # 어디서 봤나 / 어디에 썼나 (선택)
+---
+본문 16px에 1.25배. 제목이 너무 커 보여서 1.2로 다시 낮춤.`}</code></pre>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const box = document.getElementById('noteKinds')!;
+  box.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    const k = b.dataset.k!;
+    box.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    document.querySelectorAll<HTMLElement>('.note').forEach((n) => (n.hidden = !!k && n.dataset.k !== k));
+    document.querySelectorAll<HTMLElement>('.note-day').forEach((d) => (d.hidden = !d.querySelector('.note:not([hidden])')));
+  });
+</script>

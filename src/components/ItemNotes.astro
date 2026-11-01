@@ -1,0 +1,14 @@
+---
+// 공식 · 패턴 · 다크 패턴 아래에 붙는 "내 기록" 한 줄. 기록이 없으면 아무것도 그리지 않는다.
+import { notesFor } from '../lib/items';
+import { href } from '../lib/url';
+
+interface Props { ref: string }
+const notes = await notesFor(Astro.props.ref);
+---
+{notes.length > 0 && (
+  <p class="itemnotes">
+    <span class="label">내 기록</span>
+    {notes.map((n) => <a href={href(`notes/#n-${n.id}`)}><time>{n.data.date}</time> {n.data.kind} · {n.data.title}</a>)}
+  </p>
+)}

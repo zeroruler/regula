@@ -2,6 +2,7 @@
 // 다크 패턴 하나: 속이는 화면과 정직한 화면을 나란히. 기대는 편향은 원리 페이지로 잇는다.
 import type { CollectionEntry } from 'astro:content';
 import { href } from '../lib/url';
+import ItemNotes from './ItemNotes.astro';
 
 interface Props { item: CollectionEntry<'darkpatterns'>; biasNames: Record<string, string> }
 const { item, biasNames } = Astro.props;
@@ -19,4 +20,5 @@ const d = item.data;
     {d.bias.length > 0 && <><dt>기대는 심리</dt><dd>{d.bias.map((b, i) => <>{i > 0 && ' · '}<a href={href(`principles/psychology/#f-${b}`)}>{biasNames[b] ?? b}</a></>)}</dd></>}
   </dl>
   <p class="src">{d.source}</p>
+  <ItemNotes ref={`darkpatterns/${item.id}`} />
 </article>

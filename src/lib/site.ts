@@ -1,5 +1,5 @@
 // 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
-export const version = 'v0.5';
+export const version = 'v0.6';
 
 export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes';
 
@@ -118,6 +118,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: 'v0.6 마무리 — 규칙집에서 아카이브로. 찾기, 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임 · 타이포그래피, 출처 1차 검증, 기록장과 서체 목록까지. PLAN의 목표와 현황 표를 지금 상태로 맞춤.' },
   { date: '2026-11-01', text: '원리에 "타이포그래피" 실습 페이지(/principles/typography/)를 만듦. 내 디자인 시스템 4개에서 실제로 쓰는 서체 12개를 서체 목록(fonts 컬렉션)으로 정리하고 견본을 그 서체로 보여 줌. 서체 · 크기 · 행간 · 줄 길이를 바꿔 보는 본문 실습, 비례 숫자와 고정폭 숫자 비교를 붙임.' },
   { date: '2026-11-01', text: '기록장(/notes/)을 만듦. 본 것 · 메모 · 써 본 예시를 파일 하나씩 날짜별로 쌓고, 기록이 가리키는 공식 · 패턴 · 다크 패턴 아래에 "내 기록"으로 붙게 함. 오늘 본 릴스 10개를 첫 기록으로 남김. 찾기에도 기록이 들어감.' },
   { date: '2026-11-01', text: '출처 1차 검증. 확인이 필요한 출처를 원문과 대조해 틀린 저자(햄버거 메뉴 글), 연도(당겨서 새로고침), 바뀐 NN/g 제목 4개, 전자상거래법 규제 유형을 고치고, 재현이 엇갈린 연구(자이가르닉, 선택 과부하, 손실 회피 계수)의 설명을 바로잡음. 기록은 docs/source-check.md.' },
@@ -144,5 +145,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일' },
+  { when: '다음', text: '비주얼 스타일 9가지 · 써 본 예시 쌓기 · 출처 2차 검증 · 설정 화면 · 회원가입 양식' },
 ];

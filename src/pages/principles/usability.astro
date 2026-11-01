@@ -11,7 +11,7 @@ const T = '사용성과 접근성';
 const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
 const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
 ---
-<Base title="사용성과 접근성 · 원리와 공식 · Regula" current="principles" description="터치 영역, 포커스 표시와 순서, 컴포넌트 대비, 리플로, 움직임 줄이기, 대체 텍스트를 WCAG 2.2 기준과 함께 정리하고 직접 해 보는 실습 페이지">
+<Base title="사용성과 접근성 · 원리와 공식 · Regula" current="principles" description="피츠 · 힉 · 밀러 · 제이콥 · 테슬러의 법칙과 응답 시간, 터치 영역, 포커스 표시와 순서, 컴포넌트 대비, 리플로, 움직임 줄이기, 대체 텍스트를 WCAG 2.2 기준과 함께 정리하고 직접 해 보는 실습 페이지">
   <Fragment slot="sub">
     {topics.map((t, i) => (
       <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
@@ -46,7 +46,7 @@ const refTitles = Object.fromEntries((await getCollection('references')).map((r)
     <header>
       <span class="label">공식</span>
       <h2>사용성과 접근성 {formulas.length}개</h2>
-      <p>글자 대비(4.5 : 1)는 <a href={href('tools/')}>계산 도구</a>의 명도 대비에서 직접 잴 수 있어요. 라벨과 오류 문구는 <a href={href('patterns/forms/')}>입력</a> · <a href={href('patterns/writing/')}>문구</a> 패턴에, 움직임의 길이와 곡선은 <a href={href('principles/motion/')}>움직임</a>에 있습니다.</p>
+      <p>밀러 · 제이콥 · 테슬러의 법칙과 응답 시간은 <a href={href('references/laws-of-ux/')}>Laws of UX</a>가 모은 법칙을 원문으로 확인해 옮겼고, 기다림을 보여 주는 법은 <a href={href('patterns/states/')}>로딩</a> 패턴에 있어요. 글자 대비(4.5 : 1)는 <a href={href('tools/')}>계산 도구</a>의 명도 대비에서 직접 잴 수 있어요. 라벨과 오류 문구는 <a href={href('patterns/forms/')}>입력</a> · <a href={href('patterns/writing/')}>문구</a> 패턴에, 움직임의 길이와 곡선은 <a href={href('principles/motion/')}>움직임</a>에 있습니다.</p>
     </header>
     <div class="formulas">
       {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}

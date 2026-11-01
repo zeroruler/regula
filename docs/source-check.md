@@ -2,6 +2,32 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-01 — 7차: Laws of UX 남은 법칙 (밀러 · 제이콥 · 테슬러 · 응답 시간 · 심미적 사용성)
+
+lawsofux.com의 각 법칙 페이지에서 "Origins"를 읽고, 거기서 가리키는 원래 글을 찾아 대조했다.
+
+### 원문을 읽고 확인
+
+- George A. Miller, 「The Magical Number Seven, Plus or Minus Two」 (Psychological Review, 1956) — York University Classics in the History of Psychology 전문. 즉시 기억은 비트가 아니라 청크 수로 제한되고, 묶어 다시 부호화(recoding)하면 더 많이 기억함. 절대 판단과 즉시 기억에 7이 함께 나오는 것은 "pernicious, Pythagorean coincidence"일 수 있다고 본인이 씀
+- Nelson Cowan, 「The Magical Mystery Four」 (Current Directions in Psychological Science, 2010) — 초록(Europe PMC): 젊은 성인의 중심 기억 저장소는 의미 있는 항목 3–5개. PMC 본문은 봇 확인 화면에 막힘
+- Jakob Nielsen, 「The End of Web Design」 (NN/g, 2000-07-22): "Users spend most of their time on other sites" — 그래서 다른 사이트와 같은 방식으로 동작하기를 원함. NN/g 영상 「Jakob's Law of Internet User Experience」 (2017-08-18)도 같은 요약
+- Larry Tesler, 「The Law of Conservation of Complexity」 (nomodes.com, Tesler 본인 사이트): 원래 표현(1984년경) "Every application has an inherent amount of irreducible complexity. The only question is: Who will have to deal with it—the user, the application developer, or the platform developer?" 자세한 논의는 Saffer 인터뷰를 가리킴
+- Kate Moran, 「The Aesthetic-Usability Effect」 (NN/g, 2024-02-03판, 2026-09-01 재검토): 보기 좋으면 작은 문제를 너그럽게 넘기고 테스트에서 문제를 가림. Kurosu & Kashimura 1995 — ATM 화면 26가지, 참가자 252명, 아름다움 평가가 실제 쓰기 쉬움보다 쓰기 쉬워 보임과 더 강하게 상관. 논문 제목 「Apparent usability vs. inherent usability」 (CHI '95 Conference Companion)은 Crossref 메타데이터로 확인
+- Jakob Nielsen, 「Response Times: The 3 Important Limits」 (NN/g, 『Usability Engineering』 1993 5장 발췌): 0.1초 즉시 반응 · 1초 생각의 흐름 · 10초 주의
+- Walter J. Doherty · Arvind J. Thadhani, 「The Economic Value of Rapid Response Time」 (IBM, 1982-11) — Jim Elliott 블로그에 옮긴 사본: 응답 3초 → 0.3초에서 시간당 처리 약 180 → 371건(+106%), "sub-second response"를 권함
+
+### 고친 것 · 다르게 적은 것
+
+- "도허티 임계값 400ms": Laws of UX는 이 보고서가 400ms를 요구 기준으로 정했다고 쓰지만, 확인한 사본에는 400ms라는 숫자가 없다(0.3초 · 1초 미만만 나옴). 사이트에는 숫자를 쓰지 않고 1초 미만과 실험 수치만 적고, 400ms는 확인하지 못한 수치라고 밝힘
+- 공저자 이름이 사본 안에서 Thadani · Thadhani로 섞여 있어 본문 쪽(Arvind J. Thadhani)을 씀
+- 밀러의 7 ± 2는 "메뉴 7개 제한" 근거로 쓰지 말라는 메모를 붙임(Laws of UX의 Takeaway와 같고, Miller 본인도 숫자에 거리를 둠)
+
+### 직접 읽지 못함
+
+- Kurosu & Kashimura 1995 논문 본문(ACM 403) — 실험 수치는 NN/g · Laws of UX 요약 기준
+- Dan Saffer, 『Designing for Interaction』의 Tesler 인터뷰
+- 1982년 IBM 보고서 원본 인쇄본 — 블로그 사본만 읽음
+
 ## 2026-11-01 — 6차: 비율과 간격 (간격 스케일 · 간격의 위계 · 부품/레이아웃 간격 · 수직 리듬 · 8pt 그리드 · 황금비)
 
 ### 원문을 읽고 확인

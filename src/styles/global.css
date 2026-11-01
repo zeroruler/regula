@@ -913,3 +913,64 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
   .font-sample{font-size:28px}
   .ty-bytpl{grid-template-columns:minmax(0,1fr)}
 }
+
+/* 비주얼 스타일 — 흑백, 재료(그림자 · 테두리 · 투명도 · 질감)만 */
+.vslab{--vs-hi:#ffffffd9;--vs-lo:color-mix(in srgb,var(--ink) 18%,transparent)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vslab{--vs-hi:#ffffff14;--vs-lo:#000000a6}}
+:root[data-theme="dark"] .vslab{--vs-hi:#ffffff14;--vs-lo:#000000a6}
+.vs-stage{position:relative;min-height:300px;display:grid;place-items:center;border:1px solid var(--rule);background:var(--paper);overflow:hidden;align-self:start;min-width:0;--vs-bg:var(--paper)}
+.vs-blob{position:absolute;border-radius:50%;opacity:0}
+.vs-blob.a{width:140px;height:140px;left:12%;top:14%;background:var(--ink)}
+.vs-blob.b{width:100px;height:100px;right:14%;bottom:12%;background:var(--ink-3)}
+.vs-blob.c{width:70px;height:70px;right:30%;top:10%;border:10px solid var(--ink-2)}
+.vs-card{position:relative;width:220px;max-width:80%;padding:18px;display:grid;gap:14px;background:var(--surface);color:var(--ink);transition:all .25s}
+.vs-head{display:flex;align-items:center;gap:10px}
+.vs-head b{font-size:15px}
+.vs-ico{flex:none;width:30px;height:30px;display:grid;gap:3px;align-content:center;padding:0 6px;border-radius:7px;background:var(--ink-3)}
+.vs-ico i{display:block;height:2.5px;background:var(--surface);border-radius:2px}
+.vs-ico i:last-child{width:60%}
+.vs-lines{display:grid;gap:7px}
+.vs-lines i{display:block;height:6px;background:var(--rule);border-radius:3px}
+.vs-lines i.w{width:60%}
+.vs-btn{justify-self:start;font-size:13px;font-weight:600;padding:7px 16px;background:var(--ink);color:var(--paper);border-radius:6px}
+.vs-warn{margin:0;font-size:13px;color:var(--ink-2);min-height:1.4em}
+.vs-prompt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center}
+.vs-prompt .label{grid-column:1 / -1}
+.vs-prompt code{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--rule);padding:8px 10px;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){ .vs-card{transition:none} }
+/* 스큐어모피즘: 가죽 띠 + 줄 종이 + 광택 버튼 */
+[data-s="skeuo"] .vs-card{background:repeating-linear-gradient(var(--surface) 0 21px,var(--rule) 21px 22px);border-radius:10px;padding-top:0;box-shadow:0 2px 0 var(--ink-3),0 10px 18px color-mix(in srgb,var(--ink) 30%,transparent)}
+[data-s="skeuo"] .vs-head{margin:0 -18px;padding:12px 18px;border-radius:10px 10px 0 0;background:linear-gradient(var(--ink-2),var(--ink));color:var(--paper);box-shadow:inset 0 -3px 0 color-mix(in srgb,var(--paper) 25%,transparent);outline:1px dashed color-mix(in srgb,var(--paper) 45%,transparent);outline-offset:-5px}
+[data-s="skeuo"] .vs-ico{background:linear-gradient(var(--paper),var(--rule));box-shadow:0 1px 2px #0006}
+[data-s="skeuo"] .vs-ico i{background:var(--ink-3)}
+[data-s="skeuo"] .vs-btn{background:linear-gradient(var(--ink-2),var(--ink));border:1px solid var(--ink);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--paper) 40%,transparent),0 2px 3px #0005;border-radius:8px}
+/* 플랫 */
+[data-s="flat"] .vs-card{border-radius:0}
+[data-s="flat"] .vs-ico,[data-s="flat"] .vs-btn,[data-s="flat"] .vs-lines i{border-radius:0}
+/* 머티리얼: 높이만큼 그림자 */
+[data-s="material"] .vs-card{border-radius:16px;box-shadow:0 1px 3px color-mix(in srgb,var(--ink) 25%,transparent),0 6px 14px color-mix(in srgb,var(--ink) 14%,transparent)}
+[data-s="material"] .vs-btn{border-radius:20px;box-shadow:0 2px 4px color-mix(in srgb,var(--ink) 30%,transparent)}
+/* 뉴모피즘: 배경과 같은 면 + 두 그림자 */
+[data-s="neu"] .vs-card{background:var(--paper);border-radius:22px;box-shadow:-8px -8px 16px var(--vs-hi),8px 8px 16px var(--vs-lo)}
+[data-s="neu"] .vs-ico{background:var(--paper);box-shadow:inset -3px -3px 6px var(--vs-hi),inset 3px 3px 6px var(--vs-lo)}
+[data-s="neu"] .vs-ico i{background:var(--ink-3)}
+[data-s="neu"] .vs-btn{background:var(--paper);color:var(--ink-2);border-radius:14px;box-shadow:-4px -4px 8px var(--vs-hi),4px 4px 8px var(--vs-lo)}
+/* 글래스 · 리퀴드: 뒤 도형이 비치게 */
+[data-s="glass"] .vs-blob,[data-s="liquid"] .vs-blob{opacity:1}
+[data-s="glass"] .vs-card{background:color-mix(in srgb,var(--surface) 35%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid color-mix(in srgb,#fff 55%,transparent);border-radius:18px}
+[data-s="liquid"] .vs-card{background:radial-gradient(120% 80% at 20% 0%,color-mix(in srgb,#fff 45%,transparent),transparent 60%),color-mix(in srgb,var(--surface) 22%,transparent);-webkit-backdrop-filter:blur(6px) saturate(1.6);backdrop-filter:blur(6px) saturate(1.6);border-radius:26px;box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 90%,transparent),inset 0 0 0 1px color-mix(in srgb,#fff 45%,transparent),inset 0 -10px 18px color-mix(in srgb,#fff 18%,transparent),0 10px 24px color-mix(in srgb,var(--ink) 22%,transparent)}
+[data-s="glass"] .vs-btn,[data-s="liquid"] .vs-btn{border-radius:20px}
+[data-s="liquid"] .vs-btn{background:color-mix(in srgb,var(--ink) 80%,transparent);box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 40%,transparent)}
+/* 클레이: 부푼 덩어리 */
+[data-s="clay"] .vs-card{border-radius:30px;box-shadow:inset -7px -7px 14px var(--vs-lo),inset 7px 7px 14px var(--vs-hi),12px 16px 26px var(--vs-lo)}
+[data-s="clay"] .vs-ico,[data-s="clay"] .vs-btn{border-radius:14px;box-shadow:inset -3px -3px 6px #0003,inset 3px 3px 6px #fff6}
+/* 네오 브루탈리즘: 굵은 테두리 + 단단한 그림자 */
+[data-s="brutal"] .vs-card{border:3px solid var(--ink);border-radius:0;box-shadow:8px 8px 0 var(--ink)}
+[data-s="brutal"] .vs-ico{border:2px solid var(--ink);border-radius:0;background:var(--surface)}
+[data-s="brutal"] .vs-ico i{background:var(--ink)}
+[data-s="brutal"] .vs-btn{border:3px solid var(--ink);border-radius:0;background:var(--surface);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+[data-s="brutal"] .vs-lines i{border-radius:0;background:var(--ink-3)}
+/* 3D 아이콘: 아이콘만 부피 있게 */
+[data-s="icon3d"] .vs-card{border-radius:14px;box-shadow:0 2px 8px color-mix(in srgb,var(--ink) 12%,transparent)}
+[data-s="icon3d"] .vs-ico{width:44px;height:44px;border-radius:12px;background:radial-gradient(circle at 30% 25%,color-mix(in srgb,#fff 80%,transparent),transparent 45%),linear-gradient(150deg,var(--ink-3),var(--ink));box-shadow:0 8px 12px color-mix(in srgb,var(--ink) 35%,transparent),inset 0 -4px 6px #0004;transform:rotate(-8deg)}
+@media (max-width:640px){ .vs-stage{min-height:260px} }

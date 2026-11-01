@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Styles from '../../demos/styles/Styles.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const T = '비주얼 스타일';
+const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+
+const rules = [
+  { s: '단서', rule: '스타일이 무엇이든 누를 수 있는 것은 누를 수 있어 보여야 한다 — 평면이면 그림자 · 밑줄 같은 단서를 조금 되살린다', src: 'Kate Moran, 「Flat Design…」 (NN/g, 2015)' },
+  { s: '경계 대비', rule: '버튼 · 입력칸의 경계와 상태는 주변과 3:1 이상 — 그림자만으로 경계를 만드는 스타일은 여기서 걸린다', src: 'WCAG 2.2 1.4.11 Non-text Contrast (AA)' },
+  { s: '글자 대비', rule: '반투명 면 위 글자는 가장 나쁜 배경에서도 4.5:1 — 흐림을 더 주거나 면을 덜 투명하게', src: 'WCAG 2.2 1.4.3 · Megan Brown, 「Glassmorphism…」 (NN/g, 2024)' },
+  { s: '설정', rule: '투명도 줄이기 · 대비 높이기 설정을 켠 사람에게는 불투명한 면으로', src: 'Megan Brown, 「Glassmorphism…」 (NN/g, 2024) · W3C Media Queries Level 5 (prefers-reduced-transparency · prefers-contrast)' },
+  { s: '절제', rule: '강한 스타일일수록 색은 2–3개, 본문 서체는 평범하게', src: 'Hayat Sheikh, 「Neobrutalism…」 (NN/g, 2025)' },
+];
+---
+<Base title="비주얼 스타일 · 원리와 공식 · Regula" current="principles" description="스큐어모피즘부터 리퀴드 글래스까지 비주얼 스타일 9가지를 재료로 정리하고, 같은 카드를 바꿔 보며 AI에 넘길 말을 얻는 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>"예쁘게" 말고, 이름으로</h1>
+    <p>AI나 동료에게 "예쁘게 해 주세요"라고 하면 저마다 다른 걸 떠올립니다. 스타일에는 이름이 있고, 이름마다 정해진 재료가 있어요 — 그림자가 몇 겹인지, 테두리가 있는지, 뒤가 비치는지. 이름과 재료로 말하면 원하는 느낌에 훨씬 가까워집니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 같은 카드</span>
+      <h2>재료만 바꿨을 뿐</h2>
+      <p>같은 메모 카드를 9가지 스타일로 바꿔 보세요. 아래에는 그 스타일을 AI에게 요청할 때 쓰는 영어 표현이 나옵니다.</p>
+    </header>
+    <Styles />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">이름</span>
+      <h2>비주얼 스타일 {formulas.length}가지</h2>
+      <p>대략 나온 순서대로 놓았습니다. 실물을 흉내 내다(스큐어모피즘) 걷어 내고(플랫) 깊이를 다시 들이는(머티리얼 이후) 흐름이에요.</p>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

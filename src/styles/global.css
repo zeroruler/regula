@@ -608,3 +608,27 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
   .results a{grid-template-columns:minmax(0,1fr)}
   .results .k{grid-row:auto}
 }
+
+/* 로딩 · 내비게이션 추가 목업 — 흑백 */
+.spinbtn{display:block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%}
+.blurm{height:62px;background:linear-gradient(160deg,color-mix(in srgb,var(--ink) 10%,transparent),color-mix(in srgb,var(--ink) 34%,transparent));position:relative;overflow:hidden}
+.blurm i{position:absolute;inset:auto -10% -30% -10%;height:70%;background:color-mix(in srgb,var(--ink) 30%,transparent);border-radius:50% 50% 0 0;filter:blur(6px)}
+.strm{position:absolute;left:14px;top:46px;font-size:11px}
+.strm i{display:inline-block;width:1.5px;height:12px;background:var(--ink);vertical-align:-2px;margin-left:2px}
+.strm + .ln{position:absolute;left:14px;top:70px}
+.ringm{width:64px;height:64px;margin:20px auto 0;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ink) calc(var(--p)*1%),var(--rule) 0)}
+.ringm span{width:52px;height:52px;border-radius:50%;background:var(--paper);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:500}
+.stepm{display:flex;align-items:center;margin-top:28px}
+.stepm i{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-size:10px;color:var(--ink-3);background:var(--surface)}
+.stepm i.on{border-color:var(--ink);color:var(--ink);font-weight:600}
+.stepm i.done{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.stepm b{flex:1;height:1.5px;background:var(--rule)}
+.stepm b.done{background:var(--ink)}
+.stepl{display:flex;justify-content:space-between;margin-top:6px;font-size:9.5px;color:var(--ink-3)}
+.shead{position:absolute;left:0;right:0;top:0;height:30px;padding:0 14px;display:flex;align-items:center;gap:6px;background:var(--surface);border-bottom:1px solid var(--ink);box-shadow:0 3px 0 color-mix(in srgb,var(--ink) 8%,transparent);font-size:11px}
+.shead span{font-family:var(--mono);font-size:10px;color:var(--ink-2)}
+.backm{display:flex;align-items:center;gap:6px;font-size:10.5px;border-bottom:1px solid var(--rule);padding-bottom:7px}
+.backm i{font-style:normal;font-size:15px;line-height:1}
+.backm span{color:var(--ink-3)}
+.backm b{margin-left:auto;margin-right:auto;transform:translateX(-20px)}
+@media (prefers-reduced-motion:no-preference){ .spinbtn{animation:spin .8s linear infinite} }

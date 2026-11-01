@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FormulaRow from '../../components/FormulaRow.astro';
+import Card from '../../demos/spacing/Card.astro';
+import Rhythm from '../../demos/spacing/Rhythm.astro';
+import GoldenRatio from '../../demos/spacing/GoldenRatio.astro';
+import { topics } from '../../lib/site';
+import { href } from '../../lib/url';
+
+const T = '비율과 간격';
+const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
+const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
+---
+<Base title="비율과 간격 · 원리와 공식 · Regula" current="principles" description="간격 스케일, 간격의 위계, 부품 간격과 레이아웃 간격, 수직 리듬, 황금비를 디자인 시스템 원문과 함께 정리하고 직접 바꿔 보는 실습 페이지">
+  <Fragment slot="sub">
+    {topics.map((t, i) => (
+      <a href={t.path ? href(t.path) : href(`principles/#t-${i}`)} aria-current={t.name === T ? 'page' : undefined}>{t.name}</a>
+    ))}
+  </Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('principles/')}>§ 1 원리와 공식</a> · 실습</span>
+    <h1>간격은 값을 고르는 일이 아니라 단계를 고르는 일</h1>
+    <p>13px과 14px 중 무엇이 맞는지는 답이 없습니다. 미리 정한 단계 안에서 고르고, 더 먼 관계일수록 한 단계 이상 더 벌리면 됩니다. 간격 값은 IBM Carbon · Atlassian · U.S. Web Design System의 공개 문서에서 확인했어요. 가까우면 한 묶음으로 읽히는 원리 자체는 <a href={href('principles/gestalt/#f-proximity')}>게슈탈트의 근접성</a>에, 이미지 틀의 비례는 <a href={href('principles/composition/#f-ratio-proportion-scale')}>조형의 비율 · 비례 · 규모</a>에 있습니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 간격 스케일과 위계</span>
+      <h2>같은 카드, 간격만 다르게</h2>
+      <p>카드 하나에도 간격이 네 개 들어갑니다. 값이 저마다 비슷하거나 모두 같으면 무엇이 무엇에 붙었는지 흐려지고, 층마다 스케일에서 한 단계 이상 벌리면 묶음이 저절로 보여요.</p>
+    </header>
+    <Card />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">2 · 수직 리듬</span>
+      <h2>행간을 박자로 삼기</h2>
+      <p>긴 글에서는 본문 한 줄의 높이가 가장 자연스러운 단위입니다. 문단 사이와 제목 높이를 그 배수로 맞추면 글줄이 같은 가로줄 위에 놓여요.</p>
+    </header>
+    <Rhythm />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">3 · 황금비</span>
+      <h2>정사각형을 떼어내면 무엇이 남나</h2>
+      <p>유명한 비율 넷을 같은 방법으로 잘라 봅니다. 떼어내고도 처음과 같은 비율이 남는 것은 황금비뿐이에요. 다만 웹 화면의 간격과 크기는 대부분 위의 스케일로 정하고, 황금비는 열을 나눌 때 고를 수 있는 비율 하나로 둡니다.</p>
+    </header>
+    <GoldenRatio />
+  </section>
+
+  <section>
+    <header>
+      <span class="label">공식</span>
+      <h2>비율과 간격 {formulas.length}개</h2>
+      <p>단계 사이 비율은 <a href={href('tools/')}>계산 도구</a>의 간격 스케일에서 볼 수 있어요. 열과 거터는 <a href={href('principles/grid/')}>그리드</a>에, 본문 행간 값은 <a href={href('principles/typography/')}>타이포그래피</a>에 있습니다.</p>
+    </header>
+    <div class="formulas">
+      {formulas.map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,92 @@
+---
+// 간격 스케일 · 간격의 위계: 같은 카드 두 장에 간격 네 개(제목–설명, 설명–버튼, 안쪽 여백, 카드 사이)를 넣고 값 묶음을 바꾼다.
+// 임의 값은 서로 비슷한 값이라 층이 안 보이고, 한 값으로 통일하면 층이 사라지고, 스케일 · 위계는 층마다 한 단계 이상 벌어진다.
+const SCALE = [4, 8, 12, 16, 24, 32, 48, 64];
+const sets = [
+  { id: 'random', name: '임의 값', v: { t: 11, d: 9, pad: 13, gap: 14 } },
+  { id: 'same', name: '한 값으로 통일', v: { t: 16, d: 16, pad: 16, gap: 16 } },
+  { id: 'scale', name: '스케일 · 위계', v: { t: 4, d: 16, pad: 16, gap: 32 } },
+];
+const initial = 0;
+---
+<div class="lab splab" id="spCard" data-scale={JSON.stringify(SCALE)} data-sets={JSON.stringify(sets)} data-initial={initial}>
+  <div class="sp-fig">
+    <div class="sp-cards" aria-hidden="true">
+      {[0, 1].map(() => (
+        <div class="sp-card">
+          <b class="sp-title"></b>
+          <span class="sp-desc"><i></i><i></i></span>
+          <span class="sp-btn"></span>
+        </div>
+      ))}
+    </div>
+    <span class="label">카드 두 장 · 흑백 와이어프레임</span>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 간격 네 개</span>
+    <h3>같은 카드, 다른 간격 묶음</h3>
+    <div class="chips" id="spSet">
+      {sets.map((s, i) => <button class="chip" type="button" data-i={i} aria-pressed={String(i === initial)}>{s.name}</button>)}
+    </div>
+    <table class="sp-table">
+      <thead><tr><th scope="col">간격</th><th scope="col">값</th><th scope="col">스케일</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">제목 – 설명</th><td class="mono" data-k="t"></td><td class="mono" data-s="t"></td></tr>
+        <tr><th scope="row">설명 – 버튼</th><td class="mono" data-k="d"></td><td class="mono" data-s="d"></td></tr>
+        <tr><th scope="row">안쪽 여백</th><td class="mono" data-k="pad"></td><td class="mono" data-s="pad"></td></tr>
+        <tr><th scope="row">카드 사이</th><td class="mono" data-k="gap"></td><td class="mono" data-s="gap"></td></tr>
+      </tbody>
+    </table>
+    <p class="g-read" aria-live="polite">보이는 것: <mark id="spRead"></mark></p>
+    <p id="spNote"></p>
+    <div class="g-ui">
+      <span class="label">점검</span>
+      <p class="mono sp-check" id="spCheck"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#spCard')!;
+  const SCALE: number[] = JSON.parse(lab.dataset.scale!);
+  const sets: { id: string; v: Record<string, number> }[] = JSON.parse(lab.dataset.sets!);
+  const TEXT: Record<string, [string, string]> = {
+    random: ['비슷비슷한 간격 — 어디가 끊기는지 흐림', '11 · 9 · 13 · 14는 모두 다른 값인데 눈으로는 거의 같아 보입니다. 값마다 이유가 없으니 다음 화면에서 또 새 값이 생기고, 카드 사이(14)가 안쪽 여백(13)과 비슷해 두 카드가 한 덩어리처럼 읽혀요.'],
+    same: ['고른 간격 — 묶음과 층이 사라짐', '모두 16이면 깔끔해 보이지만 제목 · 설명 · 버튼이 같은 거리로 떨어져 무엇이 무엇에 붙었는지 알 수 없고, 카드 사이도 안쪽 여백과 같아 카드의 경계가 약해집니다.'],
+    scale: ['제목+설명 한 묶음, 버튼, 카드 — 세 층이 보임', '제목–설명 4, 설명–버튼 16, 카드 사이 32. 층이 올라갈 때마다 스케일에서 한 단계 이상 벌렸습니다. 안쪽 여백(16)보다 카드 사이(32)가 넓어 카드가 따로 떨어져 보여요.'],
+  };
+  let cur = +lab.dataset.initial!;
+
+  function render() {
+    const s = sets[cur];
+    const v = s.v;
+    const cards = lab.querySelector<HTMLElement>('.sp-cards')!;
+    cards.style.setProperty('--t', `${v.t}px`);
+    cards.style.setProperty('--d', `${v.d}px`);
+    cards.style.setProperty('--pad', `${v.pad}px`);
+    cards.style.setProperty('--gap', `${v.gap}px`);
+    for (const k of Object.keys(v)) {
+      lab.querySelector(`[data-k="${k}"]`)!.textContent = `${v[k]}`;
+      lab.querySelector(`[data-s="${k}"]`)!.textContent = SCALE.includes(v[k]) ? '안' : '밖';
+    }
+    // 층(제목–설명 < 설명–버튼 ≤ 안쪽 여백 < 카드 사이)이 서로 25% 이상 벌어졌는지
+    const step = (a: number, b: number) => b >= a * 1.25;
+    const off = Object.values(v).filter((x) => !SCALE.includes(x)).length;
+    const checks = [
+      `스케일 밖 값 ${off}개`,
+      `제목–설명 < 설명–버튼 ${step(v.t, v.d) ? '✓' : '✕'}`,
+      `안쪽 여백 < 카드 사이 ${step(v.pad, v.gap) ? '✓' : '✕'}`,
+    ];
+    lab.querySelector('#spCheck')!.textContent = checks.join(' · ');
+    lab.querySelector('#spRead')!.textContent = TEXT[s.id][0];
+    lab.querySelector('#spNote')!.textContent = TEXT[s.id][1];
+    lab.querySelectorAll('#spSet button').forEach((b, i) => b.setAttribute('aria-pressed', String(i === cur)));
+  }
+  lab.querySelector('#spSet')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    cur = +b.dataset.i!;
+    render();
+  });
+  render();
+</script>

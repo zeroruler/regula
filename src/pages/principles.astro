@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import FormulaRow from '../components/FormulaRow.astro';
-import GoldenRatio from '../demos/GoldenRatio.astro';
 import { topics } from '../lib/site';
 import { href } from '../lib/url';
 
@@ -26,7 +25,6 @@ const anchor = (i: number) => `t-${i}`;
         <h2>{t.name}</h2>
         {t.path && <a class="open" href={href(t.path)}>실습 페이지로 →</a>}
       </header>
-      {i === 0 && <GoldenRatio />}
       <div class="formulas">
         {formulas.filter((f) => f.data.topic === t.name).map((f) => <FormulaRow formula={f} refTitles={refTitles} />)}
       </div>

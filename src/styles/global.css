@@ -974,3 +974,8 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 [data-s="icon3d"] .vs-card{border-radius:14px;box-shadow:0 2px 8px color-mix(in srgb,var(--ink) 12%,transparent)}
 [data-s="icon3d"] .vs-ico{width:44px;height:44px;border-radius:12px;background:radial-gradient(circle at 30% 25%,color-mix(in srgb,#fff 80%,transparent),transparent 45%),linear-gradient(150deg,var(--ink-3),var(--ink));box-shadow:0 8px 12px color-mix(in srgb,var(--ink) 35%,transparent),inset 0 -4px 6px #0004;transform:rotate(-8deg)}
 @media (max-width:640px){ .vs-stage{min-height:260px} }
+
+/* 페이지 양식: 이어 보기 링크 */
+.see{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;font-size:14px}
+.see .label{margin-right:2px}
+.see a{color:var(--ink)}

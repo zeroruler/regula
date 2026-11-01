@@ -9,7 +9,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     items: [
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
-      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션 — 언제 쓰고 언제 피하는지' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태 — 언제 쓰고 언제 피하는지' },
       { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
     ],
   },
@@ -41,7 +41,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 ];
 // UI 패턴의 카테고리 순서. level은 카드와 눈금에 쓰는 1–9 값의 필드, path가 있으면 실습 페이지가 있다.
 export const patternGroups: {
-  id: string; name: string; path?: string; level: 'intrusiveness' | 'emphasis' | 'effort' | 'scope'; levelName: string;
+  id: string; name: string; path?: string; level: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block'; levelName: string;
   title: string; intro: string; ends: [string, string];
 }[] = [
   {
@@ -68,12 +68,25 @@ export const patternGroups: {
     intro: '내비게이션을 다루는 범위 순으로 놓았습니다. 왼쪽일수록 한 화면 안에서 움직이고, 오른쪽일수록 앱 전체를 오갑니다. 범위가 넓은 것일수록 늘 보이게 둘지, 숨길지가 중요해져요.',
     ends: ['화면 안 · 보기 전환', '앱 전체 · 최상위 목적지'],
   },
+  {
+    id: 'loading', name: '로딩', path: 'patterns/states/', level: 'wait', levelName: '기다리는 시간',
+    title: '기다리게 하는 방법',
+    intro: '로딩 표시를 기다리는 시간 순으로 놓았습니다. 왼쪽은 기다림을 아예 없애고, 오른쪽은 몇 분짜리 작업을 다른 일 하며 기다리게 합니다. 시간이 길수록 "얼마나 남았는지"를 알려 줘야 해요.',
+    ends: ['기다림 없음 · 1초 안', '오래 걸림 · 몇 분'],
+  },
+  {
+    id: 'empty', name: '빈 상태', path: 'patterns/states/', level: 'block', levelName: '막힌 정도',
+    title: '보여 줄 것이 없을 때',
+    intro: '빈 화면을 사용자가 막힌 정도 순으로 놓았습니다. 왼쪽은 할 일을 다 끝낸 좋은 빈 화면이고, 오른쪽은 고장 나서 아무것도 할 수 없는 화면이에요. 어느 쪽이든 왜 비었는지와 다음에 할 일을 알려 줍니다.',
+    ends: ['다 끝냄 · 잘된 일', '오류 · 막힘'],
+  },
 ];
 
 export const section = (key: SectionKey) => sections.find((s) => s.key === key)!;
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: 'v0.5 UI 패턴에 "로딩"과 "빈 상태" 추가. 로딩 5가지를 기다리는 시간 순, 빈 상태 4가지를 막힌 정도 순으로 놓고, 실습 페이지에서 걸리는 시간을 정해 로딩 표시를 직접 고르고 불러와 보는 실습, 빈 화면에 설명과 다음 행동을 붙여 보는 실습을 붙임.' },
   { date: '2026-10-31', text: 'v0.5 UI 패턴에 "내비게이션" 추가. 페이지네이션부터 내비게이션 드로어까지 6가지를 다루는 범위 순으로 놓고, 실습 페이지에서 드러난 메뉴와 숨은 메뉴로 같은 목적지에 가 보며 누른 횟수를 세는 실습, 화면 너비에 따라 하단 바·레일·사이드바가 바뀌는 실습을 붙임.' },
   { date: '2026-10-31', text: 'v0.5 UI 패턴에 "입력" 추가. 토글부터 여러 줄 입력까지 7가지를 입력 수고 순으로 놓고, 실습 페이지에서 라벨 위치(위·왼쪽·플레이스홀더·떠오르는 라벨)를 바꿔 직접 써 보는 실습과 검증 시점(입력마다·칸을 떠날 때·제출할 때) 실습을 붙임.' },
   { date: '2026-10-30', text: 'v0.5 UI 패턴에 "버튼" 추가. 텍스트·아이콘·아웃라인·채운·위험·플로팅 버튼 6가지를 시각적 무게 순으로 놓고, 실습 페이지에서 한 영역의 버튼 무게를 직접 정해 보는 위계 실습과 상태(호버·눌림·포커스·비활성·로딩) 실습을 붙임. 패턴 페이지를 카테고리별로 묶음.' },
@@ -89,5 +102,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 빈 상태와 로딩 · UX 라이팅 추가' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · v0.5 UX 라이팅 추가' },
 ];

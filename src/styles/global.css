@@ -535,3 +535,43 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .navlab .ni{fill:none;stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}
 .navlab .ni.on{fill:var(--ink)}
 .navlab .nsel{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
+
+/* 로딩과 빈 상태 — 흑백, 움직임은 움직임 줄이기 설정을 따른다 */
+.heart{margin-left:auto;font-style:normal;font-size:13px;color:var(--ink)}
+.spinm,.spin-l{display:block;width:26px;height:26px;border:3px solid var(--ink-3);border-right-color:transparent;border-radius:50%}
+.spinm{position:absolute;left:calc(50% - 13px);bottom:18px}
+.skm{display:grid;gap:6px}
+.skm i,.wl-item.sk i,.wl-item.sk b,.wl-item.sk span{display:block;height:7px;background:color-mix(in srgb,var(--ink) 12%,transparent);border-radius:2px}
+.pbm{height:8px;border:1px solid var(--ink);margin-top:4px}
+.pbm i{display:block;height:100%;background:var(--ink)}
+.pbm.wide{width:70%;height:10px}
+.emm{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding-top:6px}
+.emm b{font-size:11px}
+.emm span{font-size:9.5px;color:var(--ink-3)}
+.emm .bm{margin-top:4px}
+.emi{display:grid;place-items:center;width:24px;height:24px;border:1.5px solid var(--ink);border-radius:50%;font-style:normal;font-size:12px}
+.emi.big{width:44px;height:44px;font-size:20px}
+.wl-frame{background:var(--paper);border:1px solid var(--rule);display:flex;flex-direction:column;min-height:330px;align-self:start;min-width:0}
+.wl-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--rule);background:var(--surface)}
+.wl-head .mono{font-size:12px;color:var(--ink-3)}
+.wl-list{flex:1;display:flex;flex-direction:column}
+.wl-item{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--rule)}
+.wl-item > i{flex:none;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink-3)}
+.wl-item div{display:grid;gap:4px;flex:1;min-width:0}
+.wl-item b{font-size:14px}
+.wl-item span{font-size:13px;color:var(--ink-3)}
+.wl-item.sk > i{border:none;width:34px;height:34px;border-radius:50%}
+.wl-item.sk b{width:40%;height:10px}
+.wl-item.sk span{width:75%;height:8px}
+.wl-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:240px}
+.wl-center .mono{font-size:12px;color:var(--ink-2)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.el-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:32px 24px;min-height:260px}
+.el-body b{font-size:16px}
+.el-body span{font-size:14px;color:var(--ink-2);max-width:30ch}
+.stlab input[type=range]{accent-color:var(--ink);min-width:0}
+@media (prefers-reduced-motion:no-preference){
+  .spinm,.spin-l{animation:spin .8s linear infinite}
+  .wl-item.sk i,.wl-item.sk b,.wl-item.sk span{animation:skpulse 1.4s ease-in-out infinite}
+}
+@keyframes skpulse{50%{opacity:.45}}

@@ -13,7 +13,7 @@ const { group, items: navs } = groups.find((x) => x.group.id === 'navigation')!;
 // 내비게이션 규칙. 출처가 있는 것만 적는다.
 const rules = [
   { s: '숨김', rule: '숨은 내비게이션(햄버거 메뉴)은 드러난 내비게이션보다 덜 쓰이고, 찾는 데 더 오래 걸렸다', src: 'Kara Pernice · Raluca Budiu, 「Hamburger Menus and Hidden Navigation Hurt UX Metrics」 (NN/g, 2016)' },
-  { s: '탭 바', rule: '최상위 목적지 3–5곳, 아이콘에 라벨을 함께', src: 'Apple HIG Tab bars · Material Design 3 Navigation bar' },
+  { s: '탭 바', rule: '탭은 적을수록 찾기 쉽다 — 다섯 개 안쪽으로, 아이콘에는 한 단어 라벨을 함께', src: 'Apple HIG Tab bars ("five or fewer", "Include tab labels") · Material Design 3 Navigation bar' },
   { s: '너비', rule: '좁은 화면은 하단 바, 중간은 레일, 넓은 화면은 레일이나 펼친 드로어', src: 'Material Design 3 Navigation (window size classes)' },
   { s: '브레드크럼', rule: '지나온 기록이 아니라 구조상 위치를 보여 주고, 현재 페이지는 링크로 만들지 않는다', src: 'NN/g 「Breadcrumbs: 11 Design Guidelines for Desktop and Mobile」 · WAI-ARIA APG Breadcrumb (aria-current="page")' },
   { s: '탭', rule: '탭 목록 안은 화살표 키로 움직이고, Tab 키는 탭 패널로 넘어간다', src: 'W3C WAI-ARIA Authoring Practices Tabs Pattern' },

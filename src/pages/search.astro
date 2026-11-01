@@ -1,0 +1,193 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { topics, patternGroups } from '../lib/site';
+import { href } from '../lib/url';
+
+// 모든 항목을 빌드 때 한 목록으로 펼쳐 두고, 브라우저에서 검색어와 태그로 거른다.
+// 스크립트가 없어도 전체 목록은 보인다.
+type Item = { kind: string; tag: string; title: string; sub?: string; url: string; text: string };
+
+const [formulas, patterns, references, templates] = await Promise.all([
+  getCollection('formulas'),
+  getCollection('patterns'),
+  getCollection('references'),
+  getCollection('templates'),
+]);
+
+const hay = (...parts: (string | undefined)[]) => parts.filter(Boolean).join(' ').toLowerCase();
+const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
+
+const items: Item[] = [
+  ...formulas.sort(byOrder).map((f) => {
+    const d = f.data;
+    const page = topics.find((t) => t.name === d.topic)?.path ?? 'principles/';
+    return {
+      kind: '공식', tag: d.topic, title: d.name, sub: d.meaning, url: href(`${page}#f-${f.id}`),
+      text: hay(d.name, d.equation, d.meaning, d.note, d.topic, d.source),
+    };
+  }),
+  ...patternGroups.flatMap((g) =>
+    patterns
+      .filter((p) => p.data.category === g.name)
+      .sort((a, b) => (g.level ? (a.data[g.level] ?? 0) - (b.data[g.level] ?? 0) : 0))
+      .map((p) => {
+        const d = p.data;
+        return {
+          kind: '패턴', tag: d.category, title: `${d.name} · ${d.en}`, sub: d.use_when,
+          url: href(`${g.path}#p-${p.id.split('/').pop()}`),
+          text: hay(d.name, d.en, d.category, d.use_when, d.avoid_when, d.confused_with, d.fits, d.source),
+        };
+      }),
+  ),
+  ...references.sort(byOrder).map((r) => {
+    const d = r.data;
+    return {
+      kind: '레퍼런스', tag: d.group, title: d.title, sub: `${d.author} — ${d.summary}`, url: href(`references/${r.id}/`),
+      text: hay(d.title, d.author, d.group, d.summary),
+    };
+  }),
+  ...templates.sort(byOrder).map((t) => {
+    const d = t.data;
+    return {
+      kind: '양식', tag: d.kind, title: d.name, sub: d.concept, url: href(`templates/${t.id}/`),
+      text: hay(d.name, d.kind, d.concept, ...d.signatures, ...d.rules.map((r) => r.text)),
+    };
+  }),
+  ...topics.filter((t) => t.path).map((t) => ({
+    kind: '실습', tag: '원리와 공식', title: t.name, sub: t.blurb, url: href(t.path!),
+    text: hay(t.name, t.blurb, '실습 원리'),
+  })),
+  ...patternGroups.filter((g, i, all) => all.findIndex((x) => x.path === g.path) === i).map((g) => {
+    const same = patternGroups.filter((x) => x.path === g.path);
+    return {
+      kind: '실습', tag: 'UI 패턴', title: same.map((x) => x.name).join(' · '), sub: same.map((x) => x.title).join(' · '), url: href(g.path),
+      text: hay(...same.flatMap((x) => [x.name, x.title, x.intro]), '실습 패턴'),
+    };
+  }),
+];
+
+const kinds = [...new Set(items.map((i) => i.kind))];
+const tags = kinds.flatMap((k) => [...new Set(items.filter((i) => i.kind === k).map((i) => i.tag))].map((tag) => ({ kind: k, tag })));
+---
+<Base title="찾기 · Regula" current="search" description="Regula의 공식, 패턴, 레퍼런스, 양식을 검색어와 태그로 찾기">
+  <PageHead current="search" title="찾아서 바로 가기">
+    <p>공식 {formulas.length} · 패턴 {patterns.length} · 레퍼런스 {references.length} · 양식 {templates.length}개를 한 목록에 모았습니다. 검색어는 이름뿐 아니라 설명·출처까지 찾고, 띄어쓰기는 달라도 됩니다. 종류와 태그로 좁힐 수 있어요.</p>
+  </PageHead>
+
+  <section class="search">
+    <div class="finder">
+      <label class="label" for="q">검색어</label>
+      <input id="q" type="search" placeholder="예: 대비, 모달, 그리드, Rams" autocomplete="off" spellcheck="false">
+      <div class="chips" role="group" aria-label="종류">
+        <button type="button" class="chip" data-kind="" aria-pressed="true">전체</button>
+        {kinds.map((k) => <button type="button" class="chip" data-kind={k} aria-pressed="false">{k}</button>)}
+      </div>
+      <div class="chips tags" role="group" aria-label="태그">
+        {tags.map((t) => <button type="button" class="chip" data-tag={t.tag} data-of={t.kind} aria-pressed="false">#{t.tag}</button>)}
+      </div>
+      <p class="count" aria-live="polite"><span id="n">{items.length}</span> / {items.length}</p>
+    </div>
+
+    <ol class="results" id="results">
+      {items.map((i) => (
+        <li data-kind={i.kind} data-tag={i.tag} data-text={i.text}>
+          <a href={i.url}>
+            <span class="k">{i.kind} · {i.tag}</span>
+            <b>{i.title}</b>
+            {i.sub && <small>{i.sub}</small>}
+          </a>
+        </li>
+      ))}
+    </ol>
+    <p class="noresult" id="none" hidden>맞는 항목이 없어요. 다른 말로 찾거나 태그를 풀어 보세요.</p>
+  </section>
+</Base>
+
+<script>
+  const q = document.getElementById('q') as HTMLInputElement;
+  const n = document.getElementById('n')!;
+  const none = document.getElementById('none')!;
+  const kindBtns = [...document.querySelectorAll<HTMLButtonElement>('button[data-kind]')];
+  const tagBtns = [...document.querySelectorAll<HTMLButtonElement>('button[data-tag]')];
+  const rows = [...document.querySelectorAll<HTMLLIElement>('#results li')].map((li) => {
+    const b = li.querySelector('b')!;
+    const s = li.querySelector('small');
+    return { li, b, s, title: b.textContent ?? '', sub: s?.textContent ?? '', kind: li.dataset.kind!, tag: li.dataset.tag!, text: li.dataset.text!, flat: li.dataset.text!.replace(/\s+/g, '') };
+  });
+
+  let kind = '';
+  let tag = '';
+
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const reEsc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // 찾은 말에만 형광펜
+  function mark(text: string, terms: string[]) {
+    if (!terms.length) return esc(text);
+    const re = new RegExp(`(${terms.map(reEsc).join('|')})`, 'gi');
+    return text.split(re).map((part, i) => (i % 2 ? `<mark>${esc(part)}</mark>` : esc(part))).join('');
+  }
+
+  function render() {
+    const terms = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const r of rows) {
+      const ok = (!kind || r.kind === kind) && (!tag || r.tag === tag)
+        && terms.every((t) => r.text.includes(t) || r.flat.includes(t));
+      r.li.hidden = !ok;
+      if (!ok) continue;
+      shown++;
+      // 이름에서 찾은 항목을 위로
+      const head = r.title.toLowerCase();
+      r.li.style.order = terms.length && terms.every((t) => head.includes(t)) ? '0' : '1';
+      r.b.innerHTML = mark(r.title, terms);
+      if (r.s) r.s.innerHTML = mark(r.sub, terms);
+    }
+    n.textContent = String(shown);
+    none.hidden = shown > 0;
+    for (const b of kindBtns) b.setAttribute('aria-pressed', String(b.dataset.kind === kind));
+    for (const b of tagBtns) {
+      b.hidden = !!kind && b.dataset.of !== kind;
+      b.setAttribute('aria-pressed', String(b.dataset.tag === tag));
+    }
+    // 지금 거른 상태를 주소에 남겨 다시 열거나 링크로 보낼 수 있게
+    const p = new URLSearchParams();
+    if (q.value.trim()) p.set('q', q.value.trim());
+    if (kind) p.set('kind', kind);
+    if (tag) p.set('tag', tag);
+    const s = p.toString();
+    history.replaceState(null, '', s ? `?${s}` : location.pathname);
+  }
+
+  for (const b of kindBtns) b.addEventListener('click', () => {
+    kind = b.dataset.kind!;
+    if (tag && kind && tagBtns.find((t) => t.dataset.tag === tag)?.dataset.of !== kind) tag = '';
+    render();
+  });
+  for (const b of tagBtns) b.addEventListener('click', () => {
+    tag = tag === b.dataset.tag ? '' : b.dataset.tag!;
+    render();
+  });
+  q.addEventListener('input', render);
+  // Enter: 첫 결과로 이동
+  q.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const visible = rows.filter((r) => !r.li.hidden);
+    const first = visible.find((r) => r.li.style.order === '0') ?? visible[0];
+    if (first) location.href = first.li.querySelector('a')!.href;
+  });
+  // '/'로 검색창에 들어가기
+  document.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(t.tagName) && !t.isContentEditable) { e.preventDefault(); q.focus(); }
+  });
+
+  const init = new URLSearchParams(location.search);
+  q.value = init.get('q') ?? '';
+  kind = kindBtns.some((b) => b.dataset.kind === init.get('kind')) ? init.get('kind')! : '';
+  tag = tagBtns.find((b) => b.dataset.tag === init.get('tag'))?.dataset.tag ?? '';
+  render();
+  // 넓은 화면에서만 바로 입력 — 모바일은 키보드가 화면을 가리지 않게
+  if (!q.value && matchMedia('(min-width: 981px)').matches) q.focus({ preventScroll: true });
+</script>

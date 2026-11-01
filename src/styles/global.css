@@ -586,3 +586,25 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .wr-dialog > span{font-size:14px;color:var(--ink-2)}
 .wr-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;flex-wrap:wrap}
 .wr-acts .btn-x{cursor:default;font-size:14px;padding:8px 16px}
+
+/* 찾기 — 검색창과 결과 목록. 찾은 말만 형광펜 */
+.search{display:flex;flex-direction:column;gap:28px}
+.finder{display:grid;gap:12px;max-width:720px}
+.finder input{font:inherit;font-size:18px;width:100%;padding:12px 14px;border:1px solid var(--ink);border-radius:2px;background:var(--surface);color:var(--ink)}
+.finder input:focus-visible{outline:2px solid var(--mark);outline-offset:1px}
+.finder .tags .chip{font-size:12px;padding:3px 8px}
+.finder .chip[hidden]{display:none}
+.finder .count{margin:0;font-family:var(--mono);font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.results{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink);display:flex;flex-direction:column}
+.results a{display:grid;grid-template-columns:170px minmax(0,1fr);gap:2px 24px;padding:14px 0;border-bottom:1px solid var(--rule);text-decoration:none}
+.results a:hover{background:none}
+.results a:hover b{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:2px;text-underline-offset:3px}
+.results .k{grid-row:span 2;font-family:var(--mono);font-size:12px;color:var(--ink-3);padding-top:2px}
+.results b{font-weight:600;font-size:15px}
+.results small{font-size:13.5px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.results mark,.results small mark{background:var(--mark);color:var(--mark-ink)}
+.noresult{margin:0;color:var(--ink-2)}
+@media (max-width:640px){
+  .results a{grid-template-columns:minmax(0,1fr)}
+  .results .k{grid-row:auto}
+}

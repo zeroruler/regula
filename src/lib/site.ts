@@ -1,7 +1,7 @@
 // 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
 export const version = 'v0.5';
 
-export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log';
+export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search';
 
 export const nav: { group: string; items: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] }[] = [
   {
@@ -23,6 +23,12 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     group: '기록',
     items: [
       { key: 'log', no: 6, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
+    ],
+  },
+  {
+    group: '찾기',
+    items: [
+      { key: 'search', no: 7, title: '찾기', path: 'search/', blurb: '공식, 패턴, 레퍼런스, 양식을 검색어와 태그로 한 번에' },
     ],
   },
 ];
@@ -92,6 +98,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '찾기 페이지(/search/) 추가. 공식·패턴·레퍼런스·양식·실습 페이지를 한 목록에 모아 검색어(이름·설명·출처, 띄어쓰기 무시)와 종류·태그로 거르고, 찾은 말에 형광펜을 칠함. 거른 상태는 주소에 남아 링크로 보낼 수 있음.' },
   { date: '2026-11-01', text: 'UI 패턴 목록을 정리. /patterns/에 쌓이던 카드와 비교표를 카테고리 페이지로 옮기고 목록은 입구만 남김. 알림에도 자기 페이지(/patterns/feedback/)를 만듦.' },
   { date: '2026-11-01', text: 'v0.5 UI 패턴에 "문구(UX 라이팅)"를 추가하며 v0.5 패턴 확장을 마침. 나쁜 오류 문구를 쉬운 말·구체적으로·고칠 방법·탓하지 않기로 한 단계씩 고쳐 보는 실습, 확인 다이얼로그의 버튼을 확인/취소 · 예/아니요 · 동사로 바꿔 보는 실습과 문구 규칙 표를 붙임.' },
   { date: '2026-11-01', text: 'v0.5 UI 패턴에 "로딩"과 "빈 상태" 추가. 로딩 5가지를 기다리는 시간 순, 빈 상태 4가지를 막힌 정도 순으로 놓고, 실습 페이지에서 걸리는 시간을 정해 로딩 표시를 직접 고르고 불러와 보는 실습, 빈 화면에 설명과 다음 행동을 붙여 보는 실습을 붙임.' },
@@ -110,5 +117,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · 검색 / 태그 필터' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일 9가지' },
 ];

@@ -57,7 +57,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
 // level은 카드와 눈금에 쓰는 1–9 값의 필드. level이 없는 카테고리(문구)는 카드 없이 실습만 있다.
 export const patternGroups: {
-  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage'; levelName?: string;
+  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage' | 'hide'; levelName?: string;
   title: string; intro: string; ends?: [string, string];
 }[] = [
   {
@@ -103,6 +103,12 @@ export const patternGroups: {
     ends: ['보이는 대로 · 누구나', '숨어 있음 · 아는 사람만'],
   },
   {
+    id: 'layout', name: '화면 구성', path: 'patterns/layout/', level: 'hide', levelName: '가려진 정도',
+    title: '내용을 담고 펼치는 방법',
+    intro: '같은 내용도 목록 · 표 · 카드로 늘어놓을 수 있고, 캐러셀 · 아코디언 · 팝오버 · 사이드 시트에 접어 둘 수 있습니다. 내용이 가려진 정도 순으로 놓았어요. 오른쪽으로 갈수록 화면은 깔끔해지지만, 사용자는 열어 보기 전까지 그 내용이 있는 줄 모릅니다.',
+    ends: ['다 보임 · 훑어봄', '가려짐 · 열어야 보임'],
+  },
+  {
     id: 'ai', name: 'AI 화면', path: 'patterns/ai/', level: 'stage', levelName: '대화의 시점',
     title: 'AI와 주고받는 화면',
     intro: '챗봇·AI 도우미 화면의 요소를 대화에서 쓰이는 시점 순으로 놓았습니다. 왼쪽은 묻기 전에 무엇을 할 수 있는지 알려 주고, 가운데는 기다리는 동안 무슨 일이 일어나는지, 오른쪽은 받은 답을 믿고 고치는 법을 줍니다.',
@@ -124,6 +130,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: 'UI 패턴에 "화면 구성"(/patterns/layout/) 추가. 목록 · 표 · 카드 · 캐러셀 · 아코디언 · 팝오버 · 사이드 시트 7가지를 내용이 가려진 정도 순으로 놓고, 같은 상품 6개를 목록 · 표 · 카드로 바꿔 담으며 찾기 · 견주기 · 둘러보기에 맞는지 보는 실습을 붙임. 규칙 7개는 NN/g · W3C APG · MDN 원문을 읽고 확인(출처 5차 검증).' },
   { date: '2026-11-01', text: '출처 4차 검증: WCAG 2.2 원문(2024-12-12판)과 사용성 · 접근성 공식의 기준 번호 · 수준 · 수치를 대조. 모두 맞았고, 터치 영역의 Inline 예외 표현을 바로잡고 2.5.5(44px, AAA)와 리플로 높이 256px를 더함. 레퍼런스에 "WCAG 2.2"를 추가하고 관련 공식 14개를 연결.' },
   { date: '2026-11-01', text: '원리의 "사용성"을 "사용성과 접근성"으로 넓히고 실습 페이지(/principles/usability/)를 만듦. WCAG 2.2 기준으로 포커스 표시 · 포커스 가림 · 포커스 순서 · 컴포넌트 대비 3:1 · 색에만 기대지 않기 · 리플로 320px · 움직임 줄이기 · 대체 텍스트 · 끌기의 대안 9개를 더하고, 터치 영역에 24px 간격 예외를 적음. 눌리는 영역과 간격을 바꿔 2.5.8 통과 여부를 보는 실습, 실제 폼을 Tab으로 지나가며 포커스 표시를 끄고 순서를 어긋나게 해 보는 실습을 붙임.' },
   { date: '2026-11-01', text: '방향을 "공개 웹디자인 아카이브"로 맞춤. 홈 · 메타 설명 · 레퍼런스 · 서체 · 양식의 문구를 "나"가 아니라 방문자 기준으로 바꾸고("내 정리" → "정리", "내가 쓰는 서체" → "양식에 쓴 서체"), 기록장을 "출처 기록"으로 이름을 바꿔 내비게이션에서 뺌(항목 아래 "본 곳"과 작업 기록에서 들어감). 공식에 "웹에서" 필드를 더해 조형 · 채도 대비 · 제목 계층 17개에 웹 화면 적용 예를 붙임.' },

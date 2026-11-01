@@ -119,6 +119,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '두 번째 페이지 양식 "회원가입" 추가. 구성 7개와 규칙 14개(출처: GOV.UK Create accounts · Password input · Ask users for passwords, NIST SP 800-63B-4, WCAG 1.3.5 · 3.3.8, 개인정보 보호법 제22조, deceptive.design). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 입력 오류(오류 요약 + 칸 아래 문구) · 약관 동의(필수만 체크, 선택은 비움) 상태를 볼 수 있음. 양식마다 미리보기 상태와 이어 보기 링크를 콘텐츠 파일에 적도록 바꿈.' },
   { date: '2026-11-01', text: '출처 2차 검증. Apple HIG 본문을 직접 읽어 터치 영역(기본 44pt · 최소 28pt), 탭 바 개수, 리퀴드 글래스 쓰는 곳을 바로잡고, 피츠의 법칙 식의 출처(MacKenzie 1992), 토스트 시간(Carbon 5초), 손실 회피 메타분석 값을 고침. 출처 없는 숫자에는 (어림) 표시. 기록은 docs/source-check.md.' },
   { date: '2026-11-01', text: '원리에 "비주얼 스타일" 실습 페이지(/principles/styles/)를 추가. 스큐어모피즘부터 리퀴드 글래스까지 9가지를 재료(그림자 · 테두리 · 투명도 · 질감)로 정리하고, 같은 카드를 9가지로 바꿔 보며 AI에 넘길 말을 복사하는 실습을 붙임. 흑백 원칙이라 색은 빼고 재료만으로 그림.' },
   { date: '2026-11-01', text: 'v0.6 마무리 — 규칙집에서 아카이브로. 찾기, 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임 · 타이포그래피, 출처 1차 검증, 기록장과 서체 목록까지. PLAN의 목표와 현황 표를 지금 상태로 맞춤.' },
@@ -148,5 +149,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '써 본 예시 쌓기 · 설정 화면 · 회원가입 양식' },
+  { when: '다음', text: '써 본 예시 쌓기 · 설정 화면 양식' },
 ];

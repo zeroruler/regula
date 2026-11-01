@@ -159,6 +159,12 @@ const templates = defineCollection({
     parts: z.array(z.object({ name: z.string(), note: z.string().optional(), optional: z.boolean().default(false) })).default([]),
     // 규칙마다 출처 필수
     rules: z.array(z.object({ text: z.string(), source: z.string().min(1) })).default([]),
+    // 미리보기에서 고를 수 있는 상태 (?state=<key>). 첫 번째가 기본
+    states: z.array(z.object({ key: z.string(), label: z.string() })).default([]),
+    // 미리보기 아래 한 줄 안내
+    preview_note: z.string().optional(),
+    // 이 양식과 이어지는 사이트 안 페이지 (사이트 기준 경로)
+    see: z.array(z.object({ label: z.string(), path: z.string() })).default([]),
   }),
 });
 

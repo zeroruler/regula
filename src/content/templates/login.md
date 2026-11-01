@@ -4,6 +4,15 @@ order: 10
 kind: "페이지 양식"
 concept: "이미 계정이 있는 사람이 가장 적은 생각으로 들어오게 하는 화면. 외우게 하지 않고, 틀렸을 때 무엇을 고칠지 바로 알려 준다."
 preview: "/previews/login/"
+states:
+  - { key: "default", label: "기본" }
+  - { key: "error", label: "형식 오류" }
+  - { key: "fail", label: "계정 오류" }
+preview_note: "미리보기 안에서 직접 입력해 볼 수 있어요. 빈 칸으로 로그인을 누르면 제출 시점 검사가 동작합니다."
+see:
+  - { label: "입력과 폼", path: "patterns/forms/" }
+  - { label: "문구", path: "patterns/writing/" }
+  - { label: "회원가입 양식", path: "templates/signup/" }
 parts:
   - name: "제목"
     note: "한 줄. \"로그인\"처럼 지금 하는 일을 그대로"

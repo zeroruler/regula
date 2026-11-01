@@ -9,13 +9,14 @@ import { href } from '../lib/url';
 // 스크립트가 없어도 전체 목록은 보인다.
 type Item = { kind: string; tag: string; title: string; sub?: string; url: string; text: string };
 
-const [formulas, patterns, darks, references, templates, notes] = await Promise.all([
+const [formulas, patterns, darks, references, templates, notes, fonts] = await Promise.all([
   getCollection('formulas'),
   getCollection('patterns'),
   getCollection('darkpatterns'),
   getCollection('references'),
   getCollection('templates'),
   getCollection('notes'),
+  getCollection('fonts'),
 ]);
 
 const hay = (...parts: (string | undefined)[]) => parts.filter(Boolean).join(' ').toLowerCase();
@@ -60,6 +61,10 @@ const items: Item[] = [
   ...notes.sort((a, b) => b.data.date.localeCompare(a.data.date)).map((n) => ({
     kind: '기록', tag: n.data.kind, title: n.data.title, sub: `${n.data.date}${n.data.seen_at ? ` · ${n.data.seen_at}` : ''} — ${(n.body ?? '').trim().split('\n')[0]}`,
     url: href(`notes/#n-${n.id}`), text: hay(n.data.title, n.data.kind, n.data.seen_at, n.data.date, n.body),
+  })),
+  ...fonts.sort(byOrder).map((f) => ({
+    kind: '서체', tag: f.data.kind, title: `${f.data.name} · ${f.data.family}`, sub: `${f.data.status} · ${f.data.traits}`,
+    url: href(`principles/typography/#font-${f.id}`), text: hay(f.data.name, f.data.family, f.data.kind, f.data.maker, f.data.traits, f.data.status, f.data.script, ...f.data.used_in.map((u) => u.template)),
   })),
   ...templates.sort(byOrder).map((t) => {
     const d = t.data;

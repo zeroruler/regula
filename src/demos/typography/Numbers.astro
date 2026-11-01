@@ -1,0 +1,35 @@
+---
+// 비례 숫자와 고정폭 숫자: 표 · 가격 · 시계처럼 숫자가 세로로 줄 서는 곳은 고정폭(tabular-nums).
+const rows = [['이력서 첨삭', 30000], ['포트폴리오 리뷰', 29000], ['모의면접', 111100], ['합계', 170100]];
+---
+<div class="lab tylab" id="tyNum">
+  <div class="ty-frame">
+    <table class="ty-nums" id="tyNumTable">
+      <tbody>{rows.map(([n, v]) => <tr><td>{n}</td><td>{(v as number).toLocaleString('ko-KR')}원</td></tr>)}</tbody>
+    </table>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 숫자 폭</span>
+    <h3>숫자가 줄을 서게</h3>
+    <div class="chips" id="tyNumMode">
+      <button class="chip" type="button" data-v="proportional-nums" aria-pressed="true">비례 숫자</button>
+      <button class="chip" type="button" data-v="tabular-nums" aria-pressed="false">고정폭 숫자</button>
+    </div>
+    <p class="g-read" aria-live="polite">자릿수: <mark id="tyNumRead"></mark></p>
+    <p>비례 숫자는 1이 좁고 0이 넓어서 문장 속에서는 자연스럽지만, 세로로 쌓으면 자리가 어긋납니다. 금액 · 표 · 시계 · 바뀌는 숫자에는 <code>font-variant-numeric: tabular-nums</code>. 서체가 이 기능(tnum)을 갖고 있어야 해요.</p>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#tyNum')!;
+  const table = lab.querySelector<HTMLElement>('#tyNumTable')!;
+  lab.querySelector('#tyNumMode')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    table.style.fontVariantNumeric = b.dataset.v!;
+    lab.querySelectorAll('#tyNumMode button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    lab.querySelector('#tyNumRead')!.textContent = b.dataset.v === 'tabular-nums' ? '같은 자리끼리 세로로 맞음' : '1이 많은 줄은 짧아져 자리가 어긋남';
+  });
+  lab.querySelector('#tyNumRead')!.textContent = '1이 많은 줄은 짧아져 자리가 어긋남';
+  table.style.fontVariantNumeric = 'proportional-nums';
+</script>

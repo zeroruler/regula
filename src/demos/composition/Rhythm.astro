@@ -1,0 +1,73 @@
+---
+// 율동: 같은 원 일곱 개를 두고 바뀌는 속성을 고른다. 하나만 규칙적으로 바뀌면 흐름이 생기고, 여럿이 제각각이면 반복이 사라진다.
+const modes = [
+  ['none', '반복만'],
+  ['size', '크기 점점'],
+  ['tone', '명도 점점'],
+  ['gap', '간격 점점'],
+  ['accent', '크기 점점 + 하나만 다르게'],
+  ['chaos', '제각각'],
+] as const;
+---
+<div class="lab complab" id="cRhythm">
+  <div class="c-fig">
+    <svg viewBox="0 0 320 140" role="img" aria-label="한 줄로 놓인 원 일곱 개"><g class="c-row"></g><line x1="10" y1="112" x2="310" y2="112" class="c-floor" /></svg>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 율동</span>
+    <h3>무엇이 바뀌면 흐름이 생기나</h3>
+    <div class="chips" id="crMode">
+      {modes.map(([v, label], i) => <button class="chip" type="button" data-v={v} aria-pressed={String(i === 0)}>{label}</button>)}
+    </div>
+    <p class="g-read" aria-live="polite">보이는 것: <mark id="crRead"></mark></p>
+    <p id="crNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>목록과 카드 격자는 정적인 율동입니다. 그 안에서 하나만 다르게(새 항목, 추천) 두면 하이라이트가 되지만, 둘 셋이 저마다 다르면 아무것도 강조되지 않아요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#cRhythm')!;
+  const N = 7;
+  // 제각각: 고정된 흩어짐 값(새로 고쳐도 같은 그림)
+  const CH = { r: [14, 7, 18, 10, 16, 6, 12], dy: [-14, 6, -4, 10, -18, 2, -8], tone: [0, 2, 1, 3, 0, 2, 1] };
+  const TONES = ['t-dark', 't-mid', 't-soft', 't-light'];
+  const TEXT: Record<string, [string, string]> = {
+    none: ['고른 박자 — 안정적이지만 머무를 곳이 없음', '같은 간격, 같은 크기. 정적인 율동은 출발점일 뿐이고 오래 보면 지루합니다.'],
+    size: ['오른쪽으로 굴러가는 흐름', '크기 하나만 일정한 비율로 줄였습니다. 줄어드는 방향이 곧 시선이 흐르는 방향이에요.'],
+    tone: ['멀어지며 옅어지는 흐름', '명도만 바꿨습니다. 공기 원근법처럼 옅은 쪽이 뒤로 물러나 보여요.'],
+    gap: ['다가오며 빨라지는 흐름', '간격만 점점 좁혔습니다. 좁아지는 쪽으로 속도와 깊이가 생깁니다.'],
+    accent: ['흐름 + 머무를 곳 하나', '흐름은 크기가 만들고, 형광펜 하나가 시선이 머물 곳을 정합니다. 동적인 율동의 기본형이에요.'],
+    chaos: ['흩어진 점들 — 율동이 사라짐', '크기·위치·명도가 저마다 바뀌면 규칙을 찾을 수 없어 반복으로 읽히지 않습니다.'],
+  };
+
+  function render(mode: string) {
+    const xs: number[] = [];
+    const gaps = Array.from({ length: N - 1 }, (_, i) => (mode === 'gap' ? 65 - i * 7 : 42));
+    let x = 0; xs.push(0);
+    for (const g of gaps) { x += g; xs.push(x); }
+    const x0 = (320 - x) / 2;
+    $('.c-row').innerHTML = xs.map((xi, i) => {
+      let r = 14, dy = 0, cls = 't-dark';
+      if (mode === 'size' || mode === 'accent') r = 18 - i * 2.2;
+      if (mode === 'tone') cls = TONES[Math.min(3, Math.floor(i / 2))];
+      if (mode === 'chaos') { r = CH.r[i]; dy = CH.dy[i]; cls = TONES[CH.tone[i]]; }
+      if (mode === 'accent' && i === 2) cls = 't-mark';
+      return `<circle class="c-shape ${cls}" cx="${(x0 + xi).toFixed(1)}" cy="${(110 - r + dy).toFixed(1)}" r="${r.toFixed(1)}" />`;
+    }).join('');
+    $('#crRead').textContent = TEXT[mode][0];
+    $('#crNote').textContent = TEXT[mode][1];
+  }
+  function $(s: string) { return lab.querySelector<HTMLElement>(s)!; }
+
+  const group = $('#crMode');
+  group.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
+    if (!btn) return;
+    group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    render(btn.dataset.v!);
+  });
+  render('none');
+</script>

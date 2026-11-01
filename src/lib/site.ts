@@ -10,19 +10,18 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
       { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 제스처, AI 화면, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
-      { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
+      { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 정리와 원문' },
     ],
   },
   {
     group: '만들기',
     items: [
-      { key: 'templates', no: 4, title: '페이지 양식', path: 'templates/', blurb: '직접 만든 디자인 시스템과 페이지 양식' },
+      { key: 'templates', no: 4, title: '페이지 양식', path: 'templates/', blurb: 'Regula가 만든 디자인 시스템과 페이지 양식' },
     ],
   },
   {
     group: '기록',
     items: [
-      { key: 'notes', no: 8, title: '기록장', path: 'notes/', blurb: '자료를 어디서 봤는지 날짜별로' },
       { key: 'log', no: 6, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
     ],
   },
@@ -34,12 +33,17 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
   },
 ];
 
-export const sections = nav.flatMap((g) => g.items);
+// 내비게이션에는 없지만 페이지는 있는 섹션. 출처 기록은 항목 아래 "본 곳"과 작업 기록에서 들어간다.
+const unlisted: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] = [
+  { key: 'notes', no: 8, title: '출처 기록', path: 'notes/', blurb: '자료를 어디서 봤는지 날짜별로' },
+];
+
+export const sections = [...nav.flatMap((g) => g.items), ...unlisted];
 
 // 원리와 공식의 주제 순서. path가 있는 주제는 실습이 붙은 별도 페이지가 있다.
 export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '비율과 간격', blurb: '황금비, 8pt 그리드' },
-  { name: '타이포그래피', path: 'principles/typography/', blurb: '타입 스케일, 줄 길이, 행간, 내가 쓰는 서체' },
+  { name: '타이포그래피', path: 'principles/typography/', blurb: '타입 스케일, 줄 길이, 행간, 제목 계층, 양식에 쓴 서체' },
   { name: '색', path: 'principles/color/', blurb: '색상환과 배색, 60-30-10, 동시 대비, 명도 대비' },
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
   { name: '조형', path: 'principles/composition/', blurb: '크기 위계, 여백, 시각적 무게, 대칭, 질감, 형태, 동세, 율동 — 『디자인 구구단』 9단' },
@@ -120,6 +124,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '방향을 "공개 웹디자인 아카이브"로 맞춤. 홈 · 메타 설명 · 레퍼런스 · 서체 · 양식의 문구를 "나"가 아니라 방문자 기준으로 바꾸고("내 정리" → "정리", "내가 쓰는 서체" → "양식에 쓴 서체"), 기록장을 "출처 기록"으로 이름을 바꿔 내비게이션에서 뺌(항목 아래 "본 곳"과 작업 기록에서 들어감). 공식에 "웹에서" 필드를 더해 조형 · 채도 대비 · 제목 계층 17개에 웹 화면 적용 예를 붙임.' },
   { date: '2026-11-01', text: '책 『디자인 구구단』(에이핫, 길벗)을 레퍼런스에 추가하고, 원리에 "조형" 실습 페이지(/principles/composition/)를 새로 만듦. 직접 찍어 정리한 9단 학습 노트를 바탕으로 비율·공간·균형·질감·형태·움직임·율동의 공식 15개를 내 말로 옮기고, 색에 "채도 대비", 타이포그래피에 "제목 · 소제목 · 본문"을 더함. 시각적 무게 시소와 율동 실습을 붙임.' },
   { date: '2026-11-01', text: '출처 3차 검증. m3.material.io 대신 Google의 공개 구현 저장소 소스에서 Material 3 값을 확인 — motion 토큰(시간 50–1000ms 16단계, standard · emphasized 곡선)을 움직임 규칙 표와 ease-in · ease-out에 넣고, 창 크기 경계 600 · 840dp, 내비게이션 바 3–5곳을 확인. 스낵바 4–10초는 MDC Web(4000–10000ms)과 Compose M3(4초 · 10초)로 출처를 바꾸고, Android View 구현은 1.5 · 2.75초로 다르다고 적음. 클레이모피즘은 Malewicz의 글이 이름을 널리 알렸지만 처음 지은 사람은 확정하지 않음. 기록은 docs/source-check.md.' },
   { date: '2026-11-01', text: '여섯 번째 페이지 양식 "랜딩 페이지" 추가. 구성 7개와 규칙 14개(출처: NN/g Top 10 Guidelines for Homepage Usability · Photos as Web Content · Scrolling and Attention · Auto-Forwarding Carousels, GOV.UK Start using a service · Button, WCAG 2.2.2 · 1.4.2 · 1.4.3, deceptive.design). 마케팅 블로그의 전환율 주장은 쓰지 않음. 미리보기는 기본 · 주 버튼 둘 · 꾸밈용 그림 상태를 볼 수 있음. 채워 나갈 양식 목록이 비어 그 칸을 지움.' },

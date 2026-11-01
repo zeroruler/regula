@@ -13,6 +13,7 @@ const f = formula.data;
   <p>
     {f.meaning}
     {f.note && <span class="note">{f.note}</span>}
+    {f.web && <span class="web"><b>웹에서</b> {f.web}</span>}
     <span class="src">{f.source}{f.refs.map((r) => <> · <a href={href(`references/${r}/`)}>{refTitles[r] ?? r}</a></>)}</span>
   </p>
   <ItemNotes ref={`formulas/${formula.id}`} />

@@ -9,7 +9,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     items: [
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
-      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 제스처, AI 화면, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
       { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 내 정리와 원문' },
     ],
   },
@@ -49,7 +49,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
 // level은 카드와 눈금에 쓰는 1–9 값의 필드. level이 없는 카테고리(문구)는 카드 없이 실습만 있다.
 export const patternGroups: {
-  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block'; levelName?: string;
+  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage'; levelName?: string;
   title: string; intro: string; ends?: [string, string];
 }[] = [
   {
@@ -89,6 +89,18 @@ export const patternGroups: {
     ends: ['다 끝냄 · 잘된 일', '오류 · 막힘'],
   },
   {
+    id: 'gestures', name: '제스처', path: 'patterns/gestures/', level: 'discover', levelName: '알아채기 어려운 정도',
+    title: '손짓으로 하는 일',
+    intro: '제스처를 알아채기 어려운 순으로 놓았습니다. 왼쪽은 눈에 보이는 것을 누르기만 하면 되고, 오른쪽은 해 보기 전에는 있는 줄도 모릅니다. 오른쪽으로 갈수록 지름길로만 두고, 같은 일을 하는 보이는 버튼을 함께 둬요.',
+    ends: ['보이는 대로 · 누구나', '숨어 있음 · 아는 사람만'],
+  },
+  {
+    id: 'ai', name: 'AI 화면', path: 'patterns/ai/', level: 'stage', levelName: '대화의 시점',
+    title: 'AI와 주고받는 화면',
+    intro: '챗봇·AI 도우미 화면의 요소를 대화에서 쓰이는 시점 순으로 놓았습니다. 왼쪽은 묻기 전에 무엇을 할 수 있는지 알려 주고, 가운데는 기다리는 동안 무슨 일이 일어나는지, 오른쪽은 받은 답을 믿고 고치는 법을 줍니다.',
+    ends: ['묻기 전', '답을 받은 뒤'],
+  },
+  {
     id: 'dark', name: '다크 패턴', path: 'patterns/dark/',
     title: '피해야 할 화면 — 다크 패턴',
     intro: '사용자를 속여 원하지 않는 결정을 하게 만드는 화면입니다. 쓰는 법이 아니라 알아보고 피하는 법을 모읍니다. 속이는 화면과 같은 목적의 정직한 화면을 나란히 두었어요.',
@@ -104,6 +116,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: 'UI 패턴에 "제스처"(/patterns/gestures/)와 "AI 화면"(/patterns/ai/)을 추가. 제스처 9가지는 알아채기 어려운 순으로 놓고 대체 수단을 붙였고, 목록 항목을 밀기 · 길게 누르기 · ⋯ 버튼으로 지워 보는 실습. AI 화면 9가지는 대화의 시점 순으로 놓고, 생각 중 표시 · 단계 · 스트리밍 · 출처 · 멈춤을 켜고 끄며 같은 답을 받아 보는 실습. 레퍼런스에 Microsoft의 Human-AI Interaction 가이드라인 추가.' },
   { date: '2026-11-01', text: '원리에 "심리와 편향" 실습 페이지(/principles/psychology/), UI 패턴에 "다크 패턴"(/patterns/dark/)을 추가. 편향 9가지(앵커링·손실 회피·기본값·사회적 증거·희소성·프레이밍·선택 과부하·피크엔드·자이가르닉)마다 정직하게 쓰는 선을 적고, 같은 사실을 다른 말로 바꿔 보는 실습과 선택지 수 실습을 붙임. 다크 패턴 9가지는 속이는 화면과 정직한 화면을 나란히 그리고, 결제 화면의 속임 여섯 가지를 하나씩 꺼 보는 실습과 규제 표를 붙임. 두 페이지는 편향 ↔ 다크 패턴으로 서로 링크.' },
   { date: '2026-11-01', text: '릴스(uxwoodytips)에서 본 이름 모음을 반영. 로딩에 로딩 버튼 · 블러 업 · 스트리밍 텍스트 · 진행 링 · 단계 표시, 내비게이션에 무한 스크롤 · 고정 헤더 · 뒤로 가기를 추가(로딩 10가지, 내비게이션 9가지). 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임은 할 일로.' },
   { date: '2026-11-01', text: '찾기 페이지(/search/) 추가. 공식·패턴·레퍼런스·양식·실습 페이지를 한 목록에 모아 검색어(이름·설명·출처, 띄어쓰기 무시)와 종류·태그로 거르고, 찾은 말에 형광펜을 칠함. 거른 상태는 주소에 남아 링크로 보낼 수 있음.' },
@@ -125,5 +138,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일 · 제스처 · AI 화면 · 움직임' },
+  { when: '다음', text: '설정 화면·회원가입 양식 · 비주얼 스타일 · 움직임' },
 ];

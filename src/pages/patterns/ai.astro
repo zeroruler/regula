@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
+import Chat from '../../demos/ai/Chat.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+
+const groups = await patternsByGroup();
+const { group, items } = groups.find((x) => x.group.id === 'ai')!;
+const H = 'Amershi 외, 「Guidelines for Human-AI Interaction」 (CHI, 2019)';
+
+// AI 화면 규칙. 출처가 있는 것만 적는다.
+const rules = [
+  { s: '처음', rule: '무엇을 할 수 있는지, 그리고 얼마나 잘 하는지(틀릴 수 있음)를 먼저 알린다', src: `${H} G1 · G2` },
+  { s: '기다림', rule: '1초가 넘으면 무언가 하고 있음을, 10초가 넘으면 무엇을 하는지와 멈출 길을 보인다', src: 'Jakob Nielsen (1993) 응답 시간 한계 · ' + H + ' G8' },
+  { s: '근거', rule: '왜 그런 답을 했는지, 무엇을 근거로 했는지 확인할 수 있게 한다', src: `${H} G11` },
+  { s: '고치기', rule: '틀린 답을 쉽게 고치게 — 다시 생성, 질문 고치기, 이전 답 남기기', src: `${H} G9` },
+  { s: '피드백', rule: '좋다 · 싫다를 답마다 조용히, 싫다면 이유를 잘게 고르게', src: `${H} G15` },
+  { s: '행동', rule: '바깥에 흔적을 남기는 일(보내기, 결제, 삭제)은 하기 전에 결과를 알리고 묻는다', src: `${H} G16` },
+  { s: '접근성', rule: '답을 쓰는 중 · 다 썼음을 화면 낭독기에 한 번씩 알린다 — 글자마다 읽히지 않게', src: 'WCAG 2.2 4.1.3 Status Messages' },
+];
+---
+<Base title="AI 화면 · UI 패턴 · Regula" current="patterns" description="챗봇·AI 도우미 화면의 요소 9가지를 대화의 시점 순으로 놓고, 기다리는 동안 보이는 것을 켜고 끄며 답을 받아 보는 페이지">
+  <Fragment slot="sub"><PatternSubnav current={['ai']} /></Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>믿을 수 있게, 고칠 수 있게</h1>
+    <p>AI의 답은 늦게 오고, 가끔 틀립니다. 그래서 AI 화면의 요소는 대부분 두 가지 일을 해요 — 기다리는 동안 무슨 일이 일어나는지 보여 주고, 받은 답을 확인하고 고칠 길을 주는 것. 특정 서비스의 화면이 아니라 흔히 쓰이는 요소를 흑백으로 다시 그렸습니다.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · 기다림과 근거</span>
+      <h2>같은 답을 다르게 받기</h2>
+      <p>질문을 하나 골라 답을 받아 보세요. 그다음 생각 중 표시, 단계, 스트리밍을 끄고 같은 질문을 다시 보내면 같은 6초가 얼마나 길어지는지 느껴집니다. 답과 출처는 Regula 안의 페이지로 지은 예시예요.</p>
+    </header>
+    <Chat />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <PatternSection group={group} items={items} cols={[{ h: '언제', k: 'fits' }]} />
+</Base>

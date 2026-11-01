@@ -1,0 +1,66 @@
+---
+// 빈 화면 네 가지에 설명 문장과 다음 행동을 붙였다 뗐다 해 본다.
+const kinds = [
+  { k: 'done', n: '다 끝냄', icon: '✓', title: '새 알림을 모두 확인했어요', why: '새 알림이 오면 여기에 표시돼요.', act: '알림 설정', fill: false },
+  { k: 'first', n: '첫 사용', icon: '☆', title: '아직 저장한 글이 없어요', why: '마음에 드는 글의 ☆을 누르면 여기에 모여요.', act: '글 둘러보기', fill: true },
+  { k: 'none', n: '결과 없음', icon: '⌕', title: '‘쿠키’ 검색 결과가 없어요', why: '철자를 확인하거나 더 짧은 말로 찾아보세요. 지금 ‘이번 주’ 필터가 켜져 있어요.', act: '필터 지우기', fill: false },
+  { k: 'error', n: '오류', icon: '!', title: '목록을 불러오지 못했어요', why: '인터넷 연결을 확인한 뒤 다시 시도해 주세요. 저장한 글은 지워지지 않았어요.', act: '다시 시도', fill: true },
+];
+---
+<div class="lab stlab" id="emptyLab" data-kinds={JSON.stringify(kinds)}>
+  <div class="wl-frame">
+    <div class="wl-head"><b id="elHead">저장한 글</b></div>
+    <div class="el-body" id="elBody"></div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 빈 화면 채우기</span>
+    <h3>왜 비었고, 이제 뭘 하나</h3>
+    <div class="chips" id="elKinds">
+      {kinds.map((k, i) => <button class="chip" type="button" data-k={k.k} aria-pressed={String(i === 1)}>{k.n}</button>)}
+    </div>
+    <div class="chips">
+      <button class="chip" type="button" id="elWhy" aria-pressed="false">이유 설명</button>
+      <button class="chip" type="button" id="elAct" aria-pressed="false">다음 행동</button>
+      <button class="chip" type="button" id="elIcon" aria-pressed="false">아이콘</button>
+    </div>
+    <p class="g-read">읽히는 것: <mark id="elRead"></mark></p>
+    <p>처음엔 제목 한 줄만 있습니다. 설명과 다음 행동을 붙여 보세요. "결과 없음"과 "오류"는 제목만 있으면 둘 다 그냥 "없다"로 읽혀서, 데이터가 사라졌다고 오해하기 쉽습니다.</p>
+    <div class="g-ui">
+      <span class="label">규칙</span>
+      <p>빈 화면엔 세 가지 — 무엇이 비었는지, 왜 비었는지, 다음에 할 일 하나. 그림은 있어도 되지만 이 셋을 대신하지 못한다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#emptyLab')!;
+  const kinds: { k: string; icon: string; title: string; why: string; act: string; fill: boolean }[] = JSON.parse(lab.dataset.kinds!);
+  const on = (id: string) => lab.querySelector(`#${id}`)!.getAttribute('aria-pressed') === 'true';
+  let kind = 'first';
+
+  function render() {
+    const k = kinds.find((x) => x.k === kind)!;
+    lab.querySelector('#elHead')!.textContent = kind === 'done' ? '알림' : kind === 'none' ? '검색' : '저장한 글';
+    lab.querySelector('#elBody')!.innerHTML =
+      (on('elIcon') ? `<i class="emi big">${k.icon}</i>` : '') +
+      `<b>${k.title}</b>` +
+      (on('elWhy') ? `<span>${k.why}</span>` : '') +
+      (on('elAct') ? `<button type="button" class="btn-x ${k.fill ? 'fill' : 'out'} live">${k.act}</button>` : '');
+    const why = on('elWhy'), act = on('elAct');
+    lab.querySelector('#elRead')!.textContent =
+      why && act ? '다음 길이 보임' : why ? '이해는 되지만 막다른 길' : act ? '할 일은 있지만 왜 비었는지 모름' : '고장인지 정말 없는지 모름';
+  }
+  lab.querySelector('#elKinds')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    kind = b.dataset.k!;
+    lab.querySelectorAll('#elKinds button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    render();
+  });
+  ['elWhy', 'elAct', 'elIcon'].forEach((id) => lab.querySelector(`#${id}`)!.addEventListener('click', (e) => {
+    const b = e.currentTarget as HTMLButtonElement;
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+    render();
+  }));
+  render();
+</script>

@@ -46,6 +46,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '사용성', blurb: '피츠, 힉, 터치 영역' },
   { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드' },
   { name: '움직임', path: 'principles/motion/', blurb: '이즈 인 · 아웃, 스프링, 순차 등장, 페이드, 슬라이드, 화면 전환' },
+  { name: '비주얼 스타일', path: 'principles/styles/', blurb: '스큐어모피즘부터 리퀴드 글래스까지, 이름과 재료로 말하기' },
   { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
 ];
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
@@ -118,6 +119,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: '원리에 "비주얼 스타일" 실습 페이지(/principles/styles/)를 추가. 스큐어모피즘부터 리퀴드 글래스까지 9가지를 재료(그림자 · 테두리 · 투명도 · 질감)로 정리하고, 같은 카드를 9가지로 바꿔 보며 AI에 넘길 말을 복사하는 실습을 붙임. 흑백 원칙이라 색은 빼고 재료만으로 그림.' },
   { date: '2026-11-01', text: 'v0.6 마무리 — 규칙집에서 아카이브로. 찾기, 다크 패턴 · 심리와 편향 · 제스처 · AI 화면 · 움직임 · 타이포그래피, 출처 1차 검증, 기록장과 서체 목록까지. PLAN의 목표와 현황 표를 지금 상태로 맞춤.' },
   { date: '2026-11-01', text: '원리에 "타이포그래피" 실습 페이지(/principles/typography/)를 만듦. 내 디자인 시스템 4개에서 실제로 쓰는 서체 12개를 서체 목록(fonts 컬렉션)으로 정리하고 견본을 그 서체로 보여 줌. 서체 · 크기 · 행간 · 줄 길이를 바꿔 보는 본문 실습, 비례 숫자와 고정폭 숫자 비교를 붙임.' },
   { date: '2026-11-01', text: '기록장(/notes/)을 만듦. 본 것 · 메모 · 써 본 예시를 파일 하나씩 날짜별로 쌓고, 기록이 가리키는 공식 · 패턴 · 다크 패턴 아래에 "내 기록"으로 붙게 함. 오늘 본 릴스 10개를 첫 기록으로 남김. 찾기에도 기록이 들어감.' },
@@ -145,5 +147,5 @@ export const log: { date: string; text: string }[] = [
 ];
 
 export const next = [
-  { when: '다음', text: '비주얼 스타일 9가지 · 써 본 예시 쌓기 · 출처 2차 검증 · 설정 화면 · 회원가입 양식' },
+  { when: '다음', text: '써 본 예시 쌓기 · 출처 2차 검증 · 설정 화면 · 회원가입 양식' },
 ];

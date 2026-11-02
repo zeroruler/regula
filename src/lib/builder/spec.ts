@@ -37,7 +37,7 @@ export type ComboPick = { id: string; name: string; source: string; accent: { li
 
 // /colors/의 조합을 builder에 넘기는 모양. 색 키는 src/lib/combos.ts가 빌드 때 채운다(없는 키는 지금 값 유지).
 export type ComboOption = {
-  id: string; name: string; source: string; basis: string; strip: string[];
+  id: string; name: string; source: string; basis: string; group: string; strip: string[];
   light: Partial<Colors>; dark?: Partial<Colors>; accent: { light: string[]; dark: string[] };
 };
 

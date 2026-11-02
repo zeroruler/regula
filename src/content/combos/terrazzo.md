@@ -1,6 +1,6 @@
 ---
 name: "Terrazzo"
-order: 17
+order: 35
 basis: "Regula 양식"
 principles: []
 source: "DESIGN/terrazzo/DESIGN.md의 토큰"

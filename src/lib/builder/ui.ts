@@ -49,7 +49,7 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
       ${select('effect.texture', '질감', [['none', '없음'], ['gloss', '광택'], ['inset', '안쪽 그림자'], ['edge', '가장자리 빛']])}
       <label class="bd-chk"><input type="checkbox" data-p="effect.alertBar" data-t="b"> 알림 왼쪽에 세로 띠 (안내 · 완료 · 오류)</label>`,
       '입력칸 테두리는 두께를 0으로 해도 1px를 남깁니다 — 입력칸을 알아보는 경계는 주변과 3:1 이상이어야 해요(WCAG 2.2 1.4.11).')}
-    ${group(5, '색', `${combos.length ? `<label class="bd-r"><span>조합에서 고르기</span><select id="bdCombo"><option value="">고르지 않음</option>${combos.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}${c.dark ? '' : ' (라이트만)'}</option>`).join('')}</select></label>
+    ${group(5, '색', `${combos.length ? `<label class="bd-r"><span>조합에서 고르기</span><select id="bdCombo"><option value="">고르지 않음</option>${[...new Set(combos.map((c) => c.group))].map((g) => `<optgroup label="${esc(g)}">${combos.filter((c) => c.group === g).map((c) => `<option value="${esc(c.id)}">${esc(c.name)}${c.dark ? '' : ' (라이트만)'}</option>`).join('')}</optgroup>`).join('')}</select></label>
       <div class="bd-strip" id="bdComboStrip" aria-hidden="true"></div>
       <p class="bd-note" id="bdComboNote" aria-live="polite"></p>` : ''}
       <div class="chips" role="group" aria-label="편집할 모드"><span class="label">편집 중</span>${chip('$view', 'light', '라이트')}${chip('$view', 'dark', '다크')}</div>

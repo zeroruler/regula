@@ -202,6 +202,8 @@ const palettes = defineCollection({
 // 값은 hex로 적거나(from에 팔레트 · 단계), template의 토큰 이름(token)으로 적는다 — 토큰이면 빌드 때 DESIGN.md에서 읽는다.
 export const comboRoles = ['bg', 'surface', 'ink', 'key', 'accent', 'danger', 'success'] as const;
 export const comboBasis = ['자유 라이선스 팔레트', 'Regula 양식'] as const;
+// /colors/와 디자인 파일 만들기에서 조합을 묶는 결(느낌). 양식 조합은 따로 묶으므로 비워 둔다
+export const comboGroups = ['뉴트럴과 포인트 하나', '따뜻한 바탕', '옅은 색 바탕', '다크 우선', '선명한 두 색'] as const;
 const comboColor = z.object({
   role: z.enum(comboRoles),
   name: z.string().optional(),
@@ -215,6 +217,7 @@ const combos = defineCollection({
     name: z.string(),
     order: z.number(),
     basis: z.enum(comboBasis),
+    group: z.enum(comboGroups).optional(),
     // 배색 근거가 된 공식 slug (complementary · analogous · split-complementary · triadic · 60-30-10 …)
     principles: z.array(z.string()).default([]),
     // 값의 출처(팔레트 · 양식). 고른 일 자체는 Regula가 했다는 것을 note가 아니라 화면이 따로 밝힌다

@@ -1,13 +1,14 @@
 ---
-name: "슬레이트와 남색"
-order: 11
+name: "슬레이트와 인디고"
+order: 6
 basis: "자유 라이선스 팔레트"
+group: "뉴트럴과 포인트 하나"
 principles: ["60-30-10"]
 source: "Tailwind CSS v3 기본 색(MIT)"
 palette: "tailwind-v3"
-mood: ["차분", "차가움"]
-use: ["대시보드", "글"]
-note: "뉴트럴이 화면 대부분, 남색은 주 행동에만. 가장 무난한 출발점."
+mood: ["차분", "신뢰"]
+use: ["SaaS", "문서"]
+note: "푸른 기가 도는 slate 회색과 인디고. 키와 회색의 색상각이 가까워 화면 전체가 한 톤으로 묶인다."
 light:
   - { role: bg, hex: "#F8FAFC", from: "tailwind-v3/slate/50", name: "slate-50" }
   - { role: surface, hex: "#FFFFFF", from: "tailwind-v3/white", name: "white" }

@@ -1,6 +1,6 @@
 ---
 name: "Cordovan"
-order: 15
+order: 33
 basis: "Regula 양식"
 principles: ["60-30-10"]
 source: "DESIGN/cordovan/DESIGN.md의 토큰"

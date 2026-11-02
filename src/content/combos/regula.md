@@ -1,6 +1,6 @@
 ---
 name: "Regula"
-order: 18
+order: 36
 basis: "Regula 양식"
 principles: ["60-30-10"]
 source: "src/styles/tokens.css의 토큰"

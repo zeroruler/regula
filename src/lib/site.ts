@@ -136,6 +136,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-02', text: '일곱 번째 페이지 양식 "검색 결과" 추가. 구성 7개와 규칙 14개(출처: NN/g Search: Visible and Simple · Magnifying-Glass Icon · "No Results" Pages · The Pinball Pattern · Helpful Filter Categories · User Intent Affects Filter Design · Mobile Faceted Search with a Tray, GOV.UK Pagination · Radios, WCAG 4.1.3). 미리보기는 디자인 시스템 4개의 토큰을 바꿔 입히며 기본 · 필터 걸림 · 결과 없음 상태를 보고, 안에서 필터 · 정렬 · 페이지를 바꿀 수 있음. 좁은 화면에서는 필터가 결과 수를 단 판(tray)으로 바뀌고, 페이지 번호가 문서 제목에 들어감(출처 11차 검증).' },
   { date: '2026-11-02', text: 'UI 패턴에 "찾기와 거르기"(/patterns/search/) 추가. 검색창 · 최근 검색어 · 검색 제안 · 정렬 · 필터 칩 · 적용된 필터와 결과 수 · 패싯 필터 7가지를 둘러보는 정도 순으로 놓고, 같은 상품 12개에 색 · 크기 · 배송 조건을 걸며 바로 적용과 모아서 적용, 빠른 응답과 느린 응답을 바꿔 결과를 몇 번 다시 그리고 얼마나 기다리는지 세는 실습을 붙임. 규칙 9개는 NN/g 8편 · Apple HIG · Material 칩 문서 · W3C APG · WCAG 4.1.3 원문으로 확인(출처 10차 검증).' },
   { date: '2026-11-02', text: 'Laws of UX의 남은 법칙 중 화면 설계에 바로 쓰이는 것을 옮김. 사용성과 접근성에 포스텔의 법칙 · 인지 부하 · 멘탈 모델 · 능동적 사용자의 역설, 심리와 편향에 선택적 주의 · 배너 맹시. 포스텔의 법칙은 RFC 761 · 1122 원문과 GOV.UK 전화번호 지침으로 확인하고, 같은 전화번호 칸을 엄격하게 / 너그럽게 받아 보는 실습을 붙임(출처 9차 검증).' },
   { date: '2026-11-02', text: 'Laws of UX의 법칙을 더 옮김. 심리와 편향에 폰 레스토프 효과 · 계열 위치 효과 · 목표 경사 효과, 게슈탈트에 균일 연결성. 목표 경사는 Kivetz 외(2006) 논문 PDF에서 쿠폰 실험 수치(10칸 15.6일 vs 보너스 2개 12칸 12.7일)를 확인하고, 같은 쿠폰 두 장에 한 잔씩 도장을 찍어 보는 실습을 붙임. 폰 레스토프는 Hunt(1995)를 따라 "나머지가 서로 비슷해야 차이가 힘을 가진다"로 적음(출처 8차 검증).' },

@@ -1,0 +1,125 @@
+---
+// 결제 양식 미리보기. ?system=<디자인 시스템>&state=<default|hidden|done> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안). 상점 · 상품 · 금액 · 번호는 모두 예시.
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>결제 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style is:global>
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;padding:24px 16px 40px}
+.embedded body{min-height:0}
+.page{max-width:960px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.page{max-width:560px}
+.card{background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:24px 22px;display:grid;gap:16px}
+h1{margin:0;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:26px;line-height:1.25}
+h2{margin:0;font-size:14px;color:var(--ink2);font-weight:600}
+p{margin:0}
+.muted{color:var(--ink2);font-size:14px}
+dl{margin:0;display:grid;gap:0}
+.sec{padding:12px 0;border-top:var(--stroke) solid var(--card-border);display:grid;gap:6px}
+.line{display:flex;gap:12px;justify-content:space-between;align-items:baseline;font-size:15px}
+.line .v{font-variant-numeric:tabular-nums;white-space:nowrap}
+.line.total{font-weight:700;font-size:17px}
+.chg{border:0;background:none;padding:0;font:inherit;font-size:14px;color:var(--ink);text-decoration:underline;cursor:pointer;white-space:nowrap}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.secrow{display:flex;gap:12px;justify-content:space-between;align-items:baseline}
+.field{display:grid;gap:4px}
+.field label{font-size:14px;font-weight:600}
+.field input{height:44px;border:var(--stroke) solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:inherit;padding:0 12px;box-shadow:var(--input-shadow)}
+.field input:focus{outline:2px solid var(--key);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.primary,.secondary{min-height:48px;padding:0 18px;border-radius:var(--radius);font:inherit;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.primary{border:var(--stroke) solid var(--key);background:var(--key);color:var(--on-key);box-shadow:var(--button-shadow);width:100%}
+.secondary{border:var(--stroke) solid var(--border);background:var(--surface);color:var(--ink)}
+.confirm{font-size:14px;color:var(--ink2)}
+.panel{background:var(--key);color:var(--on-key);border-radius:var(--card-radius);padding:22px;text-align:center;display:grid;gap:6px}
+.panel strong{font-size:24px}
+.warn{border-left:4px solid var(--ink);padding:6px 0 6px 12px;font-size:14px}
+</style>
+</head>
+<body>
+<main class="page"><div class="card" id="card"></div></main>
+<script is:inline define:vars={{ themes }}>
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+  const state = params.get('state') ?? 'default';
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const nf = new Intl.NumberFormat('ko-KR');
+  const won = (n) => nf.format(n) + '원';
+
+  // 예시 값 (고정)
+  const GOODS = 38000, SHIP = 3000, DISC = 4000;
+  const data = { name: '김하늘', addr: '서울 ○○구 예시로 12, 301호', pay: '카드 · 끝 1234' };
+  let editing = null;      // 'addr' | 'pay' | null
+  let gift = false;        // 부가 상품 (직접 고를 때만 더해짐)
+  const GIFT = 2500;
+  const total = () => GOODS + SHIP - DISC + (gift ? GIFT : 0);
+
+  const sec = (key, title, value) => `<div class="sec"><div class="secrow"><h2>${title}</h2><button class="chg" type="button" data-e="${key}">변경<span class="sr-only"> ${title}</span></button></div>` +
+    (editing === key ? `<form data-f="${key}" class="field"><label for="in-${key}">${title}</label><input id="in-${key}" name="v" value="${esc(value)}" autocomplete="${key === 'addr' ? 'street-address' : 'off'}"><div class="row"><button class="secondary" type="submit">저장하고 확인으로</button></div></form>` : `<p>${esc(value)}</p>`) + '</div>';
+
+  function render() {
+    let html = '';
+    if (state === 'done') {
+      document.title = '결제가 끝났어요 · 예시 상점';
+      html = `<div class="panel"><span>주문이 완료됐어요</span><strong>주문 번호 A-20481</strong></div>
+        <h1>다음에 일어날 일</h1>
+        <p>입력하신 이메일로 주문 확인서를 보냈어요. 상품은 영업일 기준 2–3일 안에 출발하고, 출발하면 문자로 알려 드려요.</p>
+        <div class="sec"><p class="muted">문의: 000-0000-0000 · 평일 9시–18시</p></div>
+        <div class="row"><button class="secondary" type="button">주문 내역 저장(PDF)</button><button class="secondary" type="button">쇼핑 계속하기</button></div>`;
+    } else if (state === 'hidden') {
+      document.title = '결제 (마지막 단계) · 예시 상점';
+      html = `<p class="warn" role="note"><b>피할 화면:</b> 앞 단계까지 38,000원이던 금액에 마지막에서야 배송비 · 수수료가 더해져요.</p>
+        <h1>결제하기</h1>
+        <div class="sec"><div class="line"><span>니트 가디건 1개</span><span class="v">${won(GOODS)}</span></div></div>
+        <div class="sec"><div class="line"><span>배송비</span><span class="v">+${won(SHIP)}</span></div><div class="line"><span>결제 수수료</span><span class="v">+${won(1500)}</span></div><div class="line"><span>보험 (미리 담겨 있음)</span><span class="v">+${won(GIFT)}</span></div><div class="line total"><span>결제 금액</span><span class="v">${won(GOODS + SHIP + 1500 + GIFT)}</span></div></div>
+        <button class="primary" type="button">확인</button>`;
+    } else {
+      document.title = '주문 내용을 확인하고 결제하세요 · 예시 상점';
+      html = `<h1>주문 내용을 확인하고 결제하세요</h1>
+        <div class="sec"><div class="secrow"><h2>주문 내용</h2><button class="chg" type="button">수량 변경<span class="sr-only"> 주문 내용</span></button></div><div class="line"><span>니트 가디건 1개</span><span class="v">${won(GOODS)}</span></div></div>
+        <div class="sec"><div class="secrow"><h2>받는 사람</h2></div><p>${esc(data.name)}</p><label class="muted" style="display:flex;gap:8px;align-items:center"><input type="checkbox" checked> 주문자와 같아요</label></div>
+        ${sec('addr', '배송지', data.addr)}
+        ${sec('pay', '결제 수단', data.pay)}
+        <div class="sec"><label class="line" style="cursor:pointer"><span style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="gift" ${gift ? 'checked' : ''}> 파손 보험 추가 (선택)</span><span class="v">+${won(GIFT)}</span></label></div>
+        <div class="sec"><div class="line"><span>상품</span><span class="v">${won(GOODS)}</span></div><div class="line"><span>배송비</span><span class="v">+${won(SHIP)}</span></div><div class="line"><span>할인</span><span class="v">−${won(DISC)}</span></div>${gift ? `<div class="line"><span>파손 보험</span><span class="v">+${won(GIFT)}</span></div>` : ''}<div class="line total"><span>결제 금액</span><span class="v" aria-live="polite">${won(total())}</span></div></div>
+        <p class="confirm">결제하기를 누르면 위 내용이 맞다고 확인한 것으로 보고 결제돼요. 누르기 전에는 주문이 되지 않아요.</p>
+        <button class="primary" type="button" id="pay">${won(total())} 결제하기</button>`;
+    }
+    $('#card').innerHTML = html;
+  }
+  $('#card').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-e]'); if (b) { editing = b.dataset.e; render(); $('#in-' + editing)?.focus(); }
+  });
+  $('#card').addEventListener('submit', (e) => {
+    e.preventDefault(); const f = e.target.closest('[data-f]'); if (!f) return;
+    data[f.dataset.f] = f.querySelector('input').value.trim() || data[f.dataset.f]; editing = null; render();
+    $('#card [data-e="' + f.dataset.f + '"]')?.focus();
+  });
+  $('#card').addEventListener('change', (e) => { if (e.target.id === 'gift') { gift = e.target.checked; render(); $('#gift')?.focus(); } });
+  render();
+</script>
+</body>
+</html>

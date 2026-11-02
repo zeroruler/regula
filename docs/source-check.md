@@ -2,6 +2,23 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 13차: 결제 양식
+
+### 원문을 읽고 확인
+
+- GOV.UK Design System 「Check answers pattern」: 작은 거래는 확인 화면 하나, 제목이 할 일을 말하기, 항목별 "Change" 링크 + 숨은 글, 고친 뒤 확인 화면으로 돌아오기 · 이전 값 채우기, 제출 전 확인 문장, 버튼은 하는 일을 말하기("Accept and send")
+- GOV.UK 「Confirmation pages」: 참조 번호 · 다음에 일어날 일과 시점 · 연락처 · 다음에 필요한 링크 · 피드백 링크 · 기록 저장(PDF), 패널 안 링크 · 버튼은 3:1 대비
+- WCAG 2.2 Understanding 3.3.4 Error Prevention (Legal, Financial, Data) (AA): 되돌리기 · 검사 · 확인 중 하나
+- WCAG 2.2 Understanding 3.3.7 Redundant Entry (A): 이미 입력한 정보는 자동 채우기 또는 선택, 예외 셋(필수 재입력 · 보안 · 더는 유효하지 않음)
+- deceptive.design 「Hidden costs」: 마지막 단계에서야 높은 최종 금액이 나타나는 패턴
+
+### 주의
+
+- 「Hidden costs」 페이지의 연구 수치(약 21% 더 지출, 14.1% 더 구매 완료)는 한 티켓 시장 실험의 값이라 규칙 문장에 쓰지 않음
+- 전자상거래법 조항은 law.go.kr 본문을 받지 못해 확인하지 못함 — 규칙에 넣지 않음
+- Preselection · Sneaking · Hidden subscription은 4차에서 확인한 유형 이름을 그대로 씀
+- 결제 버튼에 금액을 쓰는 것은 Check answers의 "하는 일을 말한다"를 옮긴 Regula의 적용
+
 ## 2026-11-02 — 12차: 오류 페이지 양식
 
 ### 원문을 읽고 확인

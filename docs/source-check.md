@@ -2,6 +2,28 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 10차: 찾기와 거르기 패턴 (검색창 · 최근 검색어 · 검색 제안 · 정렬 · 필터 칩 · 적용된 필터 · 패싯 필터)
+
+### 원문을 읽고 확인
+
+- Jakob Nielsen, 「Search: Visible and Simple」 (NN/g, 2001-05-12): 검색은 링크가 아니라 입력칸, 흔한 검색어가 다 보일 만큼 넓게, 보통 위쪽
+- Katie Sherwin, 「The Magnifying-Glass Icon in Search Design: Pros and Cons」 (NN/g, 2014-02-23): 돋보기는 라벨 없이도 알아보지만, 아이콘만 두면 검색을 찾기 어려움
+- Kate Moran, 「Site Search Suggestions」 (NN/g, 2018-05-20): 끝을 채우는 제안은 덧붙인 글자, 가운데 포함 제안은 사용자가 친 글자를 강조. 범위 · 썸네일 · 카테고리는 알맞을 때
+- Kathryn Whitenton, 「Filters vs. Facets: Definitions」 (NN/g, 2014-03-16): 필터는 일부를 빼는 모든 것, 패싯은 내용 전체를 설명하는 여러 필터
+- Kathryn Whitenton, 「Mobile Faceted Search with a Tray」 (NN/g, 2015-07-26): 결과 위에 뜨는 판, 결과가 뒤에서 바뀌는 게 보임, 전체 결과 수가 늘 보임
+- Katie Sherwin, 「User Intent Affects Filter Design」 (NN/g, 2016-02-07): 바로 적용(interactive) vs 모아서 적용(batch) — 둘러보는 사용자에겐 바로, 조건이 분명하거나 사이트가 느리면 모아서. 고르는 도중 화면 위치를 튕기지 않기
+- Kate Moran, 「Helpful Filter Categories and Values for Better UX」 (NN/g, 2018-07-15): appropriate · predictable · free of jargon · prioritized
+- Kathryn Whitenton, 「3 Guidelines for Search Engine "No Results" Pages」 (NN/g, 2014-01-05): 결과 없음을 분명히, 다음 길을, 사용자를 놀리지 않기
+- Apple HIG Search fields (developer.apple.com JSON 본문): placeholder로 범위 알리기, 검색 시작 전 최근 검색어 · 치는 동안 제안, scope bar · token, 넓은 범위에서 시작
+- material-components-android `docs/components/Chip.md`: filter chip은 태그나 짧은 말로 내용을 거르고, 토글 버튼 · 체크박스의 대안
+- W3C WAI-ARIA APG Sortable Table 예제: 정렬된 열 머리에 aria-sort, 정렬 가능한 머리 글자는 button
+- WCAG 2.2 4.1.3 Status Messages (AA): 상태 메시지는 포커스를 받지 않고도 보조 기술에 전달되게
+
+### 직접 읽지 못함
+
+- NN/g의 정렬 · 최근 검색어 · 적용된 필터 전용 글은 찾은 주소가 404였다. 최근 검색어는 Apple HIG, 정렬은 W3C APG만 출처로 씀
+- Material Design 3 Chips 문서 본문(m3.material.io) — 구현 저장소 문서로 대신
+
 ## 2026-11-02 — 9차: 포스텔 · 인지 부하 · 멘탈 모델 · 능동적 사용자의 역설 · 배너 맹시
 
 ### 원문을 읽고 확인

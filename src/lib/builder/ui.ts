@@ -46,7 +46,8 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
       <div class="chips" role="group" aria-label="한 번에 맞추기"><span class="label">모두</span>${[0, 4, 8, 16, 999].map((r) => `<button type="button" class="chip" data-all-radius="${r}">${r >= 999 ? 'pill' : r}</button>`).join('')}</div>`)}
     ${group(4, '효과', `<div class="chips" role="group" aria-label="그림자 종류">${[['none', '그림자 없음'], ['soft', '흐린 그림자'], ['hard', '어긋난 그림자'], ['dual', '밝고 어두운 한 쌍']].map(([v, l]) => chip('effect.shadow', v, l)).join('')}</div>
       ${range('effect.depth', '그림자 단계', 1, 4, 1)}${range('effect.border', '테두리 두께', 0, 3, 1, 'px')}${range('effect.alpha', '면 투명도', 20, 100, 5, '%')}${range('effect.blur', '뒤 배경 흐림', 0, 24, 1, 'px')}
-      ${select('effect.texture', '질감', [['none', '없음'], ['gloss', '광택'], ['inset', '안쪽 그림자'], ['edge', '가장자리 빛']])}`,
+      ${select('effect.texture', '질감', [['none', '없음'], ['gloss', '광택'], ['inset', '안쪽 그림자'], ['edge', '가장자리 빛']])}
+      <label class="bd-chk"><input type="checkbox" data-p="effect.alertBar" data-t="b"> 알림 왼쪽에 세로 띠 (안내 · 완료 · 오류)</label>`,
       '입력칸 테두리는 두께를 0으로 해도 1px를 남깁니다 — 입력칸을 알아보는 경계는 주변과 3:1 이상이어야 해요(WCAG 2.2 1.4.11).')}
     ${group(5, '색', `<div class="chips" role="group" aria-label="편집할 모드"><span class="label">편집 중</span>${chip('$view', 'light', '라이트')}${chip('$view', 'dark', '다크')}</div>
       <label class="bd-chk"><input type="checkbox" data-p="color.darkOn" data-t="b"> 다크 값도 파일에 넣기</label>

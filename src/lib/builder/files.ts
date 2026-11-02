@@ -72,7 +72,7 @@ export function componentCss(t: Tokens): string {
 .ds-list li { display: flex; justify-content: space-between; gap: var(--gap); padding: ${near(12)} var(--card-pad); border-top: 1px solid var(--border); }
 .ds-list li:first-child { border-top: 0; }
 
-.ds-alert { display: grid; gap: ${near(4)}; padding: ${near(16)} var(--card-pad); color: var(--ink); border: var(--border-width) solid var(--border); border-left: 4px solid var(--tone); border-radius: var(--radius-input); background: var(--tone-soft); }
+.ds-alert { display: grid; gap: ${near(4)}; padding: ${near(16)} var(--card-pad); color: var(--ink); border: var(--border-width) solid var(--border); box-shadow: inset var(--alert-bar) 0 0 0 var(--tone); border-radius: var(--radius-input); background: var(--tone-soft); }
 .ds-alert b { font-weight: var(--weight-strong); }
 .ds-alert--info { --tone: var(--key); --tone-soft: var(--key-soft); }
 .ds-alert--success { --tone: var(--success); --tone-soft: var(--success-soft); }
@@ -260,7 +260,7 @@ ${mdTable(['종류', '배경', '글자', '테두리', 'Hover', '용도'], [
 
 **Cards** — 면 \`--material-bg\`(+ \`backdrop-filter: var(--material-blur)\`), 광택 \`--sheen\`, 테두리 \`--border-width\` \`--border\`, 모서리 \`--radius-card\`, 그림자 \`--shadow-card\`, 안쪽 \`--card-pad\`(${sp.comp.card}px), 안쪽 간격 \`--gap\`(${sp.comp.gap}px)
 
-**Alerts · Toast · List** — 알림: 왼쪽 4px 띠 + 부드러운 배경(\`--key-soft\` / \`--success-soft\` / \`--danger-soft\`) + 굵은 라벨("안내" · "완료" · "오류") + \`--ink\` 본문. 토스트 · 팝오버: 카드와 같은 면, 그림자 \`--shadow-overlay\`. 목록: 카드 면 위, 항목 사이 1px \`--border\`, 숫자는 \`--font-mono\`
+**Alerts · Toast · List** — 알림: ${e.alertBar ? '왼쪽 4px 세로 띠(`--alert-bar`, inset 그림자로 그린다) + ' : '왼쪽 세로 띠 없음(`--alert-bar: 0px`) — '}부드러운 배경(\`--key-soft\` / \`--success-soft\` / \`--danger-soft\`) + 굵은 라벨("안내" · "완료" · "오류") + \`--ink\` 본문. 토스트 · 팝오버: 카드와 같은 면, 그림자 \`--shadow-overlay\`. 목록: 카드 면 위, 항목 사이 1px \`--border\`, 숫자는 \`--font-mono\`
 
 ---
 
@@ -319,7 +319,7 @@ export function tokensJson(t: Tokens, s0: Spec, today: string, fonts: FontOption
       scale: Object.fromEntries(Object.entries(t.type.sizes).map(([k, v]) => [k, `${v}px`])),
     },
     radius: { button: s.radius.button >= 999 ? '9999px' : `${s.radius.button}px`, input: s.radius.input >= 999 ? '9999px' : `${s.radius.input}px`, card: s.radius.card >= 999 ? '9999px' : `${s.radius.card}px`, full: '9999px' },
-    border: { width: `${s.effect.border}px`, inputWidth: `${Math.max(1, s.effect.border)}px` },
+    border: { alertBar: s.effect.alertBar, width: `${s.effect.border}px`, inputWidth: `${Math.max(1, s.effect.border)}px` },
     shadow: { kind: s.effect.shadow, depth: s.effect.depth, light: Object.fromEntries(t.modes[0].fx.ladder.map((v, i) => [String(i + 1), v])), card: t.modes[0].fx.card, button: t.modes[0].fx.button, overlay: t.modes[0].fx.overlay },
     material: { alpha: s.effect.alpha / 100, blur: s.effect.blur > 0 ? `${s.effect.blur}px` : null, texture: s.effect.texture },
     spacing: { unit: `${s.space.unit}px`, scale: Object.fromEntries(t.space.scale.map((v, i) => [String(i + 1), `${v}px`])), density: s.space.density, controlHeight: `${s.space.control}px` },

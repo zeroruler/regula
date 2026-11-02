@@ -164,7 +164,6 @@ function fontLoadMd(t: Tokens): string {
 
 // ── DESIGN.md ──────────────────────────────────────────
 const mdTable = (head: string[], rows: string[][]) => [`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`, ...rows.map((r) => `| ${r.join(' | ')} |`)].join('\n');
-const fmtChecks = (cs: Check[]) => mdTable(['조합', '글자/선', '배경', '대비', '기준', '결과'], cs.map((c) => [c.label, `\`${c.fgName}\` ${c.fg}`, `\`${c.bgName}\` ${c.bg}`, `${showRatio(c.ratio)}:1`, `${c.need}:1 (WCAG 2.2 ${c.sc})`, c.pass ? '통과' : '**미달**']));
 
 export function autoIntent(t: Tokens, s: Spec): string {
   const p = t.type.picks;
@@ -183,8 +182,6 @@ export function designMd(t: Tokens, s0: Spec, today: string): string {
   const sp = t.space;
   const e = s.effect;
   const ease = EASES.find((x) => x.id === s.motion.ease)!;
-  const shadowRows = t.modes[0].fx.ladder.map((v, i) => [`\`--shadow-${i + 1}\``, `\`${v}\``]);
-  const typeRows = t.type.rows.map((r) => [r.label, `\`--font-${r.font === 'body' ? 'sans' : r.font}\``, `${r.size}px`, String(r.weight), String(r.line), r.track ? `${+(r.track * 1).toFixed(3)}em` : '0']);
   const glass = glassOn(s);
 
   const avoid = [
@@ -195,38 +192,32 @@ export function designMd(t: Tokens, s0: Spec, today: string): string {
     '글자 크기를 `--text-*` 밖의 값으로, 굵기를 `--weight-*` 밖의 값으로 쓴다',
     '`--key-on` 대신 다른 글자색을 강조색 면 위에 얹는다',
     `간격에 ${sp.unit}px 배수가 아닌 값을 쓴다 (예외: 컨트롤 높이 \`--control-height\`, 4px 이하의 선 · 띠)`,
-    '움직임 줄이기 설정을 무시한다 — §7의 `prefers-reduced-motion` 규칙을 지운다',
+    '움직임 줄이기 설정을 무시한다 — §4의 `prefers-reduced-motion` 규칙을 지운다',
     '저절로 5초 넘게 움직이는 것을 멈출 수단 없이 둔다 (WCAG 2.2 2.2.2)',
     ...(e.shadow === 'none' ? ['그림자를 새로 더한다 — 층 구분은 면 색과 테두리로 한다'] : []),
     ...(e.shadow === 'soft' ? ['흐린 그림자와 흐림 없는 어긋난 그림자를 한 화면에 섞는다', '그림자 색에 순흑을 직접 쓴다 — `--shadow-*` 토큰만 쓴다'] : []),
     ...(e.shadow === 'hard' ? ['흐린 그림자를 섞는다 — 이 시스템의 그림자는 흐림 없이 어긋난 것뿐이다'] : []),
     ...(e.shadow === 'dual' ? ['배경(`--bg`)과 표면(`--surface`)을 서로 다른 색으로 바꾼다 — 이 그림자는 같은 색 면 위에서만 입체로 보인다', '버튼 · 입력칸의 경계를 그림자만으로 만든다 — 입력칸 테두리는 최소 1px (경계 대비 3:1, WCAG 2.2 1.4.11)'] : []),
-    ...(glass ? ['반투명 면(`--material-bg`) 위 본문 글자를 가장 나쁜 배경에서의 대비 확인 없이 둔다 (4.5:1, WCAG 2.2 1.4.3)', '투명도 줄이기 · 대비 높이기 설정을 켠 사람에게도 반투명 면을 그대로 보인다 — §11의 미디어 쿼리처럼 불투명한 면으로 바꾼다'] : []),
+    ...(glass ? ['반투명 면(`--material-bg`) 위 본문 글자를 가장 나쁜 배경에서의 대비 확인 없이 둔다 (4.5:1, WCAG 2.2 1.4.3)', '투명도 줄이기 · 대비 높이기 설정을 켠 사람에게도 반투명 면을 그대로 보인다 — §5의 미디어 쿼리처럼 불투명한 면으로 바꾼다'] : []),
     ...(e.texture !== 'none' ? [`${TEXTURE_NAME[e.texture]} 질감을 버튼 · 카드 밖(본문 배경, 글자 뒤)에 깐다`] : []),
     ...(s.radius.button === 0 && s.radius.card === 0 ? ['모서리를 둥글게 만든다 — 이 시스템의 모서리는 0이다'] : []),
-    ...(failing ? [`§8에서 **미달**로 표시된 조합을 그대로 쓴다 — 색을 고쳐 다시 계산하거나 그 조합을 쓰지 않는다`] : []),
+    ...(failing ? [`§5에서 **미달**로 표시된 조합을 그대로 쓴다 — 색을 고쳐 다시 계산하거나 그 조합을 쓰지 않는다`] : []),
   ];
 
-  const colorRoles = mdTable(['토큰', '쓰는 곳'], [
-    ['`--bg`', '페이지 배경'], ['`--surface`', '카드 · 입력칸 면'], ['`--ink`', '제목 · 본문'], ['`--ink-secondary`', '설명 · 보조 글자 · 플레이스홀더'],
-    ['`--border`', '구분선 · 카드 테두리'], ['`--border-strong`', '입력칸 · 보조 버튼 테두리'],
-    ['`--key` · `--key-hover` · `--key-active`', '주 버튼 · 링크 · 포커스 · 선택'], ['`--key-soft`', '선택 배경 · 안내 알림 배경'], ['`--key-on`', '`--key` 면 위의 글자'],
-    ['`--danger` · `--danger-soft`', '오류 글자 · 위험 버튼 · 오류 알림'], ['`--success` · `--success-soft`', '성공 글자 · 성공 알림'],
-  ]);
+  const failTable = failing
+    ? mdTable(['모드', '조합', '대비', '기준'], ([['라이트', lightChecks], ...(s.color.darkOn ? [['다크', darkChecks]] : [])] as [string, Check[]][])
+        .flatMap(([m, cs]) => cs.filter((c) => !c.pass).map((c) => [m, `${c.label} (\`${c.fgName}\` on \`${c.bgName}\`)`, `${showRatio(c.ratio)}:1`, `${c.need}:1 · WCAG 2.2 ${c.sc}`])))
+    : '';
+  const sizes = t.type.sizes;
+  const scaleLine = `\`--text-display\` ${sizes.display}px · \`--text-h1\` ${sizes.h1}px · \`--text-h2\` ${sizes.h2}px · \`--text-h3\` ${sizes.h3}px · \`--text-large\` ${sizes.large}px · \`--text-body\` ${sizes.body}px · \`--text-small\` ${sizes.small}px`;
 
   return `# DESIGN.md — ${s.name} 디자인 시스템
 
 ${s.intent || autoIntent(t, s)}
 
 **만든 곳**: Regula 「디자인 파일 만들기」 · ${today} · 스타일 시작점: ${presetName(s)}${presetEdited(s) && s.preset !== 'custom' ? '(값을 고침)' : ''}
-**AI 에이전트에게**: 이 문서의 §1 토큰(CSS 변수)과 규칙만으로 화면을 만든다. 문서에 없는 값을 새로 만들지 않는다. 판단이 애매하면 §9 빠른 결정 규칙 → §10 하지 말 것 순으로 본다. 같은 값이 \`tokens.json\`에도 있고, \`preview.html\`에서 컴포넌트가 이 값으로 그려진 모습을 볼 수 있다.
-
-**세 가지 시그니처** — 이 시스템을 다른 시스템과 가르는 것:
-1. **모서리** — 버튼 ${radiusLabel(s.radius.button)} · 입력 ${radiusLabel(s.radius.input)} · 카드 ${radiusLabel(s.radius.card)}
-2. **재료** — 그림자 ${SHADOW_NAME[e.shadow]}${e.shadow === 'none' ? '' : ` ${e.depth}단계`} · 테두리 ${e.border}px · 면 투명도 ${e.alpha}% · 배경 흐림 ${e.blur}px · 질감 ${TEXTURE_NAME[e.texture]}
-3. **서체** — 제목 ${t.type.picks.display.family ?? '시스템 서체'} · 본문 ${t.type.picks.body.family ?? '시스템 서체'} · 숫자 ${t.type.picks.mono.family ?? '시스템 서체'} · 기본 ${s.type.base}px, 비율 ${s.type.ratio}
-
-값에 출처가 있는 기준(WCAG 등)은 그 자리에 출처를 적었다. 색 섞기 비율, 그림자 단계 값, 간격 밀도 같은 나머지 값은 이 도구가 설정에서 계산한 것이며 출처가 있는 기준이 아니다.
+**AI 에이전트에게**: 이 문서의 §1 토큰(CSS 변수)과 규칙만으로 화면을 만든다. 문서에 없는 값을 새로 만들지 않는다. 애매하면 §6 하지 말 것을 먼저 본다. 같은 값이 \`tokens.json\`에 있고, 컴포넌트가 이 값으로 그려진 모습은 \`preview.html\`, 대비 검증 전체 표는 \`DESIGN.html\`에 있다.
+출처가 있는 기준(WCAG 등)은 그 자리에 출처를 적었다. 색 섞기 비율, 그림자 단계 값, 간격 밀도 같은 나머지 값은 이 도구가 설정에서 계산한 것이며 출처가 있는 기준이 아니다.
 
 ---
 
@@ -241,47 +232,22 @@ ${fontLoadMd(t)}
 
 ---
 
-## 2. Color Rules (색 사용 규칙)
+## 2. Rules (색 · 서체)
 
-${colorRoles}
-
-1. **강조색 면은 한 화면에 하나.** \`--key\`로 채운 요소(주 버튼)는 화면당 하나. 두 번째 행동부터는 보조 · 고스트로 내린다. 링크 · 포커스 · 선택 표시에 \`--key\`를 쓰는 것은 개수에 넣지 않는다
-2. \`--key\` 위의 글자는 항상 \`--key-on\` (이 설정에서 \`--surface\`와 \`--ink\` 중 대비가 큰 쪽으로 정했다)
-3. 상태(오류 · 성공 · 안내)는 색과 글자를 함께 쓴다
-4. 새 글자/배경 조합을 만들면 대비를 확인한다 — 본문 글자 4.5:1 (WCAG 2.2 1.4.3), 입력칸 경계 · 아이콘 등 UI 구성요소 3:1 (WCAG 2.2 1.4.11). §8의 조합은 이 설정에서 계산했다
-5. ${s.color.darkOn ? '다크 모드는 `<html data-theme="dark">`일 때 §1의 `[data-theme="dark"]` 값으로 바뀐다. 컴포넌트 CSS는 그대로 두고 토큰만 바꾼다' : '다크 모드 값은 만들지 않았다. 다크 모드를 임의로 만들지 않는다'}
+- **강조색 면은 한 화면에 하나.** \`--key\`로 채운 요소(주 버튼)는 화면당 하나, 두 번째 행동부터는 보조 · 고스트로 내린다. 링크 · 포커스 · 선택에 \`--key\`를 쓰는 것은 개수에 넣지 않는다
+- \`--key\` 면 위의 글자는 항상 \`--key-on\`. 상태(오류 · 성공 · 안내)는 색과 글자를 함께 쓴다
+- ${s.color.darkOn ? '다크 모드는 `<html data-theme="dark">`일 때 §1의 `[data-theme="dark"]` 값으로 바뀐다. 컴포넌트 CSS는 그대로 두고 토큰만 바꾼다' : '다크 모드 값은 만들지 않았다. 다크 모드를 임의로 만들지 않는다'}
+- 글자 크기(기본 ${s.type.base}px, 비율 ${s.type.ratio}): ${scaleLine}
+- 제목은 \`--font-display\` + \`--weight-heading\`(${t.type.heading}), 본문 · 버튼 · 라벨은 \`--font-sans\` + \`--weight-regular\`(${t.type.regular}) / \`--weight-strong\`(${t.type.strong}), 숫자 · 코드는 \`--font-mono\`. 불러오는 서체 파일에 있는 굵기만 쓴다. 행간 본문 ${s.type.lhBody} · 제목 ${s.type.lhHead}, 제목 자간 ${s.type.trackHead}em
+- 세로로 줄 서는 숫자는 \`font-variant-numeric: tabular-nums\`. Display · H1은 한 화면에 하나이고, 좁은 화면(640px 미만)에서는 한 단계 작은 크기를 쓴다 (이 도구의 기본 규칙)${t.type.picks.display.script === '라틴' || t.type.picks.body.script === '라틴' ? '\n- 라틴 글자만 있는 서체는 한글을 시스템 한글 서체(`Apple SD Gothic Neo`, `Malgun Gothic`)가 받는다. 서체 스택의 순서를 바꾸지 않는다' : ''}
 
 ---
 
-## 3. Typography (타이포그래피)
+## 3. Components (컴포넌트)
 
-기본 ${s.type.base}px, 단계 비율 ${s.type.ratio} (크기 = 기본 × 비율ⁿ, 반올림). 본문 행간 ${s.type.lhBody}, 제목 행간 ${s.type.lhHead}, 제목 자간 ${s.type.trackHead}em.
+- Hover: 배경 한 단계(\`--key-hover\` 또는 \`--key-soft\`), \`--dur-fast\`, 크기 변화 없음 / Active: \`--key-active\` + \`translateY(1px)\` / Focus: \`outline: var(--focus-ring); outline-offset: 2px\`, 모든 인터랙티브 요소에 예외 없음 / Disabled: \`opacity: 0.5\` + \`cursor: not-allowed\` + 그림자 없음
 
-${mdTable(['역할', '서체', '크기', '굵기', '행간', '자간'], typeRows)}
-
-토큰 이름: \`--text-display\` \`--text-h1\` \`--text-h2\` \`--text-h3\` \`--text-large\` \`--text-body\` \`--text-small\`
-
-### Rules
-- 제목은 \`--font-display\`와 \`--weight-heading\`, 본문 · 버튼 · 라벨은 \`--font-sans\`, 숫자 · 코드는 \`--font-mono\`
-- 굵기는 \`--weight-regular\`(${t.type.regular}) · \`--weight-strong\`(${t.type.strong}) · \`--weight-heading\`(${t.type.heading}) 셋만 — 불러오는 서체 파일에 있는 굵기에서 골랐다
-- 금액 · 통계처럼 세로로 줄 서는 숫자는 \`font-variant-numeric: tabular-nums\`
-- Display · H1은 한 화면에 하나. 좁은 화면(640px 미만)에서는 Display · H1을 한 단계 작은 크기로 낮춘다 (이 도구의 기본 규칙)
-- \`--text-small\` 크기의 글자는 보조 정보에만 쓴다
-${t.type.picks.display.script === '라틴' || t.type.picks.body.script === '라틴' ? '- 라틴 글자만 있는 서체는 한글을 시스템 한글 서체(`Apple SD Gothic Neo`, `Malgun Gothic`)가 받는다. 서체 스택의 순서를 바꾸지 않는다\n' : ''}
----
-
-## 4. Components (컴포넌트)
-
-### 상태 공통 규칙
-${mdTable(['상태', '규칙'], [
-    ['Hover', `배경 한 단계(\`--key-hover\` 또는 \`--key-soft\`), \`--dur-fast\` — 크기 변화 없음`],
-    ['Active', '`--key-active`, `translateY(1px)`'],
-    ['Focus', '`outline: var(--focus-ring); outline-offset: 2px` — 모든 인터랙티브 요소, 예외 없음'],
-    ['Disabled', '`opacity: 0.5`, `cursor: not-allowed`, 그림자 없음. 가능하면 비활성 대신 눌렀을 때 부족한 것을 안내'],
-  ])}
-
-### Buttons
-공통: 모서리 \`--radius-button\`, 최소 높이 \`--control-height\`(${s.space.control}px), 좌우 패딩 \`--control-pad-x\`(${sp.comp.controlX}px), 글자 \`--text-body\` / \`--weight-strong\`, 테두리 \`--border-width\`(${e.border}px), 그림자 \`--shadow-button\`.
+**Buttons** — 모서리 \`--radius-button\`, 최소 높이 \`--control-height\`(${s.space.control}px), 좌우 \`--control-pad-x\`(${sp.comp.controlX}px), 글자 \`--text-body\` / \`--weight-strong\`, 테두리 \`--border-width\`(${e.border}px), 그림자 \`--shadow-button\`
 
 ${mdTable(['종류', '배경', '글자', '테두리', 'Hover', '용도'], [
     ['Primary', '`--key`', '`--key-on`', '`--key-active`', '`--key-hover`', '화면의 핵심 행동 하나'],
@@ -290,51 +256,22 @@ ${mdTable(['종류', '배경', '글자', '테두리', 'Hover', '용도'], [
     ['Danger', '`--surface`', '`--danger`', '`--danger` (최소 1px)', '`--danger-soft`', '되돌릴 수 없는 행동 — 채우지 않는다'],
   ])}
 
-### Inputs
-- 높이 \`--control-height\`, 면 \`--surface\`, 테두리 \`--border-strong\` **최소 1px**(테두리 설정이 0이어도), 모서리 \`--radius-input\`, 좌우 패딩 \`--control-pad-x\`
-- 라벨은 입력칸 위에 \`--text-small\` / \`--weight-strong\`. 플레이스홀더로 라벨을 대신하지 않는다
-- 포커스: 테두리 \`--key\` + \`--focus-ring\` / 오류: 테두리 \`--danger\` + 아래에 \`--danger\` 글자로 "오류: …" 문구
+**Inputs** — 높이 \`--control-height\`, 면 \`--surface\`, 테두리 \`--border-strong\` **최소 1px**(테두리 설정이 0이어도), 모서리 \`--radius-input\`. 라벨은 입력칸 위(\`--text-small\` / \`--weight-strong\`), 플레이스홀더로 라벨을 대신하지 않는다. 포커스: 테두리 \`--key\` + \`--focus-ring\`. 오류: 테두리 \`--danger\` + 아래에 \`--danger\` 글자로 "오류: …"
 
-### Cards
-- 면 \`--material-bg\`(+ \`backdrop-filter: var(--material-blur)\`), 광택 \`--sheen\`, 테두리 \`--border-width\` \`--border\`, 모서리 \`--radius-card\`, 그림자 \`--shadow-card\`, 안쪽 패딩 \`--card-pad\`(${sp.comp.card}px), 안쪽 간격 \`--gap\`(${sp.comp.gap}px)
+**Cards** — 면 \`--material-bg\`(+ \`backdrop-filter: var(--material-blur)\`), 광택 \`--sheen\`, 테두리 \`--border-width\` \`--border\`, 모서리 \`--radius-card\`, 그림자 \`--shadow-card\`, 안쪽 \`--card-pad\`(${sp.comp.card}px), 안쪽 간격 \`--gap\`(${sp.comp.gap}px)
 
-### Alerts · Toast · List
-- 알림(inline): 왼쪽 4px 띠 + 부드러운 배경(\`--key-soft\` / \`--success-soft\` / \`--danger-soft\`) + 굵은 글자 라벨("안내" · "완료" · "오류") + \`--ink\` 본문
-- 토스트 · 팝오버: 카드와 같은 면, 그림자는 \`--shadow-overlay\`
-- 목록: 카드 면 위, 항목 사이 1px \`--border\` 구분선, 숫자는 \`--font-mono\`
+**Alerts · Toast · List** — 알림: 왼쪽 4px 띠 + 부드러운 배경(\`--key-soft\` / \`--success-soft\` / \`--danger-soft\`) + 굵은 라벨("안내" · "완료" · "오류") + \`--ink\` 본문. 토스트 · 팝오버: 카드와 같은 면, 그림자 \`--shadow-overlay\`. 목록: 카드 면 위, 항목 사이 1px \`--border\`, 숫자는 \`--font-mono\`
 
 ---
 
-## 5. Shape & Material (모서리 · 그림자 · 테두리 · 재질)
+## 4. Shape · Space · Motion
 
-${mdTable(['토큰', '값', '쓰는 곳'], [
-    ['`--radius-button`', radiusLabel(s.radius.button), '버튼'], ['`--radius-input`', radiusLabel(s.radius.input), '입력칸 · 알림'],
-    ['`--radius-card`', radiusLabel(s.radius.card), '카드 · 목록 · 토스트'], ['`--radius-full`', '9999px', '아바타 · 뱃지'],
-  ])}
-
-- 테두리 \`--border-width\` ${e.border}px. 구분선은 항상 1px \`--border\`
-- 그림자 종류: **${SHADOW_NAME[e.shadow]}**${e.shadow === 'none' ? '' : `, 카드는 \`--shadow-${e.depth}\` 단계, 버튼은 한 단계 아래, 떠 있는 것(토스트 · 팝오버)은 한 단계 위`}
-${e.shadow === 'none' ? '' : `\n${mdTable(['토큰', '값 (라이트)'], shadowRows)}\n`}
-- 면 투명도 ${e.alpha}%, 배경 흐림 ${e.blur}px → \`--material-bg\` · \`--material-blur\`${glass ? ' (반투명 — 뒤가 비친다)' : ' (불투명)'}
-- 질감: ${TEXTURE_NAME[e.texture]}${e.texture === 'none' ? '' : ' — `--sheen`과 `--shadow-card` · `--shadow-button` 안의 안쪽 그림자로만 표현한다'}
-
----
-
-## 6. Spacing & Layout (간격 · 레이아웃)
-
-- 기본 단위 ${sp.unit}px. 간격은 아래 8단계에서만 고른다: ${sp.scale.map((v, i) => `\`--space-${i + 1}\` ${v}px`).join(' · ')}
-- 밀도 "${{ compact: '촘촘', normal: '보통', relaxed: '여유' }[s.space.density]}": 컨트롤 좌우 ${sp.comp.controlX}px · 카드 안쪽 ${sp.comp.card}px · 요소 사이 ${sp.comp.gap}px · 섹션 사이 ${sp.comp.section}px
-- 컨트롤 높이 ${s.space.control}px.${s.space.control >= 44 ? ' 44px 이상이라 WCAG 2.2 2.5.5(AAA)의 44×44px을 만족한다(가로가 충분할 때).' : ' WCAG 2.2 2.5.8(AA)의 최소 24×24px은 넘는다. 2.5.5(AAA)의 44×44px에는 못 미친다.'}
-- 구분선보다 여백을 먼저 늘려 본다. 섹션 사이가 가장 큰 간격이어야 한다
-
----
-
-## 7. Motion (움직임)
-
-- 시간: \`--dur-fast\` ${s.motion.fast}ms(hover · 버튼) / \`--dur-base\` ${s.motion.base}ms(알림 · 팝오버 등장) / \`--dur-slow\` ${s.motion.slow}ms(화면 전환)
-- 곡선: \`--ease\` = \`${ease.css}\` (${ease.label})
-- 들어오는 것은 감속, 나가는 것은 가속하는 곡선이 어울린다 (Material 3 Motion). 나가는 쪽은 \`--dur-fast\`로 짧게
-${s.motion.base === 0 ? '- 이 설정은 움직임을 쓰지 않는다(0ms). 전환을 새로 넣지 않는다\n' : ''}- 움직임 줄이기 설정을 따른다 (WCAG 2.2 2.3.3 Animation from Interactions · Media Queries Level 5):
+- 모서리: 버튼 ${radiusLabel(s.radius.button)} · 입력칸과 알림 ${radiusLabel(s.radius.input)} · 카드와 목록 ${radiusLabel(s.radius.card)}, 아바타 · 뱃지 \`--radius-full\`. 구분선은 항상 1px \`--border\`
+- 그림자: ${SHADOW_NAME[e.shadow]}${e.shadow === 'none' ? '' : ` — 카드는 \`--shadow-${e.depth}\` 단계, 버튼은 한 단계 아래, 떠 있는 것(토스트 · 팝오버)은 한 단계 위 (\`--shadow-card\` · \`--shadow-button\` · \`--shadow-overlay\`로 이미 계산돼 있다)`}
+- 재질: 면 투명도 ${e.alpha}%, 배경 흐림 ${e.blur}px${glass ? ' (반투명 — 뒤가 비친다)' : ' (불투명)'}, 질감 ${TEXTURE_NAME[e.texture]}${e.texture === 'none' ? '' : ' (`--sheen`과 그림자 토큰 안의 안쪽 그림자로만 표현)'}
+- 간격: 기본 단위 ${sp.unit}px, \`--space-*\`는 ${sp.scale.join(' · ')}px. 밀도 "${{ compact: '촘촘', normal: '보통', relaxed: '여유' }[s.space.density]}": 컨트롤 좌우 ${sp.comp.controlX}px · 카드 안쪽 ${sp.comp.card}px · 요소 사이 ${sp.comp.gap}px · 섹션 사이 ${sp.comp.section}px. 컨트롤 높이 ${s.space.control}px${s.space.control >= 44 ? ' (WCAG 2.2 2.5.5 AAA의 44px 이상)' : ' (WCAG 2.2 2.5.8 AA의 24px은 넘고, 2.5.5 AAA의 44px에는 못 미침)'}
+- 움직임: \`--dur-fast\` ${s.motion.fast}ms(hover · 버튼) · \`--dur-base\` ${s.motion.base}ms(알림 · 팝오버 등장) · \`--dur-slow\` ${s.motion.slow}ms(화면 전환), 곡선 \`--ease\` = \`${ease.css}\` (${ease.label}). 들어오는 것은 감속, 나가는 것은 가속하는 곡선이 어울린다 (Material 3 Motion)${s.motion.base === 0 ? '. 이 설정은 움직임을 쓰지 않는다(0ms)' : ''}
+- 움직임 줄이기 설정을 따른다 (WCAG 2.2 2.3.3 Animation from Interactions · Media Queries Level 5):
 
 \`\`\`css
 @media (prefers-reduced-motion: reduce) {
@@ -344,48 +281,19 @@ ${s.motion.base === 0 ? '- 이 설정은 움직임을 쓰지 않는다(0ms). 전
 
 ---
 
-## 8. Accessibility (접근성 · 대비 검증)
+## 5. Accessibility (접근성)
 
-이 설정의 색으로 계산한 대비다. 기준은 본문 글자 4.5:1 (WCAG 2.2 1.4.3 Contrast (Minimum), AA), UI 구성요소 3:1 (WCAG 2.2 1.4.11 Non-text Contrast, AA).${failing ? `\n\n> **미달 ${failing}건.** 미달 조합은 쓰지 않거나, 색을 고쳐 다시 계산한다.` : '\n\n> 아래 조합은 모두 기준을 통과한다.'}
+기준: 본문 글자 4.5:1 (WCAG 2.2 1.4.3 Contrast (Minimum), AA), 입력칸 경계 · 포커스 링 등 UI 구성요소 3:1 (WCAG 2.2 1.4.11 Non-text Contrast, AA). 이 설정의 색으로 글자 · 알림 · 버튼 · 경계 · 포커스 ${lightChecks.length}쌍을 계산했다.
 
-### 라이트
-${fmtChecks(lightChecks)}
-${s.color.darkOn ? `\n### 다크\n${fmtChecks(darkChecks)}\n` : ''}
-${glass ? `> 면이 반투명(${e.alpha}%)이라 글자 대비는 뒤에 무엇이 깔리느냐에 따라 달라진다. 위 표는 면이 불투명하다고 보고 계산했다.\n` : ''}
-- Tab 키만으로 모든 기능에 닿고 포커스 표시가 보인다
-- 모든 입력칸에 라벨, 의미 있는 이미지에 대체 텍스트(장식은 \`alt=""\`)
-- 페이지 \`lang="ko"\`
+${failing ? `**미달 ${failing}건** — 이 조합은 쓰지 않거나, 색을 고쳐 다시 계산한다. 나머지는 통과.\n\n${failTable}` : `**${s.color.darkOn ? '라이트 · 다크' : '라이트'} 모두 통과.**`} 전체 표는 \`DESIGN.html\`과 \`tokens.json\`의 \`contrast\`.
+${glass ? `\n면이 반투명(${e.alpha}%)이라 글자 대비는 뒤에 깔리는 것에 따라 달라진다. 위 계산은 불투명한 면 기준이다. 투명도 줄이기 · 대비 높이기 설정에는 불투명한 면을 보인다 (W3C Media Queries Level 5, Working Draft):\n\n\`\`\`css\n@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {\n  .card, .toast, .list { background-color: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }\n}\n\`\`\`\n` : ''}
+Tab 키만으로 모든 기능에 닿을 것, 모든 입력칸에 라벨, 의미 있는 이미지에 대체 텍스트(장식은 \`alt=""\`), 페이지 \`lang="ko"\`.
 
 ---
 
-## 9. Quick Decision Rules (빠른 결정 규칙)
-
-${mdTable(['고민', '답'], [
-    ['색', '가장 중요한 행동 하나 → `--key`. 나머지는 `--ink` · `--ink-secondary` · 선. 상태는 semantic'],
-    ['서체', '제목 display, 본문 · 버튼 sans, 숫자 mono'],
-    ['글자 크기', '`--text-*` 일곱 단계 중 하나'],
-    ['간격', `\`--space-*\`에서 고른다. 애매하면 큰 쪽`],
-    ['모서리', '버튼 `--radius-button`, 입력 `--radius-input`, 담는 것 `--radius-card`'],
-    ['그림자', '카드 `--shadow-card`, 버튼 `--shadow-button`, 떠 있는 것 `--shadow-overlay`'],
-    ['움직임', 'hover `--dur-fast`, 등장 `--dur-base`, 화면 전환 `--dur-slow`, 곡선은 `--ease`'],
-    ['새 값이 필요하다', '만들지 말고 가장 가까운 토큰을 쓴다'],
-  ])}
-
----
-
-## 10. Avoid (하지 말 것)
+## 6. Avoid (하지 말 것)
 
 ${avoid.map((a) => `- ${a}`).join('\n')}
-
----
-
-## 11. Reference CSS (미리보기와 같은 컴포넌트 CSS)
-
-\`preview.html\`이 이 CSS로 그려진다. 토큰만 참조하므로 §1을 바꾸면 따라 바뀐다. 클래스 이름은 참고용이고, 프레임워크의 컴포넌트에 같은 규칙을 옮겨도 된다. \`.ds-pop\` · \`.ds-track\` · \`.ds-dot\`은 움직임 견본용이다.
-
-\`\`\`css
-${componentCss(t)}
-\`\`\`
 `;
 }
 
@@ -511,7 +419,7 @@ export function designHtml(t: Tokens, s0: Spec): string {
 export function promptText(md: string): string {
   return `아래 DESIGN.md는 이 프로젝트의 디자인 시스템입니다. 화면을 만들 때 이 문서의 토큰(CSS 변수)과 규칙만 사용하세요.
 - 문서에 없는 색 · 크기 · 서체 · 그림자 · 모서리 값을 새로 만들지 마세요.
-- §10 하지 말 것을 어기지 마세요.
+- §6 하지 말 것을 어기지 마세요.
 - 끝나면 사용한 토큰 이름을 목록으로 알려 주세요.
 
 만들 화면: (여기에 적으세요)

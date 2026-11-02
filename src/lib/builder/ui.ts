@@ -173,7 +173,7 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
     const fails = [...t.modes[0].checks, ...(spec.color.darkOn ? t.modes[1].checks : [])].filter((c) => !c.pass).length;
     const notes: string[] = [];
     const e = spec.effect;
-    if (e.alpha < 100) notes.push(`면 투명도 ${e.alpha}% — 글자 대비는 뒤에 깔리는 것에 따라 달라집니다. 아래 표는 불투명한 면 기준이에요. 투명도 줄이기 · 대비 높이기 설정을 켠 사람에게는 불투명한 면을 보이게 하세요(파일의 Reference CSS에 들어 있음).`);
+    if (e.alpha < 100) notes.push(`면 투명도 ${e.alpha}% — 글자 대비는 뒤에 깔리는 것에 따라 달라집니다. 아래 표는 불투명한 면 기준이에요. 투명도 줄이기 · 대비 높이기 설정을 켠 사람에게는 불투명한 면을 보이게 하세요(DESIGN.md와 preview.html에 미디어 쿼리가 들어 있음).`);
     if (e.blur > 0 && e.alpha === 100) notes.push('면이 불투명(100%)이라 뒤 배경 흐림이 보이지 않습니다. 투명도를 낮춰야 흐림이 드러나요.');
     if (e.shadow === 'dual' && spec.color[mode].bg.toUpperCase() !== spec.color[mode].surface.toUpperCase()) notes.push('밝고 어두운 한 쌍의 그림자는 배경과 표면이 같은 색일 때 입체로 보입니다. 지금은 두 색이 다릅니다.');
     if (spec.space.control < 44) notes.push(`버튼 높이 ${spec.space.control}px — WCAG 2.5.8(AA)의 24px은 넘지만 2.5.5(AAA)의 44px에는 못 미칩니다.`);

@@ -1108,3 +1108,16 @@ article.note .prose p:last-child{margin-bottom:0}
 .splab .sp-off{fill:var(--mark)}
 .splab code{font-family:var(--mono);font-size:.9em}
 .sp-table tr:last-child td{border-bottom:1px solid var(--rule)}
+
+/* 목표 경사 실습 — 쿠폰 두 장, 보너스 도장만 형광펜 */
+.gg-cards{display:grid;gap:16px;width:100%;max-width:340px}
+.gg-card{background:var(--surface);border:1px solid var(--ink);padding:14px;display:grid;gap:10px}
+.gg-stamps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.gg-stamps i{display:block;aspect-ratio:1;border:1px solid var(--ink-3);border-radius:50%}
+.gg-stamps i.on{background:var(--ink);border-color:var(--ink)}
+.gg-stamps i.b{background:var(--mark);border-color:var(--ink)}
+.gg-bar{height:6px;background:var(--rule)}
+.gg-bar i{display:block;height:100%;background:var(--ink)}
+.gg-pct{font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+#psGrad .chip:disabled{opacity:.45;cursor:default}
+@media (prefers-reduced-motion:no-preference){ .gg-bar i{transition:width .25s ease} }

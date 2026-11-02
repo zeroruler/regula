@@ -1,0 +1,67 @@
+---
+// 목표 경사 효과: Kivetz · Urminsky · Zheng (2006)의 카페 쿠폰 실험을 두 장의 흑백 쿠폰으로 옮겼다.
+// A는 10칸 빈 쿠폰, B는 12칸에 보너스 도장 2개. 둘 다 10잔을 더 사야 무료 한 잔이다.
+const NEED = 10;
+---
+<div class="lab pslab" id="psGrad" data-need={NEED}>
+  <div class="ps-frame">
+    <div class="gg-cards" aria-hidden="true">
+      <div class="gg-card" data-total="10" data-bonus="0">
+        <span class="label">A · 10칸</span>
+        <div class="gg-stamps"></div>
+        <div class="gg-bar"><i></i></div>
+        <span class="mono gg-pct"></span>
+      </div>
+      <div class="gg-card" data-total="12" data-bonus="2">
+        <span class="label">B · 12칸, 보너스 2개</span>
+        <div class="gg-stamps"></div>
+        <div class="gg-bar"><i></i></div>
+        <span class="mono gg-pct"></span>
+      </div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 목표 경사</span>
+    <h3>같은 10잔, 다른 출발선</h3>
+    <div class="row">
+      <button class="chip" type="button" id="ggBuy">한 잔 사기</button>
+      <button class="chip" type="button" id="ggReset">처음부터</button>
+      <span class="mono" id="ggBought"></span>
+    </div>
+    <p class="g-read" aria-live="polite">남은 잔: A <span id="ggLeftA"></span> · B <span id="ggLeftB"></span> — <mark id="ggRead"></mark></p>
+    <p>두 쿠폰 모두 무료 한 잔까지 10잔이 남았습니다. 그런데 B는 처음부터 17%가 채워져 보여요. 실제 카페에서 B를 받은 손님은 10잔을 평균 12.7일 만에, A를 받은 손님은 15.6일 만에 채웠습니다(약 20% 빠름).</p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>이미 끝낸 단계(가입, 이메일 확인)는 체크된 채 보여 주세요. 진척은 실제로 한 일만큼만 — 하지 않은 일을 채워 보여 주면 속임입니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#psGrad')!;
+  const NEED = +lab.dataset.need!;
+  let bought = 0;
+
+  function render() {
+    lab.querySelectorAll<HTMLElement>('.gg-card').forEach((c) => {
+      const total = +c.dataset.total!, bonus = +c.dataset.bonus!;
+      const filled = bonus + bought;
+      c.querySelector('.gg-stamps')!.innerHTML = Array.from({ length: total }, (_, i) =>
+        `<i class="${i < bonus ? 'b' : i < filled ? 'on' : ''}"></i>`).join('');
+      const pct = Math.round((filled / total) * 100);
+      c.querySelector<HTMLElement>('.gg-bar i')!.style.width = `${pct}%`;
+      c.querySelector('.gg-pct')!.textContent = `${filled} / ${total} · ${pct}%`;
+    });
+    const left = NEED - bought;
+    lab.querySelector('#ggLeftA')!.textContent = `${left}`;
+    lab.querySelector('#ggLeftB')!.textContent = `${left}`;
+    lab.querySelector('#ggBought')!.textContent = `${bought}잔 삼`;
+    lab.querySelector('#ggRead')!.textContent = left === 0
+      ? '둘 다 다 채움 — 보상 뒤에는 속도가 다시 느려짐'
+      : bought === 0 ? '남은 거리는 같은데 B가 더 가까워 보임' : `지금 B가 ${Math.round(((2 + bought) / 12 - bought / 10) * 100)}%p 앞서 보임`;
+    lab.querySelector<HTMLButtonElement>('#ggBuy')!.disabled = left === 0;
+  }
+  lab.querySelector('#ggBuy')!.addEventListener('click', () => { if (bought < NEED) { bought++; render(); } });
+  lab.querySelector('#ggReset')!.addEventListener('click', () => { bought = 0; render(); });
+  render();
+</script>

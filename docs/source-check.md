@@ -2,6 +2,21 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 8차: 폰 레스토프 · 계열 위치 · 목표 경사 · 균일 연결성
+
+### 원문을 읽고 확인
+
+- Ran Kivetz · Oleg Urminsky · Yuhuang Zheng, 「The Goal-Gradient Hypothesis Resurrected」 (Journal of Marketing Research 43(1), 2006, pp.39–58) — Urminsky의 시카고대 페이지에 올린 PDF 전문: 카페 쿠폰에서 무료 한 잔에 가까워질수록 구매 간격이 평균 20%(0.7일) 줄어듦. 10칸 빈 쿠폰은 10잔을 평균 15.6일, 보너스 도장 2개가 찍힌 12칸 쿠폰은 12.7일에 채움(약 20% 빠름, 중앙값 15일 vs 10일). 보상 뒤에는 속도가 다시 느려짐(postreward resetting). Hull(1932) · Hull(1934) 쥐 실험을 출발점으로 인용
+- Stephen Palmer · Irvin Rock, 「Rethinking perceptual organization: The role of uniform connectedness」 (Psychonomic Bulletin & Review 1(1), 1994) — 초록(Europe PMC): 밝기 · 색 · 질감이 고른 닫힌 영역은 처음에 한 단위로 보이고, 근접성 · 유사성과 맞서도 이김. 묶기의 한 형태가 아니라 그보다 먼저 일어나는 단계로 봄
+- R. Reed Hunt, 「The subtlety of distinctiveness: What von Restorff really did」 (Psychonomic Bulletin & Review, 1995) — 초록: 폰 레스토프는 눈에 띄는 차이(지각적 두드러짐)가 꼭 필요하지 않다는 증거를 보였고, 차이는 나머지 항목의 비슷함 속에서만 힘을 가진다고 봄. 원 논문은 영어 번역이 없음
+- 서지 정보만 확인(Crossref): von Restorff (1933) Psychologische Forschung 18 · Hull (1932) Psychological Review 39, pp.25–43 · Murdock (1962) Journal of Experimental Psychology 64, pp.482–488
+
+### 직접 읽지 못함
+
+- von Restorff 1933 원문(독일어, Springer 유료), Murdock 1962 본문(APA 유료)
+- 계열 위치 효과라는 이름을 Ebbinghaus가 지었다는 Laws of UX의 설명 — 확인 못 함, 공식 메모에 적음
+- NN/g의 계열 위치 효과 글은 주소가 404
+
 ## 2026-11-01 — 7차: Laws of UX 남은 법칙 (밀러 · 제이콥 · 테슬러 · 응답 시간 · 심미적 사용성)
 
 lawsofux.com의 각 법칙 페이지에서 "Origins"를 읽고, 거기서 가리키는 원래 글을 찾아 대조했다.

@@ -301,7 +301,8 @@ nav.toc .subnav a[aria-current="page"]{color:var(--ink);font-weight:600}
 
 /* 색 실습 */
 .colorlab svg .seg{cursor:pointer;stroke:var(--surface);stroke-width:1}
-.colorlab svg .seg:hover{stroke:var(--ink);stroke-width:2}
+.colorlab svg #marks,.colorlab svg .hub{pointer-events:none}
+.colorlab svg .seg-hi{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;pointer-events:none}
 .colorlab .hub{font-family:var(--mono);font-size:22px;fill:var(--ink)}
 .colorlab .hub.small{font-size:10px;fill:var(--ink-3)}
 .colorlab input[type=range]{accent-color:var(--ink);min-width:0}

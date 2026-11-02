@@ -18,6 +18,8 @@ const arc = (deg: number) => {
   <svg viewBox="0 0 300 300" role="img" aria-label="OKLCH 색상환">
     {segments.map((h) => <path d={arc(h)} style={`fill:oklch(0.7 0.13 ${h})`} data-h={h} class="seg" />)}
     <g id="marks"></g>
+    <!-- 호버 테두리는 조각 자신의 stroke로 그리면 뒤에 그린 이웃 조각과 표시에 가려지므로, 맨 위에 따로 그린다 -->
+    <path id="segHi" class="seg-hi" d="" />
     <text x="150" y="146" text-anchor="middle" class="hub" id="hubHue">30°</text>
     <text x="150" y="166" text-anchor="middle" class="hub small">기준 색상각</text>
   </svg>
@@ -85,10 +87,15 @@ const arc = (deg: number) => {
     $('#schemeChips').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     render();
   });
-  lab.querySelectorAll<SVGPathElement>('.seg').forEach((seg) => seg.addEventListener('click', () => {
-    $<HTMLInputElement>('#hue').value = seg.dataset.h!;
-    render();
-  }));
+  const hi = $<SVGPathElement>('#segHi');
+  lab.querySelectorAll<SVGPathElement>('.seg').forEach((seg) => {
+    seg.addEventListener('click', () => {
+      $<HTMLInputElement>('#hue').value = seg.dataset.h!;
+      render();
+    });
+    seg.addEventListener('pointerenter', () => hi.setAttribute('d', seg.getAttribute('d')!));
+    seg.addEventListener('pointerleave', () => hi.setAttribute('d', ''));
+  });
   ['#hue', '#light', '#chroma'].forEach((s) => $(s).addEventListener('input', render));
   render();
 </script>

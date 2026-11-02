@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import SeenSync from '../../components/SeenSync.astro';
 import { href } from '../../lib/url';
 import { patternGroups } from '../../lib/site';
+import { prepareImported } from '../../lib/imported';
 
 type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
 const imported = import.meta.glob<Imported>('../../imported/*.json', { eager: true, import: 'default' });
@@ -82,7 +83,7 @@ const usedIn = [
             <input type="text" id="impFilter" placeholder="예: color, Korea, React" autocomplete="off">
             <span class="mono" id="impCount"></span>
           </div>
-          <div class="imported prose" set:html={snapshot.html} />
+          <div class="imported prose" set:html={prepareImported(snapshot.html, ['impFilter', 'impCount'])} />
         </div>
       ) : r.embed && r.url ? (
         <div class="frame">

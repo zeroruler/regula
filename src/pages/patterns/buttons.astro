@@ -4,6 +4,7 @@ import PatternSection from '../../components/PatternSection.astro';
 import PatternSubnav from '../../components/PatternSubnav.astro';
 import Hierarchy from '../../demos/buttons/Hierarchy.astro';
 import States from '../../demos/buttons/States.astro';
+import MenuIcons from '../../demos/buttons/MenuIcons.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 
@@ -53,6 +54,16 @@ const stateRules = [
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">3 · 아이콘 이름</span>
+      <h2>메뉴 아이콘에는 별명이 있다</h2>
+      <p>줄 셋은 햄버거, 세로 점 셋은 케밥, 가로 점 셋은 미트볼. 모양을 음식에 빗댄 비공식 별명이라 글마다 조금씩 다르게 부릅니다. 회의나 AI 요청에서 모양을 정확히 짚을 때 쓰고, 화면에는 별명이 아니라 그 버튼이 하는 일을 접근성 이름(aria-label)으로 붙이세요. 같은 모양이라도 앱마다 여는 것이 달라서, 아이콘만으로는 뜻이 전해지지 않을 수 있어요.</p>
+    </header>
+    <MenuIcons />
+    <p style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.6">출처: Instagram @uxwoodytips 릴스(9가지 별명) · 위키백과 「Hamburger button」(햄버거 · 케밥 · 미트볼 · 와플) · Google Material Icons 이름(Apache 2.0). 도너 · 베지 버거 · 계단 · 슬라이더는 릴스 밖에서 별명을 확인하지 못했습니다. 그림은 Regula가 다시 그린 흑백 도형입니다.</p>
   </section>
 
   <PatternSection group={group} items={buttons} cols={[{h: '한 화면에', k: 'per_view'}]} />

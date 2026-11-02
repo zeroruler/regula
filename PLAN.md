@@ -117,7 +117,7 @@ source: Material Design, SAP Fiori 등
 | `surface` | 카드 · 면 | `surface` (없으면 bg에서 만듦) |
 | `ink` | 본문 글자 | `ink` (`inkSecondary` · `border` · `borderStrong`은 bg와 섞어 만듦 — 출처 없음) |
 | `key` | 주 강조(버튼 · 링크) | `key` |
-| `accent` | 보조 강조 · 그래프 | builder에는 아직 자리 없음 → DESIGN.md에 `--accent-*`로만 기록 |
+| `accent` | 보조 강조 · 그래프 | builder 키 없음(정함) → DESIGN.md에 `--accent-*`로만 기록, 미리보기에는 안 나옴 |
 | `danger` · `success` | 상태 | `danger` · `success` (없으면 현재 값 유지) |
 
 **화면** — `/colors/` 한 페이지(nav 등록), 위에 조합 · 아래에 견본.
@@ -244,7 +244,7 @@ regula/
 - [ ] `/colors/` 페이지 + nav 등록
 - [ ] 원리 공식(보색 · 유사색 · 분할 보색 · 삼각)에 "이 원리로 만든 조합" 연결
 - [ ] `/builder/` "조합에서 고르기" + `#combo=` 진입 + DESIGN.md에 조합 출처 기록
-- [ ] 정할 것: `accent`를 builder 색 키에 추가할지(지금 9키, 추가하면 tokens.json 형식과 불러오기 호환을 같이 바꿔야 함)
+- 정함(2026-11-02): `accent`는 builder 색 키에 넣지 않고 DESIGN.md에 `--accent-*`로만 기록한다(9키 · tokens.json 형식 유지). 조합을 실제로 써 본 뒤 필요하면 다시 검토
 
 ### 이후
 - [x] 페이지 양식 "회원가입" — `/templates/signup/` (규칙 14개, 기본 · 입력 오류 · 약관 동의 상태 미리보기, 입력 · 문구 · 다크 패턴과 연결)

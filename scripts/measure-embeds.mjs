@@ -78,7 +78,7 @@ async function measureSite(url) {
     for (const width of WIDTHS) heights.push([width, await at(width)]);
 
     // 이웃한 두 폭의 높이가 크게 다르면(브레이크포인트) 그 사이를 반씩 좁혀 1px 앞뒤까지 찾아 둘 다 남긴다.
-    // 페이지는 두 값 중 큰 쪽을 쓰므로, 이렇게 해 두면 빈칸이 남는 구간이 1px로 줄어든다.
+    // 페이지는 잰 점 사이를 직선으로 이으므로, 이렇게 해 두면 브레이크포인트를 건너 잇는 구간이 1px로 줄어든다.
     const extra = [];
     for (let i = 1; i < heights.length; i++) {
       let [lo, hLo] = heights[i - 1];

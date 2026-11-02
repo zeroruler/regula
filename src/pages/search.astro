@@ -73,6 +73,8 @@ const items: Item[] = [
       text: hay(d.name, d.kind, d.concept, ...d.signatures, ...d.rules.map((r) => r.text)),
     };
   }),
+  { kind: '도구', tag: '만들기', title: '디자인 파일 만들기', sub: '서체 · 모서리 · 효과 · 색 · 간격 · 움직임을 골라 DESIGN.md · tokens.json으로 내려받기', url: href('builder/'),
+    text: hay('디자인 파일 만들기', 'DESIGN.md tokens.json 에이전트 다운로드 zip 미리보기 서체 모서리 border-radius 그림자 색 대비 간격 움직임 스타일 프리셋') },
   ...topics.filter((t) => t.path).map((t) => ({
     kind: '실습', tag: '원리와 공식', title: t.name, sub: t.blurb, url: href(t.path!),
     text: hay(t.name, t.blurb, '실습 원리'),

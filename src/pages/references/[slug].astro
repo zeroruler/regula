@@ -4,7 +4,7 @@ import { refGroups } from '../../content.config';
 import Base from '../../layouts/Base.astro';
 import SeenSync from '../../components/SeenSync.astro';
 import { href } from '../../lib/url';
-import { patternGroups } from '../../lib/site';
+import { patternGroups, section } from '../../lib/site';
 import { prepareImported } from '../../lib/imported';
 
 type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
@@ -28,13 +28,13 @@ const snapshot = imported[`../../imported/${reference.id}.json`];
 // 이 레퍼런스를 출처로 쓴 공식과 패턴
 const usedIn = [
   ...(await getCollection('formulas', (f) => f.data.refs.includes(reference.id)))
-    .map((f) => ({ label: '§1 공식', name: f.data.name, to: href(`principles/#f-${f.id}`) })),
+    .map((f) => ({ label: `§${section('principles').no} 공식`, name: f.data.name, to: href(`principles/#f-${f.id}`) })),
   ...(await getCollection('patterns', (p) => p.data.refs.includes(reference.id)))
-    .map((p) => ({ label: '§3 패턴', name: p.data.name, to: href(`${patternGroups.find((g) => g.name === p.data.category)?.path ?? 'patterns/'}#p-${p.id.split('/').pop()}`) })),
+    .map((p) => ({ label: `§${section('patterns').no} 패턴`, name: p.data.name, to: href(`${patternGroups.find((g) => g.name === p.data.category)?.path ?? 'patterns/'}#p-${p.id.split('/').pop()}`) })),
   ...(await getCollection('palettes', (p) => p.data.refs.includes(reference.id)))
-    .map((p) => ({ label: '§10 색 견본', name: p.data.name, to: href(`colors/#pal-${p.id}`) })),
+    .map((p) => ({ label: `§${section('colors').no} 색 견본`, name: p.data.name, to: href(`colors/#pal-${p.id}`) })),
   ...(await getCollection('combos', (c) => c.data.refs.includes(reference.id)))
-    .map((c) => ({ label: '§10 색 조합', name: c.data.name, to: href(`colors/#combo-${c.id}`) })),
+    .map((c) => ({ label: `§${section('colors').no} 색 조합`, name: c.data.name, to: href(`colors/#combo-${c.id}`) })),
 ];
 ---
 <Base title={`${r.title} · Regula`} description={r.summary} current="references">
@@ -46,7 +46,7 @@ const usedIn = [
 
   <article class="refdoc">
     <header class="ref ref-head" data-k={reference.id}>
-      <span class="label"><a href={href('references/')}>§ 5 레퍼런스</a> · {r.group}</span>
+      <span class="label"><a href={href('references/')}>§ {section('references').no} 레퍼런스</a> · {r.group}</span>
       <h1>{r.title}</h1>
       <p class="by">{r.author}</p>
       <p class="lede">{r.summary}</p>

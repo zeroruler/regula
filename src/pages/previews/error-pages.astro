@@ -1,0 +1,93 @@
+---
+// 오류 페이지 양식 미리보기. ?system=<디자인 시스템>&state=<notfound|problem|unavailable> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안). 서비스 이름 · 날짜 · 전화번호는 모두 예시.
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오류 페이지 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style is:global>
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;padding:24px 16px 40px}
+.embedded body{min-height:0}
+.page{max-width:960px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.page{max-width:640px}
+.card{background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:32px 28px;display:grid;gap:14px}
+.brand{font-weight:700;font-size:15px;color:var(--ink2)}
+h1{margin:0;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:28px;line-height:1.25}
+p{margin:0}
+.muted{color:var(--ink2);font-size:15px}
+.status{border-left:4px solid var(--key);padding:6px 0 6px 12px;font-size:15px}
+.box{min-width:0;display:flex;align-items:center;background:var(--surface);border:var(--stroke) solid var(--border);border-radius:var(--radius);box-shadow:var(--input-shadow)}
+.box:focus-within{outline:2px solid var(--key);outline-offset:2px}
+.box input{flex:1;min-width:0;height:44px;border:0;background:transparent;padding:0 12px;font:inherit;color:var(--ink);outline:none}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.primary,.secondary{height:44px;padding:0 18px;border-radius:var(--radius);font:inherit;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.primary{border:var(--stroke) solid var(--key);background:var(--key);color:var(--on-key);box-shadow:var(--button-shadow)}
+.secondary{border:var(--stroke) solid var(--border);background:var(--surface);color:var(--ink)}
+a{color:var(--ink)}
+ul.links{margin:0;padding-left:20px;display:grid;gap:4px;font-size:15px}
+.tog{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ink2)}
+.tog button{height:30px;padding:0 10px;border:var(--stroke) solid var(--border);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.tog button[aria-pressed=true]{background:var(--key);color:var(--on-key);border-color:var(--key)}
+</style>
+</head>
+<body>
+<main class="page"><div class="card" id="card"></div></main>
+<script is:inline define:vars={{ themes }}>
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+  const state = params.get('state') ?? 'notfound';
+  const $ = (s) => document.querySelector(s);
+  const NAME = '예시 민원 서비스';
+  let saved = true;
+  const contact = '<p class="muted">전화 문의: 000-0000-0000 · 평일 9시–18시</p>';
+  function render() {
+    let html = '';
+    if (state === 'problem') {
+      document.title = `서비스에 문제가 있어요 · ${NAME}`;
+      html = `<div class="brand">${NAME}</div><h1>서비스에 문제가 있어요</h1><p>나중에 다시 시도해 주세요.</p>
+        <div class="tog" role="group" aria-label="미리보기: 입력 내용"><span>입력하던 내용</span><button type="button" aria-pressed="${saved}" data-s="1">저장됨</button><button type="button" aria-pressed="${!saved}" data-s="0">저장 안 됨</button></div>
+        <p class="status" role="status">${saved ? '입력하신 내용을 저장했어요. 30일 동안 보관하니, 서비스가 다시 열리면 이어서 하실 수 있어요.' : '입력하신 내용은 저장되지 않았어요. 서비스가 다시 열리면 처음부터 다시 해야 해요.'}</p>
+        <div class="row"><button class="primary" type="button">다시 시도</button><a class="secondary" href="#" onclick="return false">다른 방법으로 신청하기</a></div>${contact}`;
+    } else if (state === 'unavailable') {
+      document.title = `서비스를 이용할 수 없어요 · ${NAME}`;
+      html = `<div class="brand">${NAME}</div><h1>서비스를 이용할 수 없어요</h1>
+        <p>서비스는 <b>12월 5일 토요일 오전 9시</b>에 다시 열려요.</p>
+        <p class="status">지금까지 입력하신 내용은 저장되지 않아요. 다시 열리면 처음부터 시작해 주세요.</p>
+        <div class="row"><a class="secondary" href="#" onclick="return false">종이 신청서 받기</a></div>${contact}`;
+    } else {
+      document.title = `페이지를 찾을 수 없어요 · ${NAME}`;
+      html = `<div class="brand">${NAME}</div><h1>페이지를 찾을 수 없어요</h1>
+        <p>주소를 직접 입력했다면 주소가 맞는지 확인해 주세요.</p>
+        <p>주소를 붙여 넣었다면 주소 전체를 복사했는지 확인해 주세요.</p>
+        <form role="search" class="row" style="flex-wrap:nowrap;min-width:0" onsubmit="return false"><div class="box" style="flex:1"><input type="search" aria-label="서비스 안 검색" placeholder="찾는 내용을 적어 보세요"></div><button class="primary" type="submit">검색</button></form>
+        <ul class="links"><li><a href="#" onclick="return false">처음으로</a></li><li><a href="#" onclick="return false">자주 찾는 신청 안내</a></li></ul>
+        <p class="muted">주소가 맞는데도 이 화면이 나오면 문의해 주세요.</p>${contact}`;
+    }
+    $('#card').innerHTML = html;
+  }
+  $('#card').addEventListener('click', (e) => { const b = e.target.closest('[data-s]'); if (b) { saved = b.dataset.s === '1'; render(); } });
+  render();
+</script>
+</body>
+</html>

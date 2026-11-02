@@ -2,6 +2,21 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 12차: 오류 페이지 양식
+
+### 원문을 읽고 확인
+
+- GOV.UK Design System 「Page not found pages」: 제목 "Page not found", 404 · bad request 같은 용어 · "oops" 같은 가벼운 말 · 탓하기 · 빨간 글씨 · 브레드크럼 금지, 직접 친 주소 / 붙여 넣은 주소 안내 문구 분리, 연락처는 필요할 때만(번호 + 운영 시간), 링크 · 버튼 점검과 옛 주소 리디렉트
+- GOV.UK 「There is a problem with the service pages」: 예상 못한 문제는 같은 페이지 하나로, "Try again later.", 입력한 답의 상태(저장 시 30일 / 저장 안 됨) 알리기, "We are experiencing technical difficulties" 금지, 오래가면 Service unavailable로, 다른 서비스 링크
+- GOV.UK 「Service unavailable pages」: 의도해서 닫은 서비스에 쓰기, 다시 열리는 요일 · 날짜 · 시각, "maintenance" · "improvements" 같은 모호한 말 금지
+- Jakob Nielsen, 「Improving the Dreaded 404 Error Message」 (NN/g, 1998): 가볍게 사과하되 탓하지 않기, 이유 설명, 비슷한 철자의 유효한 주소를 링크로 제안, 검색창
+
+### 주의
+
+- GOV.UK 세 페이지는 영국 공공 서비스 기준이라 상점 · 앱에는 연락처 · 다른 서비스 링크 규칙을 줄여 쓴다(양식 메모에 적음)
+- 다시 시도 버튼은 GOV.UK가 설명하지 않는 장치라 미리보기의 값은 예시
+- NN/g 글은 1998년 것이라 문구 · 검색창 원리만 가져옴
+
 ## 2026-11-02 — 11차: 검색 결과 양식
 
 10차에서 확인한 NN/g 글(검색창 · 돋보기 · 결과 없음 · 필터 카테고리 · 적용 시점 · 판)과 WCAG 4.1.3에 더해 아래를 읽었다.

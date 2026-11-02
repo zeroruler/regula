@@ -1,0 +1,139 @@
+---
+// 찾기와 거르기: 같은 상품 12개를 패싯(색 · 크기)과 필터 칩(무료 배송)으로 거른다.
+// 적용 방식(바로 적용 · 모아서 적용)과 응답 속도(빠름 · 느림)를 바꿔, 조건 셋을 거는 동안 결과가 몇 번 새로 그려지고 얼마나 기다리는지 센다.
+// NN/g 「User Intent Affects Filter Design」(2016): 둘러보는 사용자에겐 바로 적용, 조건이 분명하거나 사이트가 느리면 모아서 적용.
+const colors = ['검정', '흰색', '파랑'];
+const sizes = ['S', 'M', 'L'];
+---
+<div class="lab srlab" id="srFilter" data-colors={JSON.stringify(colors)} data-sizes={JSON.stringify(sizes)}>
+  <div class="sr-fig">
+    <div class="sr-facets">
+      <fieldset>
+        <legend class="label">색</legend>
+        {colors.map((c) => <label><input type="checkbox" name="color" value={c}> {c}</label>)}
+      </fieldset>
+      <fieldset>
+        <legend class="label">크기</legend>
+        {sizes.map((s) => <label><input type="checkbox" name="size" value={s}> {s}</label>)}
+      </fieldset>
+      <fieldset>
+        <legend class="label">배송</legend>
+        <label><input type="checkbox" name="ship" value="free"> 무료 배송</label>
+      </fieldset>
+      <button class="chip sr-apply" type="button" id="srApply" hidden>적용</button>
+    </div>
+    <div class="sr-results">
+      <div class="sr-head">
+        <b id="srCount" role="status"></b>
+        <span id="srApplied"></span>
+      </div>
+      <ul class="sr-list" id="srList" aria-label="상품 목록"></ul>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 필터를 거는 두 방식</span>
+    <h3>바로 적용, 모아서 적용</h3>
+    <div class="chips" id="srMode" role="group" aria-label="적용 방식">
+      <button class="chip" type="button" data-v="live" aria-pressed="true">바로 적용</button>
+      <button class="chip" type="button" data-v="batch" aria-pressed="false">모아서 적용</button>
+    </div>
+    <div class="chips" id="srSpeed" role="group" aria-label="응답 속도">
+      <button class="chip" type="button" data-v="200" aria-pressed="true">응답 빠름 0.2초</button>
+      <button class="chip" type="button" data-v="1500" aria-pressed="false">응답 느림 1.5초</button>
+    </div>
+    <div class="readout" id="srStat"></div>
+    <p id="srNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>결과 수와 걸린 조건은 고르는 동안에도 보이게 두고, 조건마다 ×로 하나씩, "모두 지우기"로 한꺼번에 풀게 합니다. 결과가 0개가 되면 막다른 길 대신 마지막 조건을 빼는 길을 줍니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#srFilter')!;
+  const COLORS: string[] = JSON.parse(lab.dataset.colors!);
+  const SIZES: string[] = JSON.parse(lab.dataset.sizes!);
+  // 상품 12개: 이름 · 색 · 크기 · 무료 배송 (고정 값)
+  const KINDS = ['셔츠', '니트', '후드', '재킷'];
+  const items = Array.from({ length: 12 }, (_, i) => ({
+    name: KINDS[i % 4], color: COLORS[i % 3], size: SIZES[(i * 2) % 3], free: i % 4 !== 1,
+  }));
+  type Sel = { color: string[]; size: string[]; ship: string[] };
+  let applied: Sel = { color: [], size: [], ship: [] };
+  let mode: 'live' | 'batch' = 'live';
+  let delay = 200;
+  let renders = 0, waited = 0, pending = 0;
+  const boxes = () => [...lab.querySelectorAll<HTMLInputElement>('.sr-facets input')];
+  const LABEL: Record<string, string> = { free: '무료 배송' };
+
+  function readBoxes(): Sel {
+    const s: Sel = { color: [], size: [], ship: [] };
+    boxes().forEach((b) => { if (b.checked) (s as any)[b.name].push(b.value); });
+    return s;
+  }
+  function writeBoxes(s: Sel) { boxes().forEach((b) => { b.checked = (s as any)[b.name].includes(b.value); }); }
+  const match = (s: Sel) => items.filter((it) =>
+    (!s.color.length || s.color.includes(it.color)) && (!s.size.length || s.size.includes(it.size)) && (!s.ship.length || it.free));
+
+  function drawResults(loading = false) {
+    const list = lab.querySelector<HTMLElement>('#srList')!;
+    const res = match(applied);
+    lab.querySelector('#srCount')!.textContent = loading ? '불러오는 중…' : `결과 ${res.length}개`;
+    list.classList.toggle('busy', loading);
+    const tags = [...applied.color, ...applied.size, ...applied.ship.map((v) => LABEL[v])];
+    lab.querySelector('#srApplied')!.innerHTML = tags.length
+      ? tags.map((t) => `<button type="button" class="sr-tag" data-t="${t}" aria-label="${t} 조건 빼기">${t} ×</button>`).join('') + '<button type="button" class="sr-clear" data-t="*">모두 지우기</button>'
+      : '';
+    list.innerHTML = res.length
+      ? res.map((it) => `<li><i></i><span>${it.name} · ${it.color} · ${it.size}</span>${it.free ? '<s>무료 배송</s>' : ''}</li>`).join('')
+      : `<li class="sr-empty">조건에 맞는 상품이 없어요. <button type="button" class="sr-tag" data-t="last">마지막 조건 빼기</button></li>`;
+  }
+  function stat() {
+    lab.querySelector('#srStat')!.innerHTML = `${renders}번 · ${(waited / 1000).toFixed(1)}초<small>결과를 새로 그린 횟수 · 기다린 시간</small>`;
+    const slow = delay > 1000;
+    lab.querySelector('#srNote')!.textContent = mode === 'live'
+      ? slow ? '느린 사이트에서 바로 적용하면 조건 하나를 고를 때마다 결과가 사라졌다 나타납니다. 셋을 고르려는 사람에게는 세 번 기다리게 하는 셈이에요.'
+             : '빠른 사이트에서는 조건 하나마다 결과가 바뀌는 것을 보며 좁혀 갈 수 있습니다. 무엇을 원하는지 아직 모르는 사람에게 맞아요.'
+      : slow ? '조건을 다 고른 뒤 "적용"을 한 번 누르면 한 번만 기다립니다. 조건이 분명하거나 사이트가 느릴 때 맞는 방식이에요.'
+             : '빠른 사이트인데 모아서 적용하면, 조건을 고를 때마다 결과가 어떻게 바뀌는지 볼 수 없어 둘러보기가 답답해집니다.';
+  }
+  function commit(next: Sel) {
+    applied = next; renders++; waited += delay; pending++;
+    drawResults(true); stat();
+    const my = pending;
+    setTimeout(() => { if (my === pending) drawResults(false); }, delay);
+  }
+  lab.querySelector('.sr-facets')!.addEventListener('change', () => { if (mode === 'live') commit(readBoxes()); });
+  lab.querySelector('#srApply')!.addEventListener('click', () => commit(readBoxes()));
+  lab.querySelector('#srApplied')!.addEventListener('click', onTag);
+  lab.querySelector('#srList')!.addEventListener('click', onTag);
+  function onTag(e: Event) {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    const t = b.dataset.t!;
+    let next: Sel;
+    if (t === '*') next = { color: [], size: [], ship: [] };
+    else if (t === 'last') {
+      const all = [...applied.color, ...applied.size, ...applied.ship];
+      const last = all[all.length - 1];
+      next = { color: applied.color.filter((v) => v !== last), size: applied.size.filter((v) => v !== last), ship: applied.ship.filter((v) => v !== last) };
+    } else {
+      next = { color: applied.color.filter((v) => v !== t), size: applied.size.filter((v) => v !== t), ship: t === '무료 배송' ? [] : applied.ship };
+    }
+    writeBoxes(next); commit(next);
+  }
+  function group(id: string, fn: (v: string) => void) {
+    const g = lab.querySelector(id)!;
+    g.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      fn(b.dataset.v!);
+    });
+  }
+  group('#srMode', (v) => { mode = v as typeof mode; lab.querySelector<HTMLElement>('#srApply')!.hidden = mode !== 'batch'; reset(); });
+  group('#srSpeed', (v) => { delay = +v; reset(); });
+  function reset() { applied = { color: [], size: [], ship: [] }; writeBoxes(applied); renders = 0; waited = 0; drawResults(); stat(); }
+  reset();
+</script>

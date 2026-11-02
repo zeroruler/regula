@@ -1121,3 +1121,56 @@ article.note .prose p:last-child{margin-bottom:0}
 .gg-pct{font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 #psGrad .chip:disabled{opacity:.45;cursor:default}
 @media (prefers-reduced-motion:no-preference){ .gg-bar i{transition:width .25s ease} }
+
+/* 찾기와 거르기 — 미니 목업(흑백) */
+.srf{display:flex;align-items:center;gap:6px;border:1.5px solid var(--ink);padding:5px 6px;margin-bottom:8px;background:var(--surface)}
+.srf b{height:6px;background:var(--ink)}
+.srf span{margin-left:auto;font-size:9.5px;border-left:1px solid var(--rule);padding-left:6px;color:var(--ink-2)}
+.srf.on{outline:2px solid var(--mark);outline-offset:1px}
+.srl,.srh,.srs{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--rule)}
+.srl i{width:14px;height:14px;background:var(--rule);flex:none}
+.srl b,.srh b,.srs b{height:5px;width:58%;background:var(--ink-3)}
+.srl s{margin-left:auto;width:16px;height:5px;background:var(--rule)}
+.srh i{width:9px;height:9px;border:1px solid var(--ink-3);border-radius:50%;flex:none}
+.srh s{margin-left:auto;text-decoration:none;color:var(--ink-3);font-size:10px}
+.srs{gap:0;padding-left:4px}
+.srs b.q{width:22%;background:var(--ink);height:6px}
+.srt{display:flex;align-items:center;justify-content:space-between;padding-bottom:6px;margin-bottom:4px;border-bottom:1px solid var(--ink)}
+.srt b{width:30%;height:6px;background:var(--ink)}
+.srt span,.sra span,.srchips span{font-size:9.5px}
+.srchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.srchips span{border:1px solid var(--ink-3);border-radius:999px;padding:1px 7px;color:var(--ink-2)}
+.srchips span.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.sra{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:6px;font-size:9.5px}
+.sra b{font-weight:600}
+.sra span{border:1px solid var(--ink-3);padding:0 5px}
+.sra u{color:var(--ink-3)}
+.srp{display:grid;grid-template-columns:38% 1fr;gap:8px;height:100%}
+.srp .side{display:flex;flex-direction:column;gap:5px;border-right:1px solid var(--rule);padding-right:6px}
+.srp .side b{height:5px;width:60%;background:var(--ink);margin-top:2px}
+.srp .side i{height:8px;width:80%;border:1px solid var(--ink-3)}
+.srp .side i.on{background:var(--ink-3)}
+.srp .res{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
+.srp .res span{height:40px;border:1px solid var(--rule);background:var(--surface)}
+
+/* 찾기와 거르기 실습 */
+.srlab .sr-fig{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr);gap:16px;background:var(--paper);border:1px solid var(--rule);padding:16px;align-self:start;min-width:0}
+.sr-facets{display:flex;flex-direction:column;gap:12px;min-width:0}
+.sr-facets fieldset{border:0;margin:0;padding:0;display:grid;gap:4px}
+.sr-facets legend{padding:0;margin-bottom:4px}
+.sr-facets label{font-size:14px;display:flex;gap:6px;align-items:center}
+.sr-facets input{accent-color:var(--ink)}
+.sr-apply[hidden]{display:none}
+.sr-results{min-width:0;display:grid;gap:8px;align-content:start}
+.sr-head{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:28px}
+.sr-head b{font-family:var(--mono);font-size:13px;font-weight:500;margin-right:4px}
+.sr-tag,.sr-clear{font-family:var(--mono);font-size:12px;border:1px solid var(--ink-3);background:var(--surface);color:var(--ink);padding:2px 7px;cursor:pointer;border-radius:2px}
+.sr-clear{border:0;background:none;text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:2px;color:var(--ink-2)}
+.sr-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.sr-list li{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
+.sr-list li i{width:16px;height:16px;background:var(--rule);flex:none}
+.sr-list li s{margin-left:auto;text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.sr-list li.sr-empty{display:block;color:var(--ink-2);padding:12px 0}
+.sr-list.busy{opacity:.35}
+@media (prefers-reduced-motion:no-preference){ .sr-list{transition:opacity .15s} }
+@media (max-width:640px){ .srlab .sr-fig{grid-template-columns:minmax(0,1fr)} .sr-facets{flex-direction:row;flex-wrap:wrap;gap:12px 20px} }

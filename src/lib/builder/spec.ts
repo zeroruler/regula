@@ -30,7 +30,7 @@ export type Spec = {
   color: { light: Colors; dark: Colors; darkOn: boolean };
   space: { unit: 4 | 8; density: 'compact' | 'normal' | 'relaxed'; control: number };
   motion: { fast: number; base: number; slow: number; ease: string };
-  // 시작점으로 고른 색 조합(/colors/). 보조 색(accent)은 builder 색 키가 아니라 DESIGN.md에만 --accent-*로 들어간다(PLAN §6).
+  // 시작점으로 고른 색 조합(/colors/). 보조 색(accent)은 builder 색 키가 아니라 DESIGN.md에만 --accent-*로 들어간다(PLAN §7).
   combo: ComboPick | null;
 };
 export type ComboPick = { id: string; name: string; source: string; accent: { light: string[]; dark: string[] } };

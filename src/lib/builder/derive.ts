@@ -196,6 +196,7 @@ export function buildTokens(s: Spec, fonts: FontOption[]) {
     ] },
     { title: 'Border', note: '테두리 두께. 입력칸은 0이어도 1px', vars: [
       ['--border-width', `${bw}px`], ['--input-border-width', `${Math.max(1, bw)}px`],
+      ['--alert-bar', s.effect.alertBar ? '4px' : '0px', '알림 왼쪽 세로 띠 두께. 0px이면 띠 없음'],
     ] },
     { title: 'Spacing', note: `${space.unit}px 단위의 배수만`, vars: [
       ...space.scale.map((v, i) => [`--space-${i + 1}`, `${v}px`] as [string, string]),

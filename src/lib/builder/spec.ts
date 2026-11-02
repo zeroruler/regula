@@ -30,6 +30,15 @@ export type Spec = {
   color: { light: Colors; dark: Colors; darkOn: boolean };
   space: { unit: 4 | 8; density: 'compact' | 'normal' | 'relaxed'; control: number };
   motion: { fast: number; base: number; slow: number; ease: string };
+  // 시작점으로 고른 색 조합(/colors/). 보조 색(accent)은 builder 색 키가 아니라 DESIGN.md에만 --accent-*로 들어간다(PLAN §10).
+  combo: ComboPick | null;
+};
+export type ComboPick = { id: string; name: string; source: string; accent: { light: string[]; dark: string[] } };
+
+// /colors/의 조합을 builder에 넘기는 모양. 색 키는 src/lib/combos.ts가 빌드 때 채운다(없는 키는 지금 값 유지).
+export type ComboOption = {
+  id: string; name: string; source: string; basis: string; strip: string[];
+  light: Partial<Colors>; dark?: Partial<Colors>; accent: { light: string[]; dark: string[] };
 };
 
 export const RATIOS = [1.125, 1.2, 1.25, 1.333, 1.5, 1.618];
@@ -72,6 +81,7 @@ export const DEFAULT: Spec = {
   color: { light: { ...LIGHT }, dark: { ...DARK }, darkOn: true },
   space: { unit: 4, density: 'normal', control: 40 },
   motion: { fast: 150, base: 300, slow: 500, ease: 'standard' },
+  combo: null,
 };
 
 // ── 비주얼 스타일 프리셋 ─ 재료(그림자 · 테두리 · 투명도 · 질감)와 모서리만 정한다. 색과 서체는 건드리지 않는다(뉴모피즘만 예외).
@@ -123,6 +133,21 @@ export function presetEdited(spec: Spec): boolean {
   return JSON.stringify(p.radius) !== JSON.stringify(spec.radius) || JSON.stringify({ ...p.effect, alertBar: 0 }) !== JSON.stringify({ ...spec.effect, alertBar: 0 });
 }
 
+// 조합을 적용한 새 spec. 조합에 있는 색 키만 덮어쓰고, 다크 값이 없는 조합이면 다크는 그대로 둔다.
+export function applyCombo(spec: Spec, c: ComboOption): Spec {
+  const next: Spec = structuredClone(spec);
+  Object.assign(next.color.light, c.light);
+  if (c.dark) Object.assign(next.color.dark, c.dark);
+  next.combo = { id: c.id, name: c.name, source: c.source, accent: { light: [...c.accent.light], dark: [...c.accent.dark] } };
+  return next;
+}
+// 조합 값에서 손으로 고쳤는지(수정됨 표시용)
+export function comboEdited(spec: Spec, c: ComboOption | undefined): boolean {
+  if (!c) return false;
+  const same = (want: Partial<Colors>, have: Colors) => Object.entries(want).every(([k, v]) => have[k as ColorKey].toUpperCase() === String(v).toUpperCase());
+  return !same(c.light, spec.color.light) || (!!c.dark && spec.color.darkOn && !same(c.dark, spec.color.dark));
+}
+
 // ── 값 검증 ─────────────────────────────────────────────
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const num = (v: unknown, min: number, max: number, fallback: number, step = 0): number => {
@@ -156,6 +181,12 @@ export function sanitize(input: unknown, fontIds: readonly string[] = []): Spec 
   };
   const text = (v: unknown, max: number, fallback: string) =>
     typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f<>`]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max) : fallback;
+  const hexList = (v: unknown) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && HEX.test(x)).slice(0, 4).map((x) => (x as string).toUpperCase()) : []);
+  const combo = (v: unknown): ComboPick | null => {
+    if (!isObj(v) || typeof v.id !== 'string' || !/^[a-z0-9-]{1,40}$/.test(v.id)) return null;
+    const a = isObj(v.accent) ? v.accent : {};
+    return { id: v.id, name: text(v.name, 40, v.id) || v.id, source: text(v.source, 120, ''), accent: { light: hexList(a.light), dark: hexList(a.dark) } };
+  };
   return {
     v: 1,
     name: text(i.name, 24, d.name) || d.name,
@@ -187,6 +218,7 @@ export function sanitize(input: unknown, fontIds: readonly string[] = []): Spec 
       fast: num(m.fast, 0, 1000, d.motion.fast, 10), base: num(m.base, 0, 1000, d.motion.base, 10), slow: num(m.slow, 0, 1000, d.motion.slow, 10),
       ease: oneOf(m.ease, EASES.map((x) => x.id), d.motion.ease),
     },
+    combo: combo(i.combo),
   };
 }
 

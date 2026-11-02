@@ -116,7 +116,7 @@ const notes = defineCollection({
   }),
 });
 
-export const refGroups = ['책', '공개 디자인 시스템', 'GitHub 저장소', '커뮤니티 · 글 · 디자이너'] as const;
+export const refGroups = ['책', '공개 디자인 시스템', 'GitHub 저장소', '색 체계', '커뮤니티 · 글 · 디자이너'] as const;
 
 const references = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/references' }),
@@ -174,4 +174,61 @@ const templates = defineCollection({
   }),
 });
 
-export const collections = { formulas, patterns, darkpatterns, references, templates, notes, fonts };
+// ── 색 (PLAN §10) ──
+// 견본: 값 전체를 싣는 건 자유 라이선스 팔레트만. 팬톤 같은 독점 체계는 references에 색값 없이 둔다.
+const hex6 = z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'HEX는 #RRGGBB');
+const palettes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/palettes' }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number(),
+    maker: z.string(),
+    license: z.string().min(1),
+    // 라이선스 원문을 확인한 주소
+    license_url: z.url(),
+    // 값을 가져온 파일(버전이 드러나는 주소)
+    data_url: z.url(),
+    url: z.url(),
+    source: z.string().min(1),
+    summary: z.string(),
+    // 모두 싣지 않았다면 무엇을 뺐는지
+    partial: z.string().optional(),
+    scales: z.array(z.object({ name: z.string(), steps: z.array(z.object({ name: z.string(), hex: hex6 })) })),
+    refs: z.array(z.string()).default([]),
+  }),
+});
+
+// 조합: 같이 쓰기 좋은 색 묶음. role은 디자인 파일 만들기의 색 키로 옮겨진다(src/lib/combos.ts).
+// 값은 hex로 적거나(from에 팔레트 · 단계), template의 토큰 이름(token)으로 적는다 — 토큰이면 빌드 때 DESIGN.md에서 읽는다.
+export const comboRoles = ['bg', 'surface', 'ink', 'key', 'accent', 'danger', 'success'] as const;
+export const comboBasis = ['자유 라이선스 팔레트', 'Regula 양식'] as const;
+const comboColor = z.object({
+  role: z.enum(comboRoles),
+  name: z.string().optional(),
+  hex: hex6.optional(),
+  token: z.string().regex(/^--[\w-]+$/).optional(),
+  from: z.string().optional(),
+}).refine((c) => !!c.hex !== !!c.token, 'hex와 token 중 하나만');
+const combos = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/combos' }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number(),
+    basis: z.enum(comboBasis),
+    // 배색 근거가 된 공식 slug (complementary · analogous · split-complementary · triadic · 60-30-10 …)
+    principles: z.array(z.string()).default([]),
+    // 값의 출처(팔레트 · 양식). 고른 일 자체는 Regula가 했다는 것을 note가 아니라 화면이 따로 밝힌다
+    source: z.string().min(1),
+    palette: z.string().optional(),
+    template: z.string().optional(),
+    mood: z.array(z.string()).default([]),
+    use: z.array(z.string()).default([]),
+    note: z.string().optional(),
+    light: z.array(comboColor).min(3).max(8),
+    // 없으면 라이트만. template 조합은 토큰의 다크 값을 쓰므로 비워 둔다
+    dark: z.array(comboColor).optional(),
+    refs: z.array(z.string()).default([]),
+  }).refine((c) => c.light.some((x) => x.role === 'bg') && c.light.some((x) => x.role === 'ink'), '조합에는 bg와 ink가 있어야 함'),
+});
+
+export const collections = { formulas, patterns, darkpatterns, references, templates, notes, fonts, palettes, combos };

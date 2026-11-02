@@ -48,8 +48,8 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합' },
   { name: '조형', path: 'principles/composition/', blurb: '크기 위계, 여백, 시각적 무게, 대칭, 질감, 형태, 동세, 율동 — 『디자인 구구단』 9단' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
-  { name: '사용성과 접근성', path: 'principles/usability/', blurb: '피츠, 힉, 터치 영역, 포커스, 리플로, 대체 텍스트 — WCAG 2.2' },
-  { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드' },
+  { name: '사용성과 접근성', path: 'principles/usability/', blurb: '피츠, 힉, 밀러, 제이콥, 테슬러, 응답 시간, 터치 영역, 포커스, 리플로 — WCAG 2.2' },
+  { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드, 심미적 사용성' },
   { name: '움직임', path: 'principles/motion/', blurb: '이즈 인 · 아웃, 스프링, 순차 등장, 페이드, 슬라이드, 화면 전환' },
   { name: '비주얼 스타일', path: 'principles/styles/', blurb: '스큐어모피즘부터 리퀴드 글래스까지, 이름과 재료로 말하기' },
   { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
@@ -130,6 +130,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-01', text: 'Laws of UX에서 옮길 후보로 남아 있던 법칙을 원문으로 확인해 원리에 더함. 사용성과 접근성에 밀러의 법칙과 청크 · 제이콥의 법칙 · 테슬러의 법칙 · 응답 시간 한계(0.1 · 1 · 10초), 심리와 편향에 심미적 사용성 효과. 도허티 임계값 "400ms"는 1982년 IBM 보고서 사본에서 찾지 못해 확인하지 못한 수치로 적음(출처 7차 검증).' },
   { date: '2026-11-01', text: '원리의 마지막 주제 "비율과 간격"에 실습 페이지(/principles/spacing/)를 만듦. 간격 스케일 · 간격의 위계 · 부품 간격과 레이아웃 간격 · 수직 리듬 4개를 더하고, 8pt 그리드 출처를 원문으로 확인한 것(Atlassian · USWDS · Carbon)으로 바꿈. 같은 카드에 임의 값 · 한 값 · 스케일 값을 넣어 보는 실습, 문단 사이 여백을 바꿔 글줄이 박자에서 밀리는 걸 보는 수직 리듬 실습을 붙이고, 원리 목록 맨 위에 있던 황금비 실험을 이 페이지로 옮김. 출처는 6차 검증으로 기록.' },
   { date: '2026-11-01', text: 'UI 패턴에 "화면 구성"(/patterns/layout/) 추가. 목록 · 표 · 카드 · 캐러셀 · 아코디언 · 팝오버 · 사이드 시트 7가지를 내용이 가려진 정도 순으로 놓고, 같은 상품 6개를 목록 · 표 · 카드로 바꿔 담으며 찾기 · 견주기 · 둘러보기에 맞는지 보는 실습을 붙임. 규칙 7개는 NN/g · W3C APG · MDN 원문을 읽고 확인(출처 5차 검증).' },
   { date: '2026-11-01', text: '출처 4차 검증: WCAG 2.2 원문(2024-12-12판)과 사용성 · 접근성 공식의 기준 번호 · 수준 · 수치를 대조. 모두 맞았고, 터치 영역의 Inline 예외 표현을 바로잡고 2.5.5(44px, AAA)와 리플로 높이 256px를 더함. 레퍼런스에 "WCAG 2.2"를 추가하고 관련 공식 14개를 연결.' },

@@ -3,12 +3,15 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { href } from '../lib/url';
+import { loadCombos } from '../lib/combos';
 
 // 서체 후보는 fonts 컬렉션에서 가져온다. 클라이언트 스크립트가 이 JSON으로 선택지와 서체 파일 주소를 만든다.
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order).map((f) => ({
   id: f.id, name: f.data.name, family: f.data.family, kind: f.data.kind, script: f.data.script, load: f.data.load,
 }));
-const origin = { styles: href('principles/styles/'), motion: href('principles/motion/'), spacing: href('principles/spacing/') };
+const origin = { styles: href('principles/styles/'), motion: href('principles/motion/'), spacing: href('principles/spacing/'), colors: href('colors/') };
+// 색 조합은 /colors/와 같은 데이터(src/content/combos)를 빌드 때 풀어 넘긴다.
+const combos = (await loadCombos()).map((c) => c.option);
 
 // 도구가 쓰는 기준 중 출처가 있는 것만. 원문 확인 기록은 docs/source-check.md (15차).
 const rules = [
@@ -26,6 +29,7 @@ const own = [
   { s: '그림자 단계', rule: '흐린 그림자 4단계의 y · 번짐 · 투명도, 어긋난 그림자 2/4/6/8px, 한 쌍 3/6/10/16px — 단계 값은 이 도구가 정함. 카드는 고른 단계, 버튼은 한 단계 아래, 떠 있는 것은 한 단계 위' },
   { s: '간격 · 밀도', rule: '8단계 배수(1 2 3 4 6 8 12 16 × 단위), 밀도별 컨트롤 · 카드 · 요소 · 섹션 간격' },
   { s: '시간 묶음', rule: '빠름 100/200/300 · 보통 150/300/500 · 느림 200/400/600ms. UI 움직임이 대개 0.1–0.5초라는 범위 안에서 정한 조합' },
+  { s: '색 조합', rule: '조합의 바탕 · 면 · 글자 · 주 강조 · 오류 · 성공은 그대로 옮기고, 보조 글자 = 글자 75% + 면 25%, 선 = 면 84% + 글자 16%, 입력칸 테두리 = 면과 글자 반반으로 섞는다. 보조 색은 DESIGN.md에만. 어떤 색을 묶을지는 Regula가 고른 것' },
   { s: '스타일 프리셋', rule: '비주얼 스타일 9가지의 재료를 CSS 값으로 옮긴 근사. 같은 이름의 스타일이어도 실제 서비스마다 다르다' },
 ];
 ---
@@ -37,6 +41,7 @@ const own = [
   <section class="bd-sec">
     <script type="application/json" id="bdFonts" set:html={JSON.stringify(fonts)}></script>
     <script type="application/json" id="bdOrigin" set:html={JSON.stringify(origin)}></script>
+    <script type="application/json" id="bdCombos" set:html={JSON.stringify(combos)}></script>
     <div class="bd" id="bd"><noscript><p class="bd-note">이 도구는 스크립트로 동작합니다. 스크립트를 켜 주세요.</p></noscript></div>
   </section>
 
@@ -66,5 +71,6 @@ const own = [
   const host = document.querySelector<HTMLElement>('#bd')!;
   const fonts = JSON.parse(document.querySelector('#bdFonts')!.textContent!);
   const origin = JSON.parse(document.querySelector('#bdOrigin')!.textContent!);
-  initBuilder(host, fonts, origin);
+  const combos = JSON.parse(document.querySelector('#bdCombos')!.textContent!);
+  initBuilder(host, fonts, origin, combos);
 </script>

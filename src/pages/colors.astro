@@ -1,0 +1,223 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { ROLE_NAME, ROLE_WEIGHT, loadCombos, oklchOf, type ComboCheck, type Swatch } from '../lib/combos';
+import { contrast } from '../lib/color';
+import { hexToRgb } from '../lib/builder/derive';
+import { topics } from '../lib/site';
+import { href } from '../lib/url';
+
+const combos = await loadCombos();
+const formulas = await getCollection('formulas');
+const fname = Object.fromEntries(formulas.map((f) => [f.id, f.data.name]));
+const fpage = (id: string) => {
+  const f = formulas.find((x) => x.id === id);
+  const page = topics.find((t) => t.name === f?.data.topic)?.path ?? 'principles/';
+  return href(`${page}#f-${id}`);
+};
+for (const c of combos) for (const p of c.data.principles) if (!fname[p]) throw new Error(`색 조합 ${c.id}: 없는 공식 "${p}"`);
+
+const palettes = (await getCollection('palettes')).sort((a, b) => a.data.order - b.data.order);
+const paletteBodies = await Promise.all(palettes.map(async (p) => (await render(p)).Content));
+const paletteName = Object.fromEntries(palettes.map((p) => [p.id, p.data.name]));
+const templateNames = Object.fromEntries((await getCollection('templates')).map((t) => [t.id, t.data.name]));
+
+// 묶음: 양식 조합은 따로, 나머지는 첫 번째 원리로
+const groups = [
+  ...['complementary', 'analogous', 'triadic', 'split-complementary', '60-30-10'].map((p) => ({
+    id: `c-${p}`, title: fname[p], list: combos.filter((c) => c.data.basis !== 'Regula 양식' && c.data.principles[0] === p),
+  })),
+  { id: 'c-templates', title: 'Regula 양식', list: combos.filter((c) => c.data.basis === 'Regula 양식') },
+].filter((g) => g.list.length);
+
+const ratioText = (r: number) => (Math.floor(r * 100) / 100).toFixed(2);
+const fails = (list?: ComboCheck[]) => (list ?? []).filter((x) => !x.pass).length;
+const get = (sw: Swatch[], r: Swatch['role']) => sw.find((x) => x.role === r)?.hex;
+const keyOn = (sw: Swatch[]) => {
+  const key = get(sw, 'key'), surface = get(sw, 'surface') ?? get(sw, 'bg')!, ink = get(sw, 'ink')!;
+  if (!key) return ink;
+  const r = (a: string, b: string) => contrast(hexToRgb(a), hexToRgb(b));
+  return r(surface, key) >= r(ink, key) ? surface : ink;
+};
+const sample = (sw: Swatch[]) => ({
+  bg: get(sw, 'bg')!, surface: get(sw, 'surface') ?? get(sw, 'bg')!, ink: get(sw, 'ink')!,
+  key: get(sw, 'key') ?? get(sw, 'ink')!, on: keyOn(sw), accents: sw.filter((x) => x.role === 'accent').map((x) => x.hex),
+});
+// 띠 면적: 역할별 기본값을 같은 역할 개수로 나눈다(Regula가 정한 값)
+const strip = (sw: Swatch[]) => {
+  const shown = sw.filter((x) => x.role !== 'danger' && x.role !== 'success');
+  return shown.map((x) => ({ hex: x.hex, w: ROLE_WEIGHT[x.role] / shown.filter((y) => y.role === x.role).length }));
+};
+const chipText = (hex: string) => (contrast(hexToRgb(hex), [255, 255, 255]) >= contrast(hexToRgb(hex), [0, 0, 0]) ? '#FFFFFF' : '#000000');
+const total = palettes.reduce((n, p) => n + p.data.scales.reduce((m, s) => m + s.steps.length, 0), 0);
+---
+<Base title="색 · Regula" current="colors" description="같이 쓰기 좋은 색 조합과 자유 라이선스 색 견본. 조합은 디자인 파일 만들기에서 바로 고를 수 있다.">
+  <Fragment slot="sub">
+    {groups.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+    <a href="#palettes">색 견본</a>
+  </Fragment>
+
+  <PageHead current="colors" title="같이 쓰기 좋은 색, 근거와 함께">
+    <p>배색 원리(보색 · 유사색 · 삼각 · 분할 보색 · 60-30-10)마다 색을 3–8개씩 묶어 둔 조합 {combos.length}개와, 값 전체를 실어도 되는 자유 라이선스 색 견본 {palettes.length}가지({total}색)입니다. 조합의 "디자인 파일 만들기에서 열기"를 누르면 그 색으로 시작합니다.</p>
+    <p class="hint">조합의 색 값은 모두 오픈 소스 팔레트나 Regula 양식에서 왔지만, <b>어떤 색을 함께 묶을지는 Regula가 고른 것</b>이고 따로 출처가 있는 배색이 아닙니다. 원리는 근거로 든 공식으로 이어지고, 실제 색상각은 조합마다 계산해 적었습니다.</p>
+  </PageHead>
+
+  {groups.map((g) => (
+    <section id={g.id} class="cmb-sec">
+      <header>
+        <span class="label">조합 · {g.list.length}개</span>
+        <h2>{g.title}</h2>
+      </header>
+      <div class="cmb-list">
+        {g.list.map((c) => {
+          const d = c.data;
+          const L = sample(c.light), D = c.dark ? sample(c.dark) : null;
+          const nf = fails(c.checks.light) + fails(c.checks.dark);
+          return (
+            <article class="cmb" id={`combo-${c.id}`}>
+              <div class="cmb-strip" aria-hidden="true">{strip(c.light).map((s) => <i style={`background:${s.hex};flex:${s.w}`}></i>)}</div>
+              <div class="cmb-main">
+                <div class="cmb-head">
+                  <h3>{d.name}</h3>
+                  <span class="label">{[...d.mood, ...d.use].join(' · ')}</span>
+                </div>
+                {d.note && <p class="cmb-note">{d.note}</p>}
+
+                <div class="cmb-samples">
+                  {[['라이트', L], ...(D ? [['다크', D]] : [])].map(([mode, x]: any) => (
+                    <div class="cmb-sample" style={`background:${x.bg};color:${x.ink}`}>
+                      <span class="cmb-mode">{mode}</span>
+                      <div class="cmb-card" style={`background:${x.surface}`}>
+                        <b>제목 글자</b>
+                        <p>본문 글자와 <span style={`color:${x.key};text-decoration:underline`}>링크</span></p>
+                        <div class="cmb-row">
+                          <span class="cmb-btn" style={`background:${x.key};color:${x.on}`}>주 버튼</span>
+                          {x.accents.map((a: string) => <i class="cmb-dot" style={`background:${a}`}></i>)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <ul class="cmb-sw">
+                  {c.light.map((s, i) => (
+                    <li>
+                      <i style={`background:${s.hex}`}></i>
+                      <span>{ROLE_NAME[s.role]}</span>
+                      <code>{s.hex}</code>
+                      <small>{s.label}{c.dark?.[i] && c.dark[i].hex !== s.hex ? ` · 다크 ${c.dark[i].hex}` : ''}</small>
+                    </li>
+                  ))}
+                </ul>
+
+                <p class="cmb-meta">
+                  {c.hues.length > 1 && <>색상각(OKLCH) {c.hues.map((h, i) => <>{i ? ' · ' : ''}{h.label} {h.hue == null ? '무채색' : `${h.hue}°`}{h.delta != null && ` (키에서 +${h.delta}°)`}</>)}<br /></>}
+                  {d.principles.length > 0 && <>근거 {d.principles.map((p, i) => <>{i ? ' · ' : ''}<a href={fpage(p)}>{fname[p]}</a></>)}<br /></>}
+                  값 {d.template ? <a href={href(`templates/${d.template}/`)}>{templateNames[d.template] ?? d.template}</a> : d.palette ? <a href={`#pal-${d.palette}`}>{paletteName[d.palette] ?? d.palette}</a> : null} — {d.source}
+                </p>
+
+                <details class="cmb-checks">
+                  <summary>대비 {nf ? <b class="bad">미달 {nf}건</b> : <b class="ok">모두 통과</b>}</summary>
+                  <div class="compare"><table>
+                    <thead><tr><th>모드</th><th>짝</th><th>대비</th><th>기준</th><th></th></tr></thead>
+                    <tbody>
+                      {(['light', 'dark'] as const).flatMap((m) => (c.checks[m] ?? []).map((k) => (
+                        <tr><td>{m === 'light' ? '라이트' : '다크'}</td><td>{k.label}</td><td class="mono">{ratioText(k.ratio)}:1</td><td class="mono">{k.need}:1 · {k.sc}</td><td class={k.pass ? 'ok' : 'bad'}>{k.pass ? '통과' : '미달'}</td></tr>
+                      )))}
+                    </tbody>
+                  </table></div>
+                  <p class="cmb-small">미달인 짝은 그 용도로 쓰지 않습니다(예: 보조 색을 글자로 쓰지 않기). 기준은 WCAG 2.2 1.4.3(글자 4.5:1) · 1.4.11(그래프 · UI 경계 3:1).</p>
+                </details>
+
+                <p class="cmb-go"><a class="cmb-open" href={href(`builder/#combo=${c.id}`)}>디자인 파일 만들기에서 열기 →</a></p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+
+  <section>
+    <header>
+      <span class="label">근거</span>
+      <h2>출처가 있는 것, Regula가 정한 것</h2>
+    </header>
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>내용</th><th>출처</th></tr></thead>
+        <tbody>
+          <tr><td>색 값</td><td>조합의 HEX는 아래 견본(Tailwind CSS v3 · Open Color)의 값 그대로이거나 Regula 양식의 토큰. 빌드할 때 원본과 다시 맞춰 본다</td><td class="src-cell">각 팔레트 저장소 (MIT) · DESIGN/&lt;이름&gt;/DESIGN.md</td></tr>
+          <tr><td>배색 원리</td><td>보색 · 유사색 · 삼각 · 분할 보색은 색상환의 각도 규칙, 60-30-10은 면적 규칙</td><td class="src-cell">원리와 공식의 각 항목 출처</td></tr>
+          <tr><td>대비</td><td>글자 4.5:1, 그래프 · UI 경계 3:1</td><td class="src-cell">WCAG 2.2 1.4.3 · 1.4.11</td></tr>
+          <tr><td>색 고르기</td><td>어느 색을 한 조합으로 묶을지, 몇 단계를 쓸지</td><td class="src-cell">Regula가 고름 (출처 없음)</td></tr>
+          <tr><td>띠 면적</td><td>바탕 46 · 면 24 · 글자 12 · 주 강조 10 · 보조 6 — 60-30-10을 역할에 나눈 근사</td><td class="src-cell">Regula가 정함 (출처 없음)</td></tr>
+          <tr><td>각도 차이</td><td>팔레트의 정해진 단계에서 고르기 때문에 규칙의 각도(180° · 120° 등)와 몇십 도 어긋난다. 위 조합마다 실제 값을 적었다</td><td class="src-cell">OKLCH 계산 (Björn Ottosson의 OKLab)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="palettes" class="pal-sec">
+    <header>
+      <span class="label">색 견본 · {palettes.length}가지</span>
+      <h2>값 전체를 실은 자유 라이선스 팔레트</h2>
+      <p>라이선스 원문을 확인한 것만 값 전체를 싣습니다. 칩을 누르면 값이 복사됩니다. 팬톤처럼 독점인 색 체계는 값을 옮기지 않고 <a href={href('references/pantone/')}>레퍼런스</a>에만 둡니다.</p>
+      <div class="chips" role="group" aria-label="복사할 값">
+        <span class="label">복사할 값</span>
+        <button type="button" class="chip" data-copyfmt="hex" aria-pressed="true">HEX</button>
+        <button type="button" class="chip" data-copyfmt="oklch" aria-pressed="false">OKLCH</button>
+      </div>
+      <p class="pal-status" id="palStatus" role="status" aria-live="polite"></p>
+    </header>
+
+    {palettes.map((p, i) => {
+      const Body = paletteBodies[i];
+      const d = p.data;
+      return (
+        <div class="pal" id={`pal-${p.id}`}>
+          <h3>{d.name}</h3>
+          <p class="pal-meta">{d.maker} · 라이선스 <a href={d.license_url}>{d.license}</a> · <a href={d.url}>원문</a> · <a href={d.data_url}>값을 가져온 곳</a></p>
+          <p class="pal-sum">{d.summary}</p>
+          {d.partial && <p class="pal-sum">{d.partial}</p>}
+          <div class="pal-body"><Body /></div>
+          {d.scales.map((s) => (
+            <div class="pal-scale">
+              <span class="pal-name">{s.name}</span>
+              <div class={`pal-steps${s.steps.some((x) => x.name.length > 4) ? ' pal-steps--wide' : ''}`}>
+                {s.steps.map((st) => {
+                  const o = oklchOf(st.hex);
+                  const w = contrast(hexToRgb(st.hex), [255, 255, 255]);
+                  return (
+                    <button type="button" class="pal-chip" style={`background:${st.hex};color:${chipText(st.hex)}`} data-hex={st.hex} data-oklch={o.css}
+                      title={`${s.name} ${st.name} · ${st.hex} · ${o.css} · 흰 바탕 대비 ${ratioText(w)}:1`} aria-label={`${s.name} ${st.name} ${st.hex} 복사`}>
+                      <b>{st.name}</b><span>{st.hex.slice(1)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <p class="src">{d.source}</p>
+        </div>
+      );
+    })}
+  </section>
+</Base>
+
+<script>
+  let fmt: 'hex' | 'oklch' = 'hex';
+  const status = document.querySelector<HTMLElement>('#palStatus')!;
+  document.querySelectorAll<HTMLButtonElement>('[data-copyfmt]').forEach((b) => b.addEventListener('click', () => {
+    fmt = b.dataset.copyfmt as 'hex' | 'oklch';
+    document.querySelectorAll('[data-copyfmt]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  document.querySelector('#palettes')!.addEventListener('click', async (e) => {
+    const chip = (e.target as Element).closest<HTMLButtonElement>('.pal-chip');
+    if (!chip) return;
+    const v = fmt === 'hex' ? chip.dataset.hex! : chip.dataset.oklch!;
+    try { await navigator.clipboard.writeText(v); status.textContent = `복사했습니다: ${v}`; }
+    catch { status.textContent = `복사하지 못했습니다 — ${v}`; }
+  });
+</script>

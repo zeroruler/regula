@@ -9,7 +9,7 @@ import { href } from '../lib/url';
 // 스크립트가 없어도 전체 목록은 보인다.
 type Item = { kind: string; tag: string; title: string; sub?: string; url: string; text: string };
 
-const [formulas, patterns, darks, references, templates, notes, fonts] = await Promise.all([
+const [formulas, patterns, darks, references, templates, notes, fonts, palettes, combos] = await Promise.all([
   getCollection('formulas'),
   getCollection('patterns'),
   getCollection('darkpatterns'),
@@ -17,6 +17,8 @@ const [formulas, patterns, darks, references, templates, notes, fonts] = await P
   getCollection('templates'),
   getCollection('notes'),
   getCollection('fonts'),
+  getCollection('palettes'),
+  getCollection('combos'),
 ]);
 
 const hay = (...parts: (string | undefined)[]) => parts.filter(Boolean).join(' ').toLowerCase();
@@ -71,6 +73,20 @@ const items: Item[] = [
     return {
       kind: '양식', tag: d.kind, title: d.name, sub: d.concept, url: href(`templates/${t.id}/`),
       text: hay(d.name, d.kind, d.concept, ...d.signatures, ...d.rules.map((r) => r.text)),
+    };
+  }),
+  ...combos.sort(byOrder).map((c) => {
+    const d = c.data;
+    return {
+      kind: '색', tag: '조합', title: d.name, sub: [...d.mood, ...d.use].join(' · ') + (d.note ? ` — ${d.note}` : ''), url: href(`colors/#combo-${c.id}`),
+      text: hay(d.name, '색 조합 배색 팔레트', d.basis, d.source, d.note, ...d.mood, ...d.use, ...d.principles, ...d.light.map((x) => `${x.hex ?? ''} ${x.name ?? ''} ${x.token ?? ''}`)),
+    };
+  }),
+  ...palettes.sort(byOrder).map((p) => {
+    const d = p.data;
+    return {
+      kind: '색', tag: '견본', title: d.name, sub: `${d.maker} · ${d.license} — ${d.summary}`, url: href(`colors/#pal-${p.id}`),
+      text: hay(d.name, '색 견본 팔레트 컬러', d.maker, d.license, d.summary, ...d.scales.map((x) => x.name)),
     };
   }),
   { kind: '도구', tag: '만들기', title: '디자인 파일 만들기', sub: '서체 · 모서리 · 효과 · 색 · 간격 · 움직임을 골라 DESIGN.md · tokens.json으로 내려받기', url: href('builder/'),

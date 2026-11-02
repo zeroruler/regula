@@ -32,6 +32,15 @@ export function tokensCss(t: Tokens, s: Spec): string {
   return `${light}\n\n/* Dark mode — 값이 달라지는 토큰만. 나머지는 위와 같다 */\n[data-theme="dark"] {\n${body}\n}`;
 }
 
+// 색 조합의 보조 색. builder 색 키가 아니라 DESIGN.md §1에만 들어간다(PLAN §10).
+export function accentCss(s: Spec): string {
+  const a = s.combo?.accent;
+  if (!a || !a.light.length) return '';
+  const row = (list: string[]) => list.map((h, i) => `  --accent-${i + 1}: ${h};`).join('\n');
+  const dark = s.color.darkOn && a.dark.length ? `\n[data-theme="dark"] {\n${row(a.dark)}\n}` : '';
+  return `\n\n/* Accent — 색 조합 「${s.combo!.name}」의 보조 색. 그래프 · 배지 · 장식에만 */\n:root {\n${row(a.light)}\n}${dark}`;
+}
+
 // ── 컴포넌트 CSS ─ 미리보기와 내려받는 파일이 공유한다
 export function componentCss(t: Tokens): string {
   const near = (px: number) => { const v = t.space.scale.find((x) => x >= px) ?? t.space.scale[t.space.scale.length - 1]; return `var(${t.space.name(v)})`; };
@@ -219,7 +228,7 @@ export function designMd(t: Tokens, s0: Spec, today: string): string {
 ${s.intent || autoIntent(t, s)}
 
 **만든 곳**: Regula 「디자인 파일 만들기」 · ${today} · 스타일 시작점: ${presetName(s)}${presetEdited(s) && s.preset !== 'custom' ? '(값을 고침)' : ''}
-**AI 에이전트에게**: 이 문서의 §1 토큰(CSS 변수)과 규칙만으로 화면을 만든다. 문서에 없는 값을 새로 만들지 않는다. 판단이 애매하면 §9 빠른 결정 규칙 → §10 하지 말 것 순으로 본다. 같은 값이 \`tokens.json\`에도 있고, \`preview.html\`에서 컴포넌트가 이 값으로 그려진 모습을 볼 수 있다.
+${s.combo ? `**색 조합**: ${s.combo.name} — ${s.combo.source || '출처 미상'} (Regula 「색」의 조합에서 시작. 색 고르기는 Regula가 한 것이고, 보조 글자 · 선 색은 바탕과 글자를 섞어 만든 값이다 — 출처 없음)\n` : ''}**AI 에이전트에게**: 이 문서의 §1 토큰(CSS 변수)과 규칙만으로 화면을 만든다. 문서에 없는 값을 새로 만들지 않는다. 판단이 애매하면 §9 빠른 결정 규칙 → §10 하지 말 것 순으로 본다. 같은 값이 \`tokens.json\`에도 있고, \`preview.html\`에서 컴포넌트가 이 값으로 그려진 모습을 볼 수 있다.
 
 **세 가지 시그니처** — 이 시스템을 다른 시스템과 가르는 것:
 1. **모서리** — 버튼 ${radiusLabel(s.radius.button)} · 입력 ${radiusLabel(s.radius.input)} · 카드 ${radiusLabel(s.radius.card)}
@@ -233,7 +242,7 @@ ${s.intent || autoIntent(t, s)}
 ## 1. Design Tokens (모든 값의 원본 — 여기 외에 값을 정의하지 않는다)
 
 \`\`\`css
-${tokensCss(t, s)}
+${tokensCss(t, s)}${accentCss(s)}
 \`\`\`
 
 **서체 불러오기**:
@@ -249,7 +258,7 @@ ${colorRoles}
 2. \`--key\` 위의 글자는 항상 \`--key-on\` (이 설정에서 \`--surface\`와 \`--ink\` 중 대비가 큰 쪽으로 정했다)
 3. 상태(오류 · 성공 · 안내)는 색과 글자를 함께 쓴다
 4. 새 글자/배경 조합을 만들면 대비를 확인한다 — 본문 글자 4.5:1 (WCAG 2.2 1.4.3), 입력칸 경계 · 아이콘 등 UI 구성요소 3:1 (WCAG 2.2 1.4.11). §8의 조합은 이 설정에서 계산했다
-5. ${s.color.darkOn ? '다크 모드는 `<html data-theme="dark">`일 때 §1의 `[data-theme="dark"]` 값으로 바뀐다. 컴포넌트 CSS는 그대로 두고 토큰만 바꾼다' : '다크 모드 값은 만들지 않았다. 다크 모드를 임의로 만들지 않는다'}
+5. ${s.color.darkOn ? '다크 모드는 `<html data-theme="dark">`일 때 §1의 `[data-theme="dark"]` 값으로 바뀐다. 컴포넌트 CSS는 그대로 두고 토큰만 바꾼다' : '다크 모드 값은 만들지 않았다. 다크 모드를 임의로 만들지 않는다'}${s.combo?.accent.light.length ? `\n6. **보조 색(\`--accent-*\`)은 그래프 · 배지 · 장식 점에만.** 컴포넌트 CSS와 미리보기에는 쓰지 않았다. 글자색으로 쓰려면 먼저 대비 4.5:1을, UI 구성요소의 경계로 쓰면 3:1을 확인한다 (WCAG 2.2 1.4.3 · 1.4.11)` : ''}
 
 ---
 
@@ -418,6 +427,7 @@ export function tokensJson(t: Tokens, s0: Spec, today: string, fonts: FontOption
     motion: { duration: { fast: `${s.motion.fast}ms`, base: `${s.motion.base}ms`, slow: `${s.motion.slow}ms` }, easing: EASES.find((e) => e.id === s.motion.ease)?.css, reducedMotion: 'prefers-reduced-motion: reduce이면 transition · animation을 끈다' },
     contrast: Object.fromEntries(t.modes.filter((m) => m.mode === 'light' || s.color.darkOn).map((m) => [m.mode, m.checks.map((c) => ({ pair: c.label, fg: c.fg, bg: c.bg, ratio: +showRatio(c.ratio), required: c.need, criterion: `WCAG 2.2 ${c.sc}`, pass: c.pass }))])),
     css: { ':root': { ...asMap(0), ...common }, ...(s.color.darkOn ? { '[data-theme="dark"]': Object.fromEntries(darkOverrides(t)) } : {}) },
+    ...(s.combo ? { combo: { id: s.combo.id, name: s.combo.name, source: s.combo.source, accent: s.color.darkOn ? s.combo.accent : { light: s.combo.accent.light } } } : {}),
     // 이 파일을 도구에 다시 불러와 이어서 고칠 수 있다
     spec: s,
   };

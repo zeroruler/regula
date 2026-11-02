@@ -2,10 +2,13 @@
 import type { CollectionEntry } from 'astro:content';
 import { href } from '../lib/url';
 import ItemNotes from './ItemNotes.astro';
+import { combosFor } from '../lib/combos';
 
 interface Props { formula: CollectionEntry<'formulas'>; refTitles: Record<string, string> }
 const { formula, refTitles } = Astro.props;
 const f = formula.data;
+// 이 원리를 근거로 든 색 조합(/colors/)
+const combos = await combosFor(formula.id);
 ---
 <div class="f" id={`f-${formula.id}`}>
   <h3>{f.name}</h3>
@@ -16,5 +19,8 @@ const f = formula.data;
     {f.web && <span class="web"><b>웹에서</b> {f.web}</span>}
     <span class="src">{f.source}{f.refs.map((r) => <> · <a href={href(`references/${r}/`)}>{refTitles[r] ?? r}</a></>)}</span>
   </p>
+  {combos.length > 0 && (
+    <p class="f-combos"><b>이 원리로 고른 조합</b> {combos.map((c, i) => <>{i ? ' · ' : ''}<a href={href(`colors/#combo-${c.id}`)}><span class="f-chip" aria-hidden="true">{c.option.strip.slice(0, 5).map((h) => <i style={`background:${h}`}></i>)}</span>{c.data.name}</a></>)}</p>
+  )}
   <ItemNotes ref={`formulas/${formula.id}`} />
 </div>

@@ -2,6 +2,22 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 14차: 온보딩 양식
+
+### 원문을 읽고 확인
+
+- Alita Kendrick, 「Mobile-App Onboarding: An Analysis of Components and Techniques」 (NN/g, 2020): 가능하면 만들지 않기, 정당한 경우 셋(시작에 사용자 정보가 필요 · 개인 상황에 달린 기능 · 낯선 새 기능), 맥락 속 안내, 짧고 건너뛸 수 있는 카드(건너뛰기 · 적은 장수 · 장당 개념 하나 · 진행 표시), 계정 만들기와 맞춤 설정 질문의 한계, 테마 같은 선택은 설정으로
+- Maria Rosala, 「3 Design Considerations for Effective Mobile-App Permission Requests」 (NN/g, 2019): 기능을 누른 순간에 요청, 접근 대상과 얻는 것 설명, 거절 시 이유 + 기기 설정 링크, 위장 · 거절 어렵게 하기는 다크 패턴
+- Aurora Harley, 「Instructional Overlays and Coach Marks for Mobile Apps」 (NN/g, 2014-02-16): 숨은 기능에만, 힌트 하나에 상호작용 하나, 도달한 자리에서 하나씩, 연달아 보이면 닫힘
+- WCAG 2.2 Understanding 2.2.2 Pause, Stop, Hide (A): 자동 시작 + 5초 초과 + 다른 내용과 함께면 멈춤 · 숨김
+- WCAG 2.2 Understanding 3.2.6 Consistent Help (A): 반복되는 도움말은 같은 순서
+
+### 주의
+
+- Apple HIG Onboarding 페이지는 본문을 받지 못해 인용하지 않음(제목만 나옴)
+- 코치마크 글(2014)은 건너뛰기 · 닫는 시점을 다루지 않아 미리보기의 "닫으면 다시 안 나옴"은 예시
+- 소개 카드 장수 3장은 "적게"라는 원문에 맞춘 예시
+
 ## 2026-11-02 — 13차: 결제 양식
 
 ### 원문을 읽고 확인

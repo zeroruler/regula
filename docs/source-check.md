@@ -2,6 +2,24 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 9차: 포스텔 · 인지 부하 · 멘탈 모델 · 능동적 사용자의 역설 · 배너 맹시
+
+### 원문을 읽고 확인
+
+- RFC 761 (Jon Postel 편, 1980-01) TCP 명세: "be conservative in what you do, be liberal in what you accept from others"
+- RFC 1122 §1.2.2 Robustness Principle (1989): "Be liberal in what you accept, and conservative in what you send"
+- RFC 9413 「Maintaining Robust Protocols」 (IAB, Informational, 2023-06): 견고성 원칙은 해석이 여러 갈래이고, 어떤 해석은 시간이 지나며 상호 운용성을 해친다고 봄 → 포스텔의 법칙 메모에 비판으로 적음
+- GOV.UK Design System 「Telephone numbers」: 익숙한 형식 그대로 넣게 하고 공백 · 하이픈 · 대시 · 괄호, 국가 · 지역 번호를 받아 줄 것. 그래도 검증은 할 것
+- Kathryn Whitenton, 「Minimize Cognitive Load to Maximize Usability」 (NN/g, 2013-12-22): 줄여야 할 것은 extraneous cognitive load, 방법 세 가지(시각적 잡동사니 · 기존 멘탈 모델 · 일을 시스템이 떠맡기)
+- Megan Chan, 「Mental Models」 (NN/g, 2024-01-26, 2026-09-01 재검토, Nielsen 2010년 글 개정판): 멘탈 모델은 사용자가 시스템에 대해 믿는 것, 사실이 아니라 믿음
+- Jakob Nielsen, 「Paradox of the Active User」 (NN/g, 1998-10-04): Carroll & Rosson이 1980년대 초 IBM 연구에서 관찰, 사용자는 설명서를 읽지 않고 바로 씀. 참고문헌 Carroll & Rosson (1987), 『Interfacing Thought』 (MIT Press)
+- Kara Pernice, 「Banner Blindness Revisited: Users Dodge Ads on Mobile and Desktop」 (NN/g, 2018-04-22): 1997년 처음 기록, 2007년 · 2018년 시선 추적으로 재확인. 광고처럼 보이거나 광고 가까이 · 광고 자리에 있는 것을 무시. 내용을 광고처럼 꾸미지 말 것
+
+### 직접 읽지 못함
+
+- Carroll & Rosson 1987 원문(책 속 장) — NN/g의 소개만 읽음
+- Broadbent 1958 · Cherry 1953(선택적 주의의 기원) — Laws of UX 요약만 보고 공식 출처로 쓰지 않음
+
 ## 2026-11-02 — 8차: 폰 레스토프 · 계열 위치 · 목표 경사 · 균일 연결성
 
 ### 원문을 읽고 확인

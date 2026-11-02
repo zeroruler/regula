@@ -1,0 +1,87 @@
+---
+// 포스텔의 법칙: 같은 휴대전화 번호 칸을 엄격하게(010-0000-0000 꼴만) / 너그럽게(공백 · 하이픈 · 괄호 · 점 · +82 허용) 받아 본다.
+// 너그럽게 받아도 검사는 한다: 숫자만 남겨 010이면 11자리, 예전 01X 번호면 10–11자리인지 본다. 저장 · 표시는 한 형식으로.
+const samples = ['010-1234-5678', '010 1234 5678', '01012345678', '010.1234.5678', '+82 10-1234-5678', '(010) 1234-5678', '010-1234-567'];
+---
+<div class="lab formlab uslab" id="uLenient" data-samples={JSON.stringify(samples)}>
+  <form class="vf" id="ulForm" novalidate>
+    <div class="lf-row" id="ulRow">
+      <label for="ulPhone">휴대전화 번호</label>
+      <span class="vf-hint" id="ulHint"></span>
+      <input type="text" id="ulPhone" inputmode="tel" autocomplete="tel" value="010 1234 5678" aria-describedby="ulHint ulMsg">
+      <span id="ulMsg" aria-live="polite"></span>
+    </div>
+    <div class="chips" id="ulSamples" role="group" aria-label="예시 입력">
+      {samples.map((s) => <button class="chip" type="button" data-v={s}>{s}</button>)}
+    </div>
+  </form>
+  <div class="lab-side">
+    <span class="label">실험 · 포스텔의 법칙</span>
+    <h3>사람이 쓰는 대로 받기</h3>
+    <div class="chips" id="ulMode">
+      <button class="chip" type="button" data-v="strict" aria-pressed="false">엄격하게</button>
+      <button class="chip" type="button" data-v="lenient" aria-pressed="true">너그럽게</button>
+    </div>
+    <div class="readout" id="ulCount"></div>
+    <p id="ulNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>GOV.UK는 전화번호를 익숙한 형식 그대로 넣게 하고 공백 · 하이픈 · 괄호를 받아 주라고 합니다. 너그럽게 받는 것과 검사하지 않는 것은 다릅니다 — 마지막 예시처럼 숫자가 모자라면 그대로 알려 줘요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#uLenient')!;
+  const samples: string[] = JSON.parse(lab.dataset.samples!);
+  const input = lab.querySelector<HTMLInputElement>('#ulPhone')!;
+  const row = lab.querySelector<HTMLElement>('#ulRow')!;
+  const msg = lab.querySelector<HTMLElement>('#ulMsg')!;
+  let mode: 'strict' | 'lenient' = 'lenient';
+
+  // 결과: 저장할 값(010-1234-5678 꼴) 또는 오류 문구
+  function check(v: string): { ok: true; value: string } | { ok: false; error: string } {
+    const s = v.trim();
+    if (mode === 'strict') {
+      return /^01\d-\d{3,4}-\d{4}$/.test(s) ? { ok: true, value: s } : { ok: false, error: '형식이 올바르지 않습니다.' };
+    }
+    if (/[^\d\s\-().+]/.test(s)) return { ok: false, error: '숫자와 - ( ) . + 공백만 쓸 수 있어요.' };
+    let d = s.replace(/\D/g, '');
+    if (d.startsWith('82')) d = '0' + d.slice(2);
+    // 010은 11자리, 011 · 016 같은 예전 번호는 10–11자리
+    const valid = d.startsWith('010') ? d.length === 11 : /^01[1-9]\d{7,8}$/.test(d);
+    if (!valid) return { ok: false, error: `숫자가 ${d.length}자리예요. 010 번호는 11자리입니다.` };
+    const value = d.length === 11 ? `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}` : `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
+    return { ok: true, value };
+  }
+
+  function render() {
+    lab.querySelectorAll('#ulMode button').forEach((b) => b.setAttribute('aria-pressed', String((b as HTMLElement).dataset.v === mode)));
+    lab.querySelector('#ulHint')!.textContent = mode === 'strict' ? '010-0000-0000 형식으로 입력' : '하이픈이나 공백은 넣어도, 빼도 됩니다';
+    const r = check(input.value);
+    row.classList.toggle('has-err', !r.ok);
+    input.setAttribute('aria-invalid', String(!r.ok));
+    msg.className = r.ok ? 'vf-hint' : 'vf-err';
+    msg.textContent = r.ok ? `저장되는 값: ${r.value}` : r.error;
+    const passed = samples.filter((s) => check(s).ok).length;
+    lab.querySelector('#ulCount')!.innerHTML = `${passed} / ${samples.length}<small>예시 중 받아 준 입력</small>`;
+    lab.querySelector('#ulNote')!.textContent = mode === 'strict'
+      ? '하이픈 위치까지 맞춘 한 가지만 받습니다. 사람이 흔히 쓰는 공백 · 붙여 쓰기 · 국가 번호가 모두 오류가 되고, 오류 문구도 무엇을 고칠지 말하지 못해요.'
+      : '여러 형식을 받아 숫자만 남긴 뒤 검사하고, 저장할 때는 한 형식으로 정리합니다. 진짜로 틀린 번호(자릿수 부족)만 오류가 됩니다.';
+  }
+  input.addEventListener('input', render);
+  lab.querySelector('#ulSamples')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    input.value = b.dataset.v!;
+    render();
+  });
+  lab.querySelector('#ulMode')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!b) return;
+    mode = b.dataset.v as typeof mode;
+    render();
+  });
+  lab.querySelector('#ulForm')!.addEventListener('submit', (e) => e.preventDefault());
+  render();
+</script>

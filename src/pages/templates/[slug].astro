@@ -5,6 +5,7 @@ import { isColor } from '../../lib/design-tokens';
 import { loadTemplate } from '../../lib/templates';
 import { loadThemes } from '../../lib/themes';
 import { href } from '../../lib/url';
+import { section } from '../../lib/site';
 
 export async function getStaticPaths() {
   const all = (await getCollection('templates')).sort((a, b) => a.data.order - b.data.order);
@@ -26,7 +27,7 @@ const themes = isPage ? await loadThemes() : [];
 
   <article class="refdoc">
     <header class="ref-head">
-      <span class="label"><a href={href('templates/')}>§ 4 페이지 양식</a> · {t.kind}</span>
+      <span class="label"><a href={href('templates/')}>§ {section('templates').no} 페이지 양식</a> · {t.kind}</span>
       <h1>{t.name}</h1>
       <p class="lede">{t.concept}</p>
       {strip.length > 0 && <div class="strip" aria-hidden="true">{strip.map((s) => <i style={`background:${s.value}`}></i>)}</div>}

@@ -1,5 +1,5 @@
 // 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
-export const version = 'v0.6';
+export const version = 'v0.9';
 
 export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes' | 'builder' | 'colors' | 'designmd';
 
@@ -10,35 +10,35 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
       { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 제스처, 화면 구성, 찾기와 거르기, AI 화면, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
-      { key: 'references', no: 5, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 정리와 원문' },
+      { key: 'references', no: 4, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 정리와 원문' },
     ],
   },
   {
     group: '만들기',
     items: [
-      { key: 'templates', no: 4, title: '페이지 양식', path: 'templates/', blurb: 'Regula가 만든 디자인 시스템과 페이지 양식' },
-      { key: 'colors', no: 10, title: '색', path: 'colors/', blurb: '요즘 화면에 어울리는 색 조합과 자유 라이선스 색 견본 — 디자인 파일 만들기에서 바로 고르기' },
-      { key: 'builder', no: 9, title: '디자인 파일 만들기', path: 'builder/', blurb: '서체, 모서리, 효과, 색, 간격, 움직임을 고르고 AI 에이전트가 읽는 DESIGN.md로 내려받기' },
-      { key: 'designmd', no: 11, title: '사이트 DESIGN.md', path: 'design-md/', blurb: '이름난 사이트 84곳의 디자인을 분석한 DESIGN.md 모음(awesome-design-md, MIT) — 색 · 서체를 보고 파일째 받기' },
+      { key: 'templates', no: 5, title: '페이지 양식', path: 'templates/', blurb: 'Regula가 만든 디자인 시스템과 페이지 양식' },
+      { key: 'colors', no: 6, title: '색', path: 'colors/', blurb: '요즘 화면에 어울리는 색 조합과 자유 라이선스 색 견본 — 디자인 파일 만들기에서 바로 고르기' },
+      { key: 'builder', no: 7, title: '디자인 파일 만들기', path: 'builder/', blurb: '서체, 모서리, 효과, 색, 간격, 움직임을 고르고 AI 에이전트가 읽는 DESIGN.md로 내려받기' },
+      { key: 'designmd', no: 8, title: '사이트 DESIGN.md', path: 'design-md/', blurb: '이름난 사이트 84곳의 디자인을 분석한 DESIGN.md 모음(awesome-design-md, MIT) — 색 · 서체를 보고 파일째 받기' },
     ],
   },
   {
     group: '기록',
     items: [
-      { key: 'log', no: 6, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
+      { key: 'log', no: 9, title: '작업 기록', path: 'log/', blurb: '버전별로 쌓아 온 것과 다음에 할 것' },
     ],
   },
   {
     group: '찾기',
     items: [
-      { key: 'search', no: 7, title: '찾기', path: 'search/', blurb: '공식, 패턴, 레퍼런스, 양식을 검색어와 태그로 한 번에' },
+      { key: 'search', no: 10, title: '찾기', path: 'search/', blurb: '공식, 패턴, 레퍼런스, 양식을 검색어와 태그로 한 번에' },
     ],
   },
 ];
 
 // 내비게이션에는 없지만 페이지는 있는 섹션. 출처 기록은 항목 아래 "본 곳"과 작업 기록에서 들어간다.
 const unlisted: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] = [
-  { key: 'notes', no: 8, title: '출처 기록', path: 'notes/', blurb: '자료를 어디서 봤는지 날짜별로' },
+  { key: 'notes', no: 11, title: '출처 기록', path: 'notes/', blurb: '자료를 어디서 봤는지 날짜별로' },
 ];
 
 export const sections = [...nav.flatMap((g) => g.items), ...unlisted];
@@ -139,6 +139,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-02', text: 'v0.9 — 사이트 DESIGN.md와 점검. 섹션 번호(§)를 내비게이션 순서대로 다시 매김(공부 1–4 · 만들기 5–8 · 작업 기록 9 · 찾기 10 · 출처 기록 11). 그동안 추가한 순서로 붙어 "§ 10 색" 다음에 "§ 9 디자인 파일 만들기"가 오던 것을 바로잡고, 페이지 안에 숫자로 적혀 있던 번호는 site.ts에서 읽게 바꿈. PLAN.md의 섹션 표 · 정보 구조 · 색 조합 규칙(group) · 로드맵(v0.8 조합 교체, v0.9)을 지금 상태로 맞춤.' },
   { date: '2026-11-02', text: '새 섹션 "사이트 DESIGN.md"(/design-md/) 추가. VoltAgent/awesome-design-md(MIT, 커밋 fcc7028)의 사이트별 DESIGN.md 84개를 원문 그대로 들여와, 분류 10개(AI · 개발 도구 · 핀테크 · 자동차 등)로 나눈 목록과 사이트별 페이지를 만듦. 페이지마다 맨 위 YAML에서 뽑은 색 견본 · 서체 · 모서리, 문서 전체, 파일 받기 · 복사를 둠(YAML이 없거나 깨진 13개는 본문에서 색만 뽑음). 각 회사의 공식 문서가 아니라 VoltAgent의 해석이라는 점을 목록과 페이지에 적음. 레퍼런스에 저장소 항목을 더하고, 찾기에서도 사이트 이름 · 서체 · 색으로 찾을 수 있게 함. 갱신은 npm run sync-design-md(출처 19차).' },
   { date: '2026-11-02', text: '색 조합을 새로 고름. 원색끼리 맞춘 듯한 기존 14개를 지우고, 요즘 웹 화면에서 자주 보는 결로 32개를 만듦 — 뉴트럴과 포인트 하나(흑백과 파랑 · 슬레이트와 인디고 등 8) · 따뜻한 바탕(리넨과 테라코타 · 크림과 숲 등 7) · 옅은 색 바탕(라벤더 · 민트 · 하늘 등 6) · 다크 우선(한밤과 라임 · 남색과 시안 등 5) · 선명한 두 색(노랑과 검정 · 인디고와 장미 등 6). 32개 모두 라이트 · 다크 대비 통과. /colors/와 디자인 파일 만들기의 조합 목록을 원리 대신 이 결로 묶음(출처 18차).' },
   { date: '2026-11-02', text: '404 페이지에서 내비게이션의 홈 링크(Regula)가 현재 페이지(aria-current)로 읽히던 것을 고침. 이제 홈에서만 현재 페이지로 표시됨.' },

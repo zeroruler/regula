@@ -135,7 +135,7 @@ const references = defineCollection({
   }),
 });
 
-// 직접 만든 디자인 시스템과 페이지 양식 (PLAN §4 페이지 양식)
+// 직접 만든 디자인 시스템과 페이지 양식 (PLAN §5 페이지 양식)
 export const templateKinds = ['디자인 시스템', '페이지 양식'] as const;
 
 const templates = defineCollection({
@@ -174,7 +174,7 @@ const templates = defineCollection({
   }),
 });
 
-// ── 색 (PLAN §10) ──
+// ── 색 (PLAN §6) ──
 // 견본: 값 전체를 싣는 건 자유 라이선스 팔레트만. 팬톤 같은 독점 체계는 references에 색값 없이 둔다.
 const hex6 = z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'HEX는 #RRGGBB');
 const palettes = defineCollection({

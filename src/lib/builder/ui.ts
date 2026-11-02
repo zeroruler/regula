@@ -46,7 +46,8 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
       <div class="chips" role="group" aria-label="한 번에 맞추기"><span class="label">모두</span>${[0, 4, 8, 16, 999].map((r) => `<button type="button" class="chip" data-all-radius="${r}">${r >= 999 ? 'pill' : r}</button>`).join('')}</div>`)}
     ${group(4, '효과', `<div class="chips" role="group" aria-label="그림자 종류">${[['none', '그림자 없음'], ['soft', '흐린 그림자'], ['hard', '어긋난 그림자'], ['dual', '밝고 어두운 한 쌍']].map(([v, l]) => chip('effect.shadow', v, l)).join('')}</div>
       ${range('effect.depth', '그림자 단계', 1, 4, 1)}${range('effect.border', '테두리 두께', 0, 3, 1, 'px')}${range('effect.alpha', '면 투명도', 20, 100, 5, '%')}${range('effect.blur', '뒤 배경 흐림', 0, 24, 1, 'px')}
-      ${select('effect.texture', '질감', [['none', '없음'], ['gloss', '광택'], ['inset', '안쪽 그림자'], ['edge', '가장자리 빛']])}`,
+      ${select('effect.texture', '질감', [['none', '없음'], ['gloss', '광택'], ['inset', '안쪽 그림자'], ['edge', '가장자리 빛']])}
+      <label class="bd-chk"><input type="checkbox" data-p="effect.alertBar" data-t="b"> 알림 왼쪽에 세로 띠 (안내 · 완료 · 오류)</label>`,
       '입력칸 테두리는 두께를 0으로 해도 1px를 남깁니다 — 입력칸을 알아보는 경계는 주변과 3:1 이상이어야 해요(WCAG 2.2 1.4.11).')}
     ${group(5, '색', `${combos.length ? `<label class="bd-r"><span>조합에서 고르기</span><select id="bdCombo"><option value="">고르지 않음</option>${combos.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}${c.dark ? '' : ' (라이트만)'}</option>`).join('')}</select></label>
       <div class="bd-strip" id="bdComboStrip" aria-hidden="true"></div>
@@ -190,7 +191,7 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
     const fails = [...t.modes[0].checks, ...(spec.color.darkOn ? t.modes[1].checks : [])].filter((c) => !c.pass).length;
     const notes: string[] = [];
     const e = spec.effect;
-    if (e.alpha < 100) notes.push(`면 투명도 ${e.alpha}% — 글자 대비는 뒤에 깔리는 것에 따라 달라집니다. 아래 표는 불투명한 면 기준이에요. 투명도 줄이기 · 대비 높이기 설정을 켠 사람에게는 불투명한 면을 보이게 하세요(파일의 Reference CSS에 들어 있음).`);
+    if (e.alpha < 100) notes.push(`면 투명도 ${e.alpha}% — 글자 대비는 뒤에 깔리는 것에 따라 달라집니다. 아래 표는 불투명한 면 기준이에요. 투명도 줄이기 · 대비 높이기 설정을 켠 사람에게는 불투명한 면을 보이게 하세요(DESIGN.md와 preview.html에 미디어 쿼리가 들어 있음).`);
     if (e.blur > 0 && e.alpha === 100) notes.push('면이 불투명(100%)이라 뒤 배경 흐림이 보이지 않습니다. 투명도를 낮춰야 흐림이 드러나요.');
     if (e.shadow === 'dual' && spec.color[mode].bg.toUpperCase() !== spec.color[mode].surface.toUpperCase()) notes.push('밝고 어두운 한 쌍의 그림자는 배경과 표면이 같은 색일 때 입체로 보입니다. 지금은 두 색이 다릅니다.');
     if (spec.space.control < 44) notes.push(`버튼 높이 ${spec.space.control}px — WCAG 2.5.8(AA)의 24px은 넘지만 2.5.5(AAA)의 44px에는 못 미칩니다.`);

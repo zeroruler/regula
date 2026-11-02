@@ -238,7 +238,7 @@ regula/
 
 ### v0.8 — 색 견본과 조합
 - [x] `palettes` · `combos` 컬렉션 스키마 (`src/content.config.ts`) — 조합 값이 팔레트 값과 다르면 빌드가 멈춤
-- [x] 자유 라이선스 견본 4개 — Open Color · Tailwind v3 · Radix Colors(6스케일) · CSS 이름 색 148개 (출처 16차)
+- [x] 자유 라이선스 견본 4개 — Open Color · Tailwind v3 · Radix Colors(6스케일) · CSS 이름 색 148개 (출처 17차)
 - [x] 팬톤 레퍼런스 항목(색값 없이, 별색 vs 화면 색 요약) — 레퍼런스에 새 묶음 "색 체계"
 - [x] 조합 18개 — 원리별 14 + 양식 4, 대비 · 실제 색상각 계산 표시
 - [x] `/colors/` 페이지 + nav 등록

@@ -2,7 +2,7 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
-## 2026-11-02 — 16차: 색 견본 · 조합 (/colors/)
+## 2026-11-02 — 17차: 색 견본 · 조합 (/colors/)
 
 ### 원문을 읽고 확인
 
@@ -25,6 +25,22 @@
 
 - 조합의 HEX가 팔레트 파일 값과 다르면 빌드가 멈춘다(src/lib/combos.ts). 양식 조합은 DESIGN.md 토큰을 빌드 때 읽으므로 두 곳에 값을 적지 않는다
 - 미달인 짝을 숨기지 않고 표시한다(노랑 · 형광펜 같은 밝은 보조 색은 흰 면 위에서 3:1이 안 됨)
+
+## 2026-11-02 — 16차: 백로그 대조와 토스 TDS Button
+
+### 대조
+
+- PLAN §8 백로그 대비 레퍼런스에 없던 것은 『The Elements of Typographic Style』 하나뿐이었다(책 · 디자인 시스템 · 저장소 · 커뮤니티 나머지는 모두 있음). 레퍼런스로 추가하고 "줄 길이" 원리의 근거로 이은 것이 전부이며, 책 원문은 대조하지 않았다.
+
+### 원문을 읽고 확인
+
+- 토스 TDS Mobile 소개 페이지: 컴포넌트 목록(Button · Toast · Bottom Sheet · TextField 등)과 Foundation은 Colors · Typography. 소개 페이지에는 값이 없음
+- 토스 TDS Mobile Button 문서: size small · medium · large · xlarge(기본 xlarge), variant fill(기본) · weak, color primary(기본) · danger · light · dark, display inline · block · full, `loading`은 로딩 표시를 보이고 버튼 너비를 유지, `disabled`는 클릭을 막음, 아이콘만 있거나 모호한 라벨에는 `aria-label`
+
+### 확인 못 한 것
+
+- 토스 TDS Foundation(Colors · Typography) 페이지 주소 — 추정한 주소는 404
+- Wanted Montage 문서: 첫 페이지에 값이 없고 foundation/typography 주소는 404 — 아무것도 옮기지 않음
 
 ## 2026-11-02 — 15차: 디자인 파일 만들기 (/builder/)
 

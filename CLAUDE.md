@@ -18,7 +18,7 @@
 - 서체: `src/content/fonts/<이름>.md`. status는 실제로 양식에 쓴 것만 `쓰는 중`, 사용자가 눈여겨봤다고 한 것만 `눈여겨봄`.
 - 출처 기록(구 기록장, 내비게이션에는 없음): `src/content/notes/<날짜>-<이름>.md` (kind: 본 것 · 메모 · 써 본 예시). `about`에 `formulas/<id>`, `patterns/<카테고리>/<id>`, `darkpatterns/<id>`, `references/<id>`, `fonts/<id>`를 넣으면 그 항목 아래 "본 곳"에 붙는다. 자료를 어디서 봤는지 남기는 용도로만 쓰고, 개인 경험 기록을 권하지 않는다. 사용자가 직접 보여 준 자료는 `본 것`으로 남길 수 있고, 사용자가 하지 않은 일을 지어내지 않는다.
 - 디자인 파일 만들기(`/builder/`): 로직은 `src/lib/builder/`(spec 설정·프리셋, derive 토큰·대비 계산, files 내려받는 파일, zip, ui 화면). 서체 후보는 `src/content/fonts`에서 읽는다. 대비 기준 숫자는 원문을 확인한 WCAG 값만 쓰고, 도구가 정한 값(색 섞기·그림자 단계 등)은 파일에도 "출처 없음"이라 적는다. 기록은 `docs/source-check.md` 15차.
-- 색(`/colors/`): 견본 `src/content/palettes/<slug>.md`(값 전체는 라이선스 원문을 확인한 자유 라이선스만, 팬톤 같은 독점 체계는 references에 색값 없이), 조합 `src/content/combos/<slug>.md`(`principles`에 공식 slug, 색은 `hex`+`from` 또는 양식 `token`). 조합 로직은 `src/lib/combos.ts`, 디자인 파일 만들기는 같은 데이터로 "조합에서 고르기"를 만들고 보조 색은 DESIGN.md에 `--accent-*`로만 넣는다. 기록은 `docs/source-check.md` 16차.
+- 색(`/colors/`): 견본 `src/content/palettes/<slug>.md`(값 전체는 라이선스 원문을 확인한 자유 라이선스만, 팬톤 같은 독점 체계는 references에 색값 없이), 조합 `src/content/combos/<slug>.md`(`principles`에 공식 slug, 색은 `hex`+`from` 또는 양식 `token`). 조합 로직은 `src/lib/combos.ts`, 디자인 파일 만들기는 같은 데이터로 "조합에서 고르기"를 만들고 보조 색은 DESIGN.md에 `--accent-*`로만 넣는다. 기록은 `docs/source-check.md` 17차.
 - 레퍼런스 `embed: true`는 iframe 안에서 실제로 열리는지 확인한 사이트에만 켠다.
 
 ## 규칙

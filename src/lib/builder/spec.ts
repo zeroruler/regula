@@ -25,7 +25,7 @@ export type Spec = {
   radius: { button: number; input: number; card: number };
   effect: {
     shadow: (typeof SHADOW_KINDS)[number]; depth: number; border: number;
-    blur: number; alpha: number; texture: (typeof TEXTURES)[number];
+    blur: number; alpha: number; texture: (typeof TEXTURES)[number]; alertBar: boolean;
   };
   color: { light: Colors; dark: Colors; darkOn: boolean };
   space: { unit: 4 | 8; density: 'compact' | 'normal' | 'relaxed'; control: number };
@@ -77,7 +77,7 @@ export const DEFAULT: Spec = {
   fonts: { display: 'system', body: 'system', mono: 'system' },
   type: { base: 16, ratio: 1.25, lhBody: 1.6, lhHead: 1.2, trackHead: -0.01 },
   radius: { button: 20, input: 8, card: 16 },
-  effect: { shadow: 'soft', depth: 2, border: 0, blur: 0, alpha: 100, texture: 'none' },
+  effect: { shadow: 'soft', depth: 2, border: 0, blur: 0, alpha: 100, texture: 'none', alertBar: false },
   color: { light: { ...LIGHT }, dark: { ...DARK }, darkOn: true },
   space: { unit: 4, density: 'normal', control: 40 },
   motion: { fast: 150, base: 300, slow: 500, ease: 'standard' },
@@ -91,7 +91,7 @@ export type Preset = {
   id: string; name: string; note: string; prompt: string;
   radius: Spec['radius']; effect: Effect; colors?: Partial<Record<Mode, Partial<Record<ColorKey, string>>>>;
 };
-const fx = (p: Partial<Effect>): Effect => ({ shadow: 'none', depth: 1, border: 0, blur: 0, alpha: 100, texture: 'none', ...p });
+const fx = (p: Partial<Effect>): Effect => ({ shadow: 'none', depth: 1, border: 0, blur: 0, alpha: 100, texture: 'none', alertBar: false, ...p });
 export const PRESETS: Preset[] = [
   { id: 'skeuo', name: '스큐어모피즘', note: '광택 있는 면과 짙은 그림자로 실물처럼', prompt: 'skeuomorphic UI, realistic textures, soft lighting, glossy button',
     radius: { button: 8, input: 6, card: 10 }, effect: fx({ shadow: 'soft', depth: 3, border: 1, texture: 'gloss' }) },
@@ -122,7 +122,7 @@ export function applyPreset(spec: Spec, id: string): Spec {
   const next: Spec = structuredClone(spec);
   next.preset = id;
   next.radius = { ...p.radius };
-  next.effect = { ...p.effect };
+  next.effect = { ...p.effect, alertBar: spec.effect.alertBar }; // 알림 띠는 스타일이 아니라 취향이라 프리셋이 바꾸지 않는다
   for (const mode of ['light', 'dark'] as Mode[]) Object.assign(next.color[mode], p.colors?.[mode] ?? {});
   return next;
 }
@@ -130,7 +130,7 @@ export function applyPreset(spec: Spec, id: string): Spec {
 export function presetEdited(spec: Spec): boolean {
   const p = PRESETS.find((x) => x.id === spec.preset);
   if (!p) return true;
-  return JSON.stringify(p.radius) !== JSON.stringify(spec.radius) || JSON.stringify(p.effect) !== JSON.stringify(spec.effect);
+  return JSON.stringify(p.radius) !== JSON.stringify(spec.radius) || JSON.stringify({ ...p.effect, alertBar: 0 }) !== JSON.stringify({ ...spec.effect, alertBar: 0 });
 }
 
 // 조합을 적용한 새 spec. 조합에 있는 색 키만 덮어쓰고, 다크 값이 없는 조합이면 다크는 그대로 둔다.
@@ -210,6 +210,7 @@ export function sanitize(input: unknown, fontIds: readonly string[] = []): Spec 
       blur: num(e.blur, 0, 24, d.effect.blur, 1),
       alpha: num(e.alpha, 20, 100, d.effect.alpha, 5),
       texture: oneOf(e.texture, TEXTURES, d.effect.texture),
+      alertBar: e.alertBar === true,
     },
     color: { light: colors(c.light, LIGHT), dark: colors(c.dark, DARK), darkOn: c.darkOn === false ? false : true },
     space: { unit: s.unit === 8 ? 8 : 4, density: oneOf(s.density, DENSITIES, 'normal'), control: oneOf(s.control, CONTROLS, d.space.control) },

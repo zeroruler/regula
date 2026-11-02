@@ -18,7 +18,7 @@ const rules = [
   { s: '글자 대비', rule: '본문 글자는 배경과 4.5:1 이상. 도구는 글자 · 보조 글자 · 강조색 · 알림 · 위험 버튼의 조합을 계산해 미달을 표시한다', src: 'WCAG 2.2 1.4.3 Contrast (Minimum) (AA)' },
   { s: '경계 · 포커스', rule: '입력칸 경계와 포커스 링은 주변과 3:1 이상. 그래서 입력칸 테두리는 두께 0이어도 1px를 남긴다', src: 'WCAG 2.2 1.4.11 Non-text Contrast (AA)' },
   { s: '색에만 기대지 않기', rule: '파일의 알림 견본은 색과 함께 "안내 · 완료 · 오류" 글자를 쓴다', src: 'WCAG 2.2 1.4.1 Use of Color (A)' },
-  { s: '반투명 면', rule: '반투명 면 위 글자는 가장 나쁜 배경에서도 4.5:1. 투명도 줄이기 · 대비 높이기 설정에는 불투명한 면으로 — 파일의 Reference CSS에 미디어 쿼리가 들어간다', src: 'Megan Brown, 「Glassmorphism: Definition and Best Practices」 (NN/g, 2024) · W3C Media Queries Level 5 (prefers-reduced-transparency · prefers-contrast, 2026-02-19 Working Draft 원문에서 이름 확인)' },
+  { s: '반투명 면', rule: '반투명 면 위 글자는 가장 나쁜 배경에서도 4.5:1. 투명도 줄이기 · 대비 높이기 설정에는 불투명한 면으로 — DESIGN.md와 preview.html에 미디어 쿼리가 들어간다', src: 'Megan Brown, 「Glassmorphism: Definition and Best Practices」 (NN/g, 2024) · W3C Media Queries Level 5 (prefers-reduced-transparency · prefers-contrast, 2026-02-19 Working Draft 원문에서 이름 확인)' },
   { s: '움직임 줄이기', rule: 'prefers-reduced-motion이면 전환을 끈다. 5초 넘게 저절로 움직이는 것은 멈출 수단을 둔다', src: 'WCAG 2.2 2.3.3 Animation from Interactions (AAA) · 2.2.2 Pause, Stop, Hide (A)' },
   { s: '곡선', rule: '표준 cubic-bezier(0.2, 0, 0, 1) · 감속 (0, 0, 0, 1) · 가속 (0.3, 0, 1, 1)', src: 'Material 3 토큰 md.sys.motion (material-web 저장소 tokens/versions/v0_192)' },
   { s: '컨트롤 크기', rule: '최소 24×24px(AA), 44×44px이면 향상 기준(AAA)까지', src: 'WCAG 2.2 2.5.8 Target Size (Minimum) · 2.5.5 Target Size (Enhanced)' },

@@ -1,7 +1,7 @@
 // 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
 export const version = 'v0.6';
 
-export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes' | 'builder' | 'colors';
+export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes' | 'builder' | 'colors' | 'designmd';
 
 export const nav: { group: string; items: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] }[] = [
   {
@@ -17,8 +17,9 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     group: '만들기',
     items: [
       { key: 'templates', no: 4, title: '페이지 양식', path: 'templates/', blurb: 'Regula가 만든 디자인 시스템과 페이지 양식' },
-      { key: 'colors', no: 10, title: '색', path: 'colors/', blurb: '요즘 화면에 어울리는 색 조합 36개와 자유 라이선스 색 견본 — 디자인 파일 만들기에서 바로 고르기' },
+      { key: 'colors', no: 10, title: '색', path: 'colors/', blurb: '요즘 화면에 어울리는 색 조합과 자유 라이선스 색 견본 — 디자인 파일 만들기에서 바로 고르기' },
       { key: 'builder', no: 9, title: '디자인 파일 만들기', path: 'builder/', blurb: '서체, 모서리, 효과, 색, 간격, 움직임을 고르고 AI 에이전트가 읽는 DESIGN.md로 내려받기' },
+      { key: 'designmd', no: 11, title: '사이트 DESIGN.md', path: 'design-md/', blurb: '이름난 사이트 84곳의 디자인을 분석한 DESIGN.md 모음(awesome-design-md, MIT) — 색 · 서체를 보고 파일째 받기' },
     ],
   },
   {
@@ -138,6 +139,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-02', text: '새 섹션 "사이트 DESIGN.md"(/design-md/) 추가. VoltAgent/awesome-design-md(MIT, 커밋 fcc7028)의 사이트별 DESIGN.md 84개를 원문 그대로 들여와, 분류 10개(AI · 개발 도구 · 핀테크 · 자동차 등)로 나눈 목록과 사이트별 페이지를 만듦. 페이지마다 맨 위 YAML에서 뽑은 색 견본 · 서체 · 모서리, 문서 전체, 파일 받기 · 복사를 둠(YAML이 없거나 깨진 13개는 본문에서 색만 뽑음). 각 회사의 공식 문서가 아니라 VoltAgent의 해석이라는 점을 목록과 페이지에 적음. 레퍼런스에 저장소 항목을 더하고, 찾기에서도 사이트 이름 · 서체 · 색으로 찾을 수 있게 함. 갱신은 npm run sync-design-md(출처 19차).' },
   { date: '2026-11-02', text: '색 조합을 새로 고름. 원색끼리 맞춘 듯한 기존 14개를 지우고, 요즘 웹 화면에서 자주 보는 결로 32개를 만듦 — 뉴트럴과 포인트 하나(흑백과 파랑 · 슬레이트와 인디고 등 8) · 따뜻한 바탕(리넨과 테라코타 · 크림과 숲 등 7) · 옅은 색 바탕(라벤더 · 민트 · 하늘 등 6) · 다크 우선(한밤과 라임 · 남색과 시안 등 5) · 선명한 두 색(노랑과 검정 · 인디고와 장미 등 6). 32개 모두 라이트 · 다크 대비 통과. /colors/와 디자인 파일 만들기의 조합 목록을 원리 대신 이 결로 묶음(출처 18차).' },
   { date: '2026-11-02', text: '404 페이지에서 내비게이션의 홈 링크(Regula)가 현재 페이지(aria-current)로 읽히던 것을 고침. 이제 홈에서만 현재 페이지로 표시됨.' },
   { date: '2026-11-02', text: '색 › 색상환: 조각에 마우스를 올렸을 때 검정 테두리 한두 면이 가려지던 것을 고침. 테두리를 조각 자신의 선으로 그려 뒤에 그린 이웃 조각과 표시 원에 덮였던 것이라, 맨 위에 테두리 전용 경로를 따로 둠. 표시 원과 선이 마우스를 가로채 그 아래 조각이 호버 · 클릭되지 않던 것도 함께 고침.' },

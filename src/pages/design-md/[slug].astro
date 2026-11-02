@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import { dmSource, loadDesignMd, type DesignMd } from '../../lib/designmd';
+import { contrast } from '../../lib/color';
+import { hexToRgb } from '../../lib/builder/derive';
+import { href } from '../../lib/url';
+
+export function getStaticPaths() {
+  const all = loadDesignMd();
+  return all.map((d) => ({ params: { slug: d.slug }, props: { d, siblings: all.filter((x) => x.category === d.category) } }));
+}
+const { d, siblings } = Astro.props as { d: DesignMd; siblings: DesignMd[] };
+const chipText = (hex: string) => (contrast(hexToRgb(hex), [255, 255, 255]) >= contrast(hexToRgb(hex), [0, 0, 0]) ? '#FFFFFF' : '#000000');
+const gh = `https://github.com/${dmSource.repo}/blob/${dmSource.commit}/design-md/${d.slug}/DESIGN.md`;
+---
+<Base title={`${d.name} DESIGN.md · Regula`} description={d.blurb || `${d.name}의 디자인 언어를 정리한 DESIGN.md`} current="designmd">
+  <Fragment slot="sub">
+    {siblings.map((s) => <a href={href(`design-md/${s.slug}/`)} aria-current={s.slug === d.slug ? 'page' : undefined}>{s.name}</a>)}
+  </Fragment>
+
+  <article class="refdoc dmdoc">
+    <header class="ref-head">
+      <span class="label"><a href={href('design-md/')}>§ 11 사이트 DESIGN.md</a> · {d.category}</span>
+      <h1>{d.name}</h1>
+      {d.blurb && <p class="lede" lang="en">{d.blurb}</p>}
+      <div class="row">
+        <a class="open" href={href(`design-md/${d.slug}/DESIGN.md`)} download={`${d.slug}-DESIGN.md`}>DESIGN.md 받기</a>
+        <button type="button" class="chip" id="dmCopy">문서 복사</button>
+        <a class="open" href={gh} target="_blank" rel="noopener">GitHub 원문 ↗</a>
+        <span class="mono dm-status" id="dmStatus" role="status" aria-live="polite"></span>
+      </div>
+      <p class="credit">VoltAgent가 공개 화면을 보고 해석한 문서입니다. {d.name}의 공식 디자인 시스템이 아니고, 이름 · 로고 · 독자 서체는 그 회사의 것입니다. 원문 {dmSource.repo} · MIT · 커밋 <code>{dmSource.commit.slice(0, 7)}</code>({dmSource.committedAt}).</p>
+    </header>
+
+    {d.colors.length > 0 && (
+      <section>
+        <h2 class="label">색 {d.colors.length}개{d.hasTokens ? '' : ' · 본문에서 뽑음'}</h2>
+        <ul class="dm-sw">
+          {d.colors.map((c) => (
+            <li style={`background:${c.hex};color:${chipText(c.hex)}`}><span>{c.name || '—'}</span><code>{c.hex}</code></li>
+          ))}
+        </ul>
+      </section>
+    )}
+    {(d.fonts.length > 0 || d.radius.length > 0) && (
+      <section class="dm-facts">
+        {d.fonts.length > 0 && <p><span class="label">서체</span> {d.fonts.join(' · ')}</p>}
+        {d.radius.length > 0 && <p><span class="label">모서리</span> <span class="mono">{d.radius.join(' · ')}</span></p>}
+      </section>
+    )}
+
+    <section>
+      <h2 class="label">문서</h2>
+      {d.frontmatter && (
+        <details class="dm-yaml">
+          <summary>맨 위 토큰(YAML) 보기</summary>
+          <pre><code>{d.frontmatter}</code></pre>
+        </details>
+      )}
+      <div class="imported prose" lang="en" set:html={d.html} />
+    </section>
+  </article>
+  <script type="application/json" id="dmText" set:html={JSON.stringify(d.text).replace(/</g, '\\u003c')}></script>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('#dmCopy')!;
+  const status = document.querySelector<HTMLElement>('#dmStatus')!;
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.parse(document.querySelector('#dmText')!.textContent!));
+      status.textContent = '복사했어요';
+    } catch {
+      status.textContent = '복사하지 못했어요 — "DESIGN.md 받기"를 써 주세요';
+    }
+  });
+</script>

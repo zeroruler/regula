@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { dmCategoryOrder, dmSource, loadDesignMd } from '../../lib/designmd';
+import { href } from '../../lib/url';
+
+const all = loadDesignMd();
+const groups = dmCategoryOrder.map((c, i) => ({ id: `dm-g${i + 1}`, title: c, list: all.filter((d) => d.category === c) })).filter((g) => g.list.length);
+---
+<Base title="사이트 DESIGN.md · Regula" current="designmd" description="이름난 사이트들의 디자인 언어를 AI 에이전트가 읽는 DESIGN.md로 정리한 모음(VoltAgent/awesome-design-md, MIT).">
+  <Fragment slot="sub">
+    {groups.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+  </Fragment>
+
+  <PageHead current="designmd" title="이름난 사이트를 DESIGN.md로 읽기">
+    <p>사이트 {all.length}곳의 색 · 서체 · 모서리 · 컴포넌트 규칙을 DESIGN.md 한 파일씩으로 정리한 모음입니다. 항목을 누르면 문서 전체를 이 사이트 안에서 읽고, 파일째 받을 수 있어요. <a href={href('builder/')}>디자인 파일 만들기</a>가 내려 주는 DESIGN.md와 같은 쓰임입니다.</p>
+    <p class="hint">원문은 <a href={`https://github.com/${dmSource.repo}`} target="_blank" rel="noopener">{dmSource.repo}</a>(라이선스 {dmSource.license}, {dmSource.committedAt} 커밋 <code>{dmSource.commit.slice(0, 7)}</code>)이고 그대로 가져왔습니다. <b>각 회사의 공식 디자인 시스템이 아니라 VoltAgent가 공개된 화면을 보고 해석한 문서</b>라 실제 값과 다를 수 있어요. 이름 · 로고 · 독자 서체는 각 회사의 것이니 디자인 언어를 공부하는 데 쓰고, 브랜드를 그대로 흉내 내는 데 쓰지 않습니다.</p>
+  </PageHead>
+
+  <div class="row filter dm-filter">
+    <label class="label" for="dmFilter">거르기</label>
+    <input type="text" id="dmFilter" placeholder="예: dark, purple, Inter, 핀테크" autocomplete="off">
+    <span class="mono" id="dmCount" role="status">{all.length}곳</span>
+  </div>
+
+  {groups.map((g) => (
+    <section id={g.id} class="dm-sec">
+      <header>
+        <span class="label">{g.list.length}곳</span>
+        <h2>{g.title}</h2>
+      </header>
+      <ul class="dm-list">
+        {g.list.map((d) => (
+          <li class="dm-item" data-q={[d.name, d.slug, d.category, d.blurb, ...d.fonts, ...d.colors.map((c) => c.name)].join(' ').toLowerCase()}>
+            <a href={href(`design-md/${d.slug}/`)}>
+              <span class="dm-strip" aria-hidden="true">{d.colors.slice(0, 8).map((c) => <i style={`background:${c.hex}`}></i>)}</span>
+              <b>{d.name}</b>
+              {d.blurb && <small lang="en">{d.blurb}</small>}
+              {d.fonts.length > 0 && <span class="dm-fonts">{d.fonts.slice(0, 2).join(' · ')}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('#dmFilter')!;
+  const count = document.querySelector<HTMLElement>('#dmCount')!;
+  const items = [...document.querySelectorAll<HTMLElement>('.dm-item')];
+  const secs = [...document.querySelectorAll<HTMLElement>('.dm-sec')];
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let n = 0;
+    for (const it of items) { const hit = !q || it.dataset.q!.includes(q) || it.closest('.dm-sec')!.querySelector('h2')!.textContent!.toLowerCase().includes(q); it.hidden = !hit; if (hit) n++; }
+    for (const s of secs) s.hidden = !s.querySelector('.dm-item:not([hidden])');
+    count.textContent = `${n}곳`;
+  });
+</script>

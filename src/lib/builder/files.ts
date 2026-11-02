@@ -32,6 +32,15 @@ export function tokensCss(t: Tokens, s: Spec): string {
   return `${light}\n\n/* Dark mode — 값이 달라지는 토큰만. 나머지는 위와 같다 */\n[data-theme="dark"] {\n${body}\n}`;
 }
 
+// 색 조합의 보조 색. builder 색 키가 아니라 DESIGN.md §1에만 들어간다(PLAN §10).
+export function accentCss(s: Spec): string {
+  const a = s.combo?.accent;
+  if (!a || !a.light.length) return '';
+  const row = (list: string[]) => list.map((h, i) => `  --accent-${i + 1}: ${h};`).join('\n');
+  const dark = s.color.darkOn && a.dark.length ? `\n[data-theme="dark"] {\n${row(a.dark)}\n}` : '';
+  return `\n\n/* Accent — 색 조합 「${s.combo!.name}」의 보조 색. 그래프 · 배지 · 장식에만 */\n:root {\n${row(a.light)}\n}${dark}`;
+}
+
 // ── 컴포넌트 CSS ─ 미리보기와 내려받는 파일이 공유한다
 export function componentCss(t: Tokens): string {
   const near = (px: number) => { const v = t.space.scale.find((x) => x >= px) ?? t.space.scale[t.space.scale.length - 1]; return `var(${t.space.name(v)})`; };
@@ -216,7 +225,7 @@ export function designMd(t: Tokens, s0: Spec, today: string): string {
 ${s.intent || autoIntent(t, s)}
 
 **만든 곳**: Regula 「디자인 파일 만들기」 · ${today} · 스타일 시작점: ${presetName(s)}${presetEdited(s) && s.preset !== 'custom' ? '(값을 고침)' : ''}
-**AI 에이전트에게**: 이 문서의 §1 토큰(CSS 변수)과 규칙만으로 화면을 만든다. 문서에 없는 값을 새로 만들지 않는다. 애매하면 §6 하지 말 것을 먼저 본다. 같은 값이 \`tokens.json\`에 있고, 컴포넌트가 이 값으로 그려진 모습은 \`preview.html\`, 대비 검증 전체 표는 \`DESIGN.html\`에 있다.
+${s.combo ? `**색 조합**: ${s.combo.name} — ${s.combo.source || '출처 미상'} (Regula 「색」의 조합에서 시작. 색 고르기는 Regula가 한 것이고, 보조 글자 · 선 색은 바탕과 글자를 섞어 만든 값이다 — 출처 없음)\n` : ''}**AI 에이전트에게**: 이 문서의 §1 토큰(CSS 변수)과 규칙만으로 화면을 만든다. 문서에 없는 값을 새로 만들지 않는다. 애매하면 §6 하지 말 것을 먼저 본다. 같은 값이 \`tokens.json\`에 있고, 컴포넌트가 이 값으로 그려진 모습은 \`preview.html\`, 대비 검증 전체 표는 \`DESIGN.html\`에 있다.
 출처가 있는 기준(WCAG 등)은 그 자리에 출처를 적었다. 색 섞기 비율, 그림자 단계 값, 간격 밀도 같은 나머지 값은 이 도구가 설정에서 계산한 것이며 출처가 있는 기준이 아니다.
 
 ---
@@ -224,7 +233,7 @@ ${s.intent || autoIntent(t, s)}
 ## 1. Design Tokens (모든 값의 원본 — 여기 외에 값을 정의하지 않는다)
 
 \`\`\`css
-${tokensCss(t, s)}
+${tokensCss(t, s)}${accentCss(s)}
 \`\`\`
 
 **서체 불러오기**:
@@ -236,7 +245,7 @@ ${fontLoadMd(t)}
 
 - **강조색 면은 한 화면에 하나.** \`--key\`로 채운 요소(주 버튼)는 화면당 하나, 두 번째 행동부터는 보조 · 고스트로 내린다. 링크 · 포커스 · 선택에 \`--key\`를 쓰는 것은 개수에 넣지 않는다
 - \`--key\` 면 위의 글자는 항상 \`--key-on\`. 상태(오류 · 성공 · 안내)는 색과 글자를 함께 쓴다
-- ${s.color.darkOn ? '다크 모드는 `<html data-theme="dark">`일 때 §1의 `[data-theme="dark"]` 값으로 바뀐다. 컴포넌트 CSS는 그대로 두고 토큰만 바꾼다' : '다크 모드 값은 만들지 않았다. 다크 모드를 임의로 만들지 않는다'}
+- ${s.color.darkOn ? '다크 모드는 `<html data-theme="dark">`일 때 §1의 `[data-theme="dark"]` 값으로 바뀐다. 컴포넌트 CSS는 그대로 두고 토큰만 바꾼다' : '다크 모드 값은 만들지 않았다. 다크 모드를 임의로 만들지 않는다'}${s.combo?.accent.light.length ? `\n- **보조 색(\`--accent-*\`)은 그래프 · 배지 · 장식 점에만.** 컴포넌트 CSS와 미리보기에는 쓰지 않았다. 글자색으로 쓰려면 먼저 대비 4.5:1을, UI 구성요소의 경계로 쓰면 3:1을 확인한다 (WCAG 2.2 1.4.3 · 1.4.11)` : ''}
 - 글자 크기(기본 ${s.type.base}px, 비율 ${s.type.ratio}): ${scaleLine}
 - 제목은 \`--font-display\` + \`--weight-heading\`(${t.type.heading}), 본문 · 버튼 · 라벨은 \`--font-sans\` + \`--weight-regular\`(${t.type.regular}) / \`--weight-strong\`(${t.type.strong}), 숫자 · 코드는 \`--font-mono\`. 불러오는 서체 파일에 있는 굵기만 쓴다. 행간 본문 ${s.type.lhBody} · 제목 ${s.type.lhHead}, 제목 자간 ${s.type.trackHead}em
 - 세로로 줄 서는 숫자는 \`font-variant-numeric: tabular-nums\`. Display · H1은 한 화면에 하나이고, 좁은 화면(640px 미만)에서는 한 단계 작은 크기를 쓴다 (이 도구의 기본 규칙)${t.type.picks.display.script === '라틴' || t.type.picks.body.script === '라틴' ? '\n- 라틴 글자만 있는 서체는 한글을 시스템 한글 서체(`Apple SD Gothic Neo`, `Malgun Gothic`)가 받는다. 서체 스택의 순서를 바꾸지 않는다' : ''}
@@ -326,6 +335,7 @@ export function tokensJson(t: Tokens, s0: Spec, today: string, fonts: FontOption
     motion: { duration: { fast: `${s.motion.fast}ms`, base: `${s.motion.base}ms`, slow: `${s.motion.slow}ms` }, easing: EASES.find((e) => e.id === s.motion.ease)?.css, reducedMotion: 'prefers-reduced-motion: reduce이면 transition · animation을 끈다' },
     contrast: Object.fromEntries(t.modes.filter((m) => m.mode === 'light' || s.color.darkOn).map((m) => [m.mode, m.checks.map((c) => ({ pair: c.label, fg: c.fg, bg: c.bg, ratio: +showRatio(c.ratio), required: c.need, criterion: `WCAG 2.2 ${c.sc}`, pass: c.pass }))])),
     css: { ':root': { ...asMap(0), ...common }, ...(s.color.darkOn ? { '[data-theme="dark"]': Object.fromEntries(darkOverrides(t)) } : {}) },
+    ...(s.combo ? { combo: { id: s.combo.id, name: s.combo.name, source: s.combo.source, accent: s.color.darkOn ? s.combo.accent : { light: s.combo.accent.light } } } : {}),
     // 이 파일을 도구에 다시 불러와 이어서 고칠 수 있다
     spec: s,
   };

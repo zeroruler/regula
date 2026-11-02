@@ -2,6 +2,30 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 17차: 색 견본 · 조합 (/colors/)
+
+### 원문을 읽고 확인
+
+- 라이선스 원문(저장소의 LICENSE 파일을 직접 받아 읽음): Open Color (yeun/open-color, MIT, © 2016 heeyeun) · Radix Colors (radix-ui/colors, MIT, © Modulz · WorkOS) · Tailwind CSS (tailwindlabs/tailwindcss, MIT, © Tailwind Labs). 셋 다 MIT라 값 전체를 실음
+- 값: Open Color `open-color.json`(master), Tailwind `src/public/colors.js`(**v3 브랜치** — v4는 같은 이름을 OKLCH로 다시 정의해 값이 다름), Radix `@radix-ui/colors@3.0.0`의 라이트 CSS 중 gray · blue · green · red · amber · violet 6개(일부만 실었다고 화면에 적음)
+- CSS 이름 색: W3C CSS Color Module Level 4 §6.1 Named Colors 표에서 148개를 받음(**Candidate Recommendation Draft 2026-11-01**). 16개는 VGA, 대부분은 X11에서 왔다는 설명, "좋아서가 아니라 널리 쓰여서 표준화했다", `darkgray`가 `gray`보다 밝고 `lightpink`가 `pink`보다 짙다는 예, 사용을 권하지 않는다는 문장을 본문에서 확인
+- Radix 단계의 쓰임(1–2 배경 · 3–5 컴포넌트 면 · 6–8 테두리 · 9–10 단색 면 · 11–12 글자): Radix 문서 「Understanding the scale」에서 확인
+- 팬톤: Adobe 도움말 「Pantone Color Books | Photoshop」(helpx.adobe.com)과 당시 보도(AppleInsider 2022-10-29 등)로 2022년부터 Creative Cloud 앱에서 팬톤 견본첩이 빠지고 Pantone Connect 라이선스가 필요해졌음을 확인. 팬톤 번호 · 색값은 싣지 않음
+
+### Regula가 정한 것 (출처 없음 — 화면 · 파일에 그렇게 적음)
+
+- 어떤 색을 한 조합으로 묶을지, 몇 단계를 쓸지. 근거로 든 원리(보색 · 유사색 · 삼각 · 분할 보색 · 60-30-10)는 각 공식의 출처를 따르지만, 조합 자체는 출처가 있는 배색이 아니다
+- 팔레트의 정해진 단계에서 고르기 때문에 규칙의 각도와 몇십 도 어긋난다 — 조합마다 OKLCH 색상각을 계산해 그대로 적음(예: 청록과 장미 +190°)
+- 색 띠 면적(바탕 46 · 면 24 · 글자 12 · 주 강조 10 · 보조 6)
+- 디자인 파일 만들기로 옮길 때 보조 글자 = 글자 75% + 면 25%, 선 = 면 84% + 글자 16%, 입력칸 테두리 = 반반
+- 대비 검사 짝(글자/바탕 · 글자/면 · 주 강조 글자/면 · 주 강조 면 위 글자 · 보조 색/면)을 고른 것. 기준 숫자는 WCAG 2.2 1.4.3 · 1.4.11(4차에서 확인)
+- Terrazzo 조합에는 원리를 붙이지 않음 — 빨강 · 파랑 · 노랑이 OKLCH로는 120°씩 떨어져 있지 않아 "삼각 배색"이라 부르지 않음
+
+### 주의
+
+- 조합의 HEX가 팔레트 파일 값과 다르면 빌드가 멈춘다(src/lib/combos.ts). 양식 조합은 DESIGN.md 토큰을 빌드 때 읽으므로 두 곳에 값을 적지 않는다
+- 미달인 짝을 숨기지 않고 표시한다(노랑 · 형광펜 같은 밝은 보조 색은 흰 면 위에서 3:1이 안 됨)
+
 ## 2026-11-02 — 16차: 백로그 대조와 토스 TDS Button
 
 ### 대조

@@ -2,8 +2,8 @@
 import { buildTokens, showRatio } from './derive.ts';
 import { componentCss, designHtml, designMd, fileBase, norm, previewHtml, promptText, sampleHtml, SAMPLE_CSS, tokensCss, tokensJson } from './files.ts';
 import {
-  CONTROLS, DEFAULT, EASES, MOTION_SETS, PRESETS, RADII, RATIOS, applyPreset, decodeSpec, encodeSpec, presetEdited, sanitize,
-  type FontOption, type Mode, type Spec,
+  CONTROLS, DEFAULT, EASES, MOTION_SETS, PRESETS, RADII, RATIOS, applyCombo, applyPreset, comboEdited, decodeSpec, encodeSpec, presetEdited, sanitize,
+  type ComboOption, type FontOption, type Mode, type Spec,
 } from './spec.ts';
 import { makeZip } from './zip.ts';
 
@@ -24,7 +24,7 @@ const group = (n: number, title: string, body: string, note = '') =>
 
 const radiusOpts: [number, string][] = RADII.map((r) => [r, r >= 999 ? 'pill' : `${r}px`]);
 
-export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { styles: string; motion: string; spacing: string }) {
+export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { styles: string; motion: string; spacing: string; colors: string }, combos: ComboOption[] = []) {
   const fontIds = fonts.map((f) => f.id);
   const fontOpts = (pred: (f: FontOption) => boolean): [string, string][] => [
     ['system', '시스템 서체'],
@@ -49,10 +49,13 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
       ${select('effect.texture', '질감', [['none', '없음'], ['gloss', '광택'], ['inset', '안쪽 그림자'], ['edge', '가장자리 빛']])}
       <label class="bd-chk"><input type="checkbox" data-p="effect.alertBar" data-t="b"> 알림 왼쪽에 세로 띠 (안내 · 완료 · 오류)</label>`,
       '입력칸 테두리는 두께를 0으로 해도 1px를 남깁니다 — 입력칸을 알아보는 경계는 주변과 3:1 이상이어야 해요(WCAG 2.2 1.4.11).')}
-    ${group(5, '색', `<div class="chips" role="group" aria-label="편집할 모드"><span class="label">편집 중</span>${chip('$view', 'light', '라이트')}${chip('$view', 'dark', '다크')}</div>
+    ${group(5, '색', `${combos.length ? `<label class="bd-r"><span>조합에서 고르기</span><select id="bdCombo"><option value="">고르지 않음</option>${combos.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}${c.dark ? '' : ' (라이트만)'}</option>`).join('')}</select></label>
+      <div class="bd-strip" id="bdComboStrip" aria-hidden="true"></div>
+      <p class="bd-note" id="bdComboNote" aria-live="polite"></p>` : ''}
+      <div class="chips" role="group" aria-label="편집할 모드"><span class="label">편집 중</span>${chip('$view', 'light', '라이트')}${chip('$view', 'dark', '다크')}</div>
       <label class="bd-chk"><input type="checkbox" data-p="color.darkOn" data-t="b"> 다크 값도 파일에 넣기</label>
       ${[['bg', '배경'], ['surface', '표면 (카드 · 입력칸)'], ['ink', '글자'], ['inkSecondary', '보조 글자'], ['border', '선'], ['borderStrong', '입력칸 테두리'], ['key', '강조 (key)'], ['danger', '오류'], ['success', '성공']].map(([k, l]) => colorRow(k, l)).join('')}`,
-      '호버 · 눌림 · 부드러운 배경 · 강조색 위 글자는 위 색에서 계산합니다. 대비는 아래 "대비 검사"에서 바로 확인하세요.')}
+      `호버 · 눌림 · 부드러운 배경 · 강조색 위 글자는 위 색에서 계산합니다. 대비는 아래 "대비 검사"에서 바로 확인하세요. 조합은 <a href="${origin.colors}">색</a>에서 비교해 볼 수 있어요.`)}
     ${group(6, '간격', `<div class="chips" role="group" aria-label="기본 단위"><span class="label">기본 단위</span>${chip('space.unit', 4, '4px', 'n')}${chip('space.unit', 8, '8px', 'n')}</div>
       ${select('space.density', '밀도', [['compact', '촘촘'], ['normal', '보통'], ['relaxed', '여유']])}${select('space.control', '버튼 · 입력칸 높이', CONTROLS.map((c) => [c, `${c}px`] as [number, string]), 'n')}`,
       `간격 규칙은 <a href="${origin.spacing}">비율과 간격</a>에서 다룹니다. 44px 이상이면 WCAG 2.5.5(AAA)의 44×44px을 채웁니다.`)}
@@ -95,7 +98,11 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
   // ── 상태
   const fromHash = () => {
     const m = location.hash.match(/^#s=([\w-]+)$/);
-    return m ? decodeSpec(m[1], fontIds) : null;
+    if (m) return decodeSpec(m[1], fontIds);
+    // /colors/에서 들어올 때: #combo=<id>. 적용한 뒤 주소는 최종 색값(#s=)으로 바뀐다
+    const c = location.hash.match(/^#combo=([a-z0-9-]+)$/);
+    const pick = c && combos.find((x) => x.id === c[1]);
+    return pick ? applyCombo(sanitize(DEFAULT, fontIds), pick) : null;
   };
   let spec: Spec = fromHash() ?? sanitize(DEFAULT, fontIds);
   let view: Mode = 'light';
@@ -161,6 +168,16 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
     host.querySelector<HTMLInputElement>('[data-p="effect.depth"]')!.disabled = spec.effect.shadow === 'none';
     const pr = PRESETS.find((p) => p.id === spec.preset);
     $('bdPresetNote').textContent = pr ? `${pr.name}${presetEdited(spec) ? ' (값을 고침)' : ''} — ${pr.note}. AI에게는 "${pr.prompt}"` : '';
+    const combo = host.querySelector<HTMLSelectElement>('#bdCombo');
+    if (combo) {
+      const c = combos.find((x) => x.id === spec.combo?.id);
+      combo.value = c ? c.id : '';
+      $('bdComboStrip').innerHTML = c ? c.strip.map((h) => `<i style="background:${h}"></i>`).join('') : '';
+      const acc = spec.combo?.accent.light ?? [];
+      $('bdComboNote').textContent = spec.combo
+        ? `${spec.combo.name}${comboEdited(spec, c) ? ' (값을 고침)' : ''} — ${spec.combo.source}. ${acc.length ? `보조 색 ${acc.join(' · ')}은 미리보기에는 없고 DESIGN.md에 --accent-*로만 들어갑니다. ` : ''}${c && !c.dark ? '이 조합은 다크 값이 없어 다크 색은 그대로입니다.' : ''}`
+        : '';
+    }
     $('bdScale').innerHTML = `크기 단계 <b>${[t.type.sizes.small, t.type.sizes.body, t.type.sizes.large, t.type.sizes.h3, t.type.sizes.h2, t.type.sizes.h1, t.type.sizes.display].join(' · ')}</b> px${t.type.picks.display.script === '라틴' || t.type.picks.body.script === '라틴' ? '<br>라틴만 있는 서체는 한글을 시스템 한글 서체가 받습니다.' : ''}`;
 
     renderChecks(t);
@@ -245,6 +262,13 @@ export function initBuilder(host: HTMLElement, fonts: FontOption[], origin: { st
   host.addEventListener('change', (e) => {
     const el = e.target as HTMLInputElement | HTMLSelectElement;
     if (el.id === 'bdLoad') return;
+    if (el.id === 'bdCombo') {
+      const c = combos.find((x) => x.id === el.value);
+      if (c) { spec = applyCombo(spec, c); status(`색 조합을 적용했습니다: ${c.name}`); }
+      else spec.combo = null;
+      commit();
+      return;
+    }
     const path = el.dataset?.p;
     if (!path || path === '$view') return;
     if (el instanceof HTMLInputElement && el.type === 'checkbox') setAt(path, el.checked);

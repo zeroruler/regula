@@ -1,6 +1,6 @@
 ---
 name: "Chamomile"
-order: 16
+order: 34
 basis: "Regula 양식"
 principles: ["60-30-10"]
 source: "DESIGN/chamomile/DESIGN.md의 토큰"

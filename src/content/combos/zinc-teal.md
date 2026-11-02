@@ -1,23 +1,22 @@
 ---
-name: "초록과 자홍"
-order: 3
+name: "회색과 청록"
+order: 8
 basis: "자유 라이선스 팔레트"
-principles: ["complementary"]
+group: "뉴트럴과 포인트 하나"
+principles: ["60-30-10"]
 source: "Tailwind CSS v3 기본 색(MIT)"
 palette: "tailwind-v3"
-mood: ["선명"]
-use: ["랜딩"]
-note: "보색이라 서로를 가장 강하게 밀어낸다. 자홍은 면적을 아주 작게."
+mood: ["차분", "깔끔"]
+use: ["헬스케어", "대시보드"]
+note: "청록 700은 흰 면 위 글자로도 충분히 짙다. 다크에서는 400으로 밝힌다."
 light:
   - { role: bg, hex: "#FAFAFA", from: "tailwind-v3/zinc/50", name: "zinc-50" }
   - { role: surface, hex: "#FFFFFF", from: "tailwind-v3/white", name: "white" }
   - { role: ink, hex: "#18181B", from: "tailwind-v3/zinc/900", name: "zinc-900" }
-  - { role: key, hex: "#15803D", from: "tailwind-v3/green/700", name: "green-700" }
-  - { role: accent, hex: "#D946EF", from: "tailwind-v3/fuchsia/500", name: "fuchsia-500" }
+  - { role: key, hex: "#0F766E", from: "tailwind-v3/teal/700", name: "teal-700" }
 dark:
   - { role: bg, hex: "#09090B", from: "tailwind-v3/zinc/950", name: "zinc-950" }
   - { role: surface, hex: "#18181B", from: "tailwind-v3/zinc/900", name: "zinc-900" }
   - { role: ink, hex: "#F4F4F5", from: "tailwind-v3/zinc/100", name: "zinc-100" }
-  - { role: key, hex: "#4ADE80", from: "tailwind-v3/green/400", name: "green-400" }
-  - { role: accent, hex: "#E879F9", from: "tailwind-v3/fuchsia/400", name: "fuchsia-400" }
+  - { role: key, hex: "#2DD4BF", from: "tailwind-v3/teal/400", name: "teal-400" }
 ---

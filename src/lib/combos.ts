@@ -127,7 +127,7 @@ export async function loadCombos(): Promise<ResolvedCombo[]> {
 
     const accent = (sw?: Swatch[]) => (sw ?? []).filter((x) => x.role === 'accent').map((x) => x.hex).slice(0, 4);
     const option: ComboOption = {
-      id: c.id, name: d.name, source: d.source, basis: d.basis,
+      id: c.id, name: d.name, source: d.source, basis: d.basis, group: d.group ?? d.basis,
       strip: light.filter((x) => x.role !== 'danger' && x.role !== 'success').map((x) => x.hex),
       light: toColors(light), dark: dark ? toColors(dark) : undefined,
       accent: { light: accent(light), dark: accent(dark) },

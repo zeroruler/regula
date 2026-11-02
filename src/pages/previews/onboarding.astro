@@ -1,0 +1,111 @@
+---
+// 온보딩 양식 미리보기. ?system=<디자인 시스템>&state=<default|permission|hint> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안). 서비스 이름과 기능은 모두 예시.
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>온보딩 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style is:global>
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;padding:24px 16px 40px}
+.embedded body{min-height:0}
+.page{max-width:960px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.page{max-width:520px}
+.card{background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:24px 22px;display:grid;gap:16px}
+h1{margin:0;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:24px;line-height:1.25}
+p{margin:0}
+.muted{color:var(--ink2);font-size:14px}
+.art{height:120px;border-radius:calc(var(--card-radius) / 2);background:color-mix(in srgb,var(--ink) 8%,var(--surface));display:grid;place-items:center;font-size:36px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.step{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.link{border:0;background:none;padding:6px 4px;font:inherit;font-size:14px;color:var(--ink);text-decoration:underline;cursor:pointer;min-height:36px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.primary,.secondary{min-height:48px;padding:0 18px;border-radius:var(--radius);font:inherit;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.primary{border:var(--stroke) solid var(--key);background:var(--key);color:var(--on-key);box-shadow:var(--button-shadow);flex:1}
+.secondary{border:var(--stroke) solid var(--border);background:var(--surface);color:var(--ink)}
+.dots{display:flex;gap:6px;justify-content:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:color-mix(in srgb,var(--ink) 20%,transparent)}
+.dots i.on{background:var(--key)}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;border:var(--stroke) solid var(--card-border);border-radius:var(--radius);padding:10px 12px}
+.toolbar button.feat{min-height:44px;padding:0 14px;border:var(--stroke) solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;cursor:pointer;position:relative}
+.hint{position:relative;border:var(--stroke) dashed var(--ink);border-radius:var(--radius);padding:10px 12px;font-size:14px;background:color-mix(in srgb,var(--key) 8%,var(--surface));display:grid;gap:6px}
+.hint::before{content:"";position:absolute;top:-7px;right:36px;width:12px;height:12px;background:inherit;border-left:var(--stroke) dashed var(--ink);border-top:var(--stroke) dashed var(--ink);transform:rotate(45deg)}
+.note{border-left:4px solid var(--ink);padding:6px 0 6px 12px;font-size:14px}
+</style>
+</head>
+<body>
+<main class="page"><div class="card" id="card"></div></main>
+<script is:inline define:vars={{ themes }}>
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+  const state = params.get('state') ?? 'default';
+  const $ = (s) => document.querySelector(s);
+  const NAME = '예시 메모 앱';
+
+  // 소개 카드: 한 장에 개념 하나, 저절로 넘어가지 않는다
+  const CARDS = [
+    { icon: '✎', h: '떠오르면 바로 적어요', t: '앱을 열면 새 메모가 열려 있어요.' },
+    { icon: '☆', h: '중요한 건 별을 달아요', t: '별 단 메모는 목록 맨 위에 모여요.' },
+    { icon: '⌕', h: '필요할 때 찾아요', t: '위쪽 검색창에서 글자로 찾을 수 있어요.' },
+  ];
+  let i = 0, done = false;
+  let perm = 'ask';     // ask | why | granted | later | denied
+  let hint = true;
+
+  function intro() {
+    const c = CARDS[i], last = i === CARDS.length - 1;
+    document.title = `${NAME} 시작하기 (${i + 1}/${CARDS.length})`;
+    if (done) return `<h1>${NAME}</h1><p>바로 쓸 수 있어요. 안내는 설정의 \"도움말\"에서 다시 볼 수 있어요.</p><div class="row"><button class="primary" type="button" data-a="restart">처음 안내 다시 보기</button></div>`;
+    return `<div class="top"><span class="step" aria-live="polite">${i + 1} / ${CARDS.length}</span><button class="link" type="button" data-a="skip">건너뛰기</button></div>
+      <div class="art" aria-hidden="true">${c.icon}</div><h1>${c.h}</h1><p class="muted">${c.t}</p>
+      <div class="dots" aria-hidden="true">${CARDS.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
+      <div class="row">${i > 0 ? '<button class="secondary" type="button" data-a="prev">이전</button>' : ''}<button class="primary" type="button" data-a="${last ? 'start' : 'next'}">${last ? '첫 메모 쓰기' : '다음'}</button></div>`;
+  }
+  function permission() {
+    document.title = '권한 요청 · ' + NAME;
+    const tb = `<div class="toolbar"><span>메모</span><button class="feat" type="button" data-a="scan">📷 종이 메모 스캔</button></div>`;
+    if (perm === 'ask') return `<p class="muted">앱을 열었을 때가 아니라, 사용자가 \"스캔\"을 누른 순간에 물어요.</p>${tb}`;
+    if (perm === 'why') return `${tb}<div class="note" role="dialog" aria-labelledby="pw"><b id="pw">카메라를 쓸게요</b><p class="muted">종이 메모를 사진으로 찍어 글자로 바꾸려면 카메라가 필요해요. 찍은 사진은 이 기기에만 저장돼요.</p></div>
+      <div class="row"><button class="primary" type="button" data-a="allow">허용</button><button class="secondary" type="button" data-a="deny">허용 안 함</button><button class="secondary" type="button" data-a="later">나중에</button></div>`;
+    if (perm === 'granted') return `${tb}<p class="note" role="status">카메라가 켜졌어요. 종이를 화면에 맞춰 주세요.</p><div class="row"><button class="secondary" type="button" data-a="reset">처음 상태로</button></div>`;
+    if (perm === 'later') return `${tb}<p class="note" role="status">괜찮아요. 스캔은 메모를 직접 적어도 쓸 수 있고, 필요하면 \"스캔\"을 다시 누르면 돼요.</p><div class="row"><button class="secondary" type="button" data-a="reset">처음 상태로</button></div>`;
+    return `${tb}<div class="note" role="status"><b>카메라를 쓸 수 없어서 스캔을 못 해요</b><p class="muted">스캔은 카메라가 필요해요. 기기 설정에서 켜면 다시 쓸 수 있어요.</p></div><div class="row"><a class="primary" href="#" onclick="return false">기기 설정 열기</a><button class="secondary" type="button" data-a="reset">처음 상태로</button></div>`;
+  }
+  function hintView() {
+    document.title = '맥락 힌트 · ' + NAME;
+    return `<div class="toolbar"><span>메모 3개</span><button class="feat" type="button" aria-describedby="hint1">☆ 별</button></div>
+      ${hint ? `<div class="hint" id="hint1" role="note"><span>별을 달면 이 메모가 목록 맨 위에 모여요.</span><button class="link" type="button" data-a="gotit" style="justify-self:end">알겠어요</button></div>` : '<p class="muted">닫았어요. 이 힌트는 다시 나오지 않아요.</p><div class="row"><button class="secondary" type="button" data-a="reset">처음 상태로</button></div>'}
+      <p class="muted">처음 쓰는 자리에서 힌트 하나만 보여 줘요. 연달아 보여 주지 않아요.</p>`;
+  }
+  function render() { $('#card').innerHTML = state === 'permission' ? permission() : state === 'hint' ? hintView() : intro(); }
+  $('#card').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-a]'); if (!b) return; const a = b.dataset.a;
+    if (a === 'next') i++; else if (a === 'prev') i--; else if (a === 'skip' || a === 'start') done = true; else if (a === 'restart') { done = false; i = 0; }
+    else if (a === 'scan') perm = 'why'; else if (a === 'allow') perm = 'granted'; else if (a === 'deny') perm = 'denied'; else if (a === 'later') perm = 'later'; else if (a === 'reset') { perm = 'ask'; hint = true; }
+    else if (a === 'gotit') hint = false;
+    render(); $('#card [data-a]')?.focus();
+  });
+  render();
+</script>
+</body>
+</html>

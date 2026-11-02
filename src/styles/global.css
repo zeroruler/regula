@@ -1292,3 +1292,29 @@ article.note .prose p:last-child{margin-bottom:0}
 .f-combos b{font-weight:600;margin-right:4px}
 .f-chip{display:inline-flex;vertical-align:-2px;margin-right:4px;border:1px solid var(--rule)}
 .f-chip i{display:block;width:8px;height:12px}
+
+/* 사이트 DESIGN.md (/design-md/) */
+.dm-filter{margin-top:8px}
+.dm-sec{scroll-margin-top:80px}
+.dm-sec[hidden]{display:none}
+.dm-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.dm-item[hidden]{display:none}
+.dm-item a{display:grid;gap:6px;height:100%;padding:12px;border:1px solid var(--rule);background:var(--surface);text-decoration:none;color:var(--ink);min-width:0}
+.dm-item a:hover{border-color:var(--ink)}
+.dm-item b{font-size:16px}
+.dm-item small{font-size:12.5px;color:var(--ink-2);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dm-fonts{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);overflow-wrap:anywhere}
+.dm-strip{display:flex;height:18px;border:1px solid var(--rule)}
+.dm-strip i{flex:1}
+.dm-sw{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.dm-sw li{display:grid;gap:2px;padding:10px;min-height:64px;align-content:end;border:1px solid var(--rule);font-size:12px;min-width:0}
+.dm-sw span{overflow-wrap:anywhere}
+.dm-sw code{font-family:var(--mono);font-size:12px}
+.dm-facts{display:grid;gap:8px}
+.dm-facts p{margin:0;overflow-wrap:anywhere}
+.dm-facts .label{margin-right:8px}
+.dm-status{font-size:12px;color:var(--ink-3)}
+.dm-yaml{margin-bottom:18px}
+.dm-yaml summary{cursor:pointer;font-family:var(--mono);font-size:13px}
+.dm-yaml pre{margin:10px 0 0;max-height:420px;overflow:auto;background:var(--surface);border:1px solid var(--rule);padding:12px 14px;font-size:12px;line-height:1.55}
+.dmdoc .imported pre{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);padding:12px 14px;font-size:12.5px}

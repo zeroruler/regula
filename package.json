@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "sync-refs": "node scripts/sync-refs.mjs"
+    "sync-refs": "node scripts/sync-refs.mjs",
+    "sync-design-md": "node scripts/sync-design-md.mjs"
   },
   "dependencies": {
     "astro": "^7.4.4",

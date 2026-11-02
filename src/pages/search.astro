@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { loadDesignMd } from '../lib/designmd';
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { topics, patternGroups } from '../lib/site';
@@ -89,6 +90,10 @@ const items: Item[] = [
       text: hay(d.name, '색 견본 팔레트 컬러', d.maker, d.license, d.summary, ...d.scales.map((x) => x.name)),
     };
   }),
+  ...loadDesignMd().map((d) => ({
+    kind: '사이트 DESIGN.md', tag: d.category, title: d.name, sub: d.blurb || `${d.name}의 디자인 언어를 정리한 DESIGN.md`, url: href(`design-md/${d.slug}/`),
+    text: hay(d.name, d.slug, d.category, d.blurb, 'DESIGN.md 사이트 디자인 시스템', ...d.fonts, ...d.colors.map((c) => `${c.name} ${c.hex}`)),
+  })),
   { kind: '도구', tag: '만들기', title: '디자인 파일 만들기', sub: '서체 · 모서리 · 효과 · 색 · 간격 · 움직임을 골라 DESIGN.md · tokens.json으로 내려받기', url: href('builder/'),
     text: hay('디자인 파일 만들기', 'DESIGN.md tokens.json 에이전트 다운로드 zip 미리보기 서체 모서리 border-radius 그림자 색 대비 간격 움직임 스타일 프리셋') },
   ...topics.filter((t) => t.path).map((t) => ({

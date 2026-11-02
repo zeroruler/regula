@@ -2,6 +2,23 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-02 — 19차: 사이트 DESIGN.md (/design-md/)
+
+### 원문을 읽고 확인
+
+- VoltAgent/awesome-design-md 저장소를 받아 LICENSE 파일을 직접 읽음: MIT License, Copyright (c) 2026 VoltAgent. 그래서 DESIGN.md 84개를 원문 그대로 실음(src/imported/design-md/, LICENSE 사본 포함). 기준 커밋 fcc7028(2026-10-28)
+- 사이트 이름 · 분류 · 한 줄 설명은 저장소 README의 Collection 목록에서 읽음. Slack은 폴더는 있지만 README 목록에 없어 "기타"로 둠
+- 문서는 회사의 공식 디자인 시스템이 아니라 VoltAgent가 공개 화면을 보고 쓴 해석이다(README: "DESIGN.md analysis", 파일 이름 예: "Stripi-Inspired-design-analysis"). 화면에 그렇게 적음
+
+### Regula가 정한 것 (출처 없음)
+
+- 분류 이름의 한국어 번역, 색 견본에 올릴 색을 뽑는 방법(YAML의 colors 블록, 없으면 본문의 `**이름** (`#hex`)` 꼴, 그것도 없으면 본문에 나온 순서)
+
+### 주의
+
+- 71개만 맨 위 YAML이 있고, 3개(elevenlabs · raycast · supabase)는 YAML 문법이 깨져 있으며 10개는 YAML이 없다. 그래서 YAML 전체를 해석하지 않고 필요한 줄만 읽는다
+- 원문을 고치지 않는다. 갱신은 `npm run sync-design-md`(라이선스가 MIT가 아니게 바뀌면 멈춤)
+
 ## 2026-11-02 — 18차: 색 조합 다시 고르기
 
 ### 바꾼 것

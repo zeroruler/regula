@@ -1,0 +1,116 @@
+---
+// WCAG 2.2 성공 기준 원문(W3C Document License). 문장은 고치거나 번역하지 않고 그대로 싣는다.
+// 스냅숏: src/imported/w3c/wcag22.json (npm run sync-wcag)
+import wcag from '../imported/w3c/wcag22.json';
+
+export type WcagUse = { label: string; name: string; to: string; text: string };
+interface Props {
+  // 이 레퍼런스를 출처로 쓴 공식·패턴. 본문에 적힌 기준 번호(1.4.3 등)로 각 기준 아래에 붙인다.
+  uses: WcagUse[];
+}
+const { uses } = Astro.props;
+
+const nums = new Set(wcag.principles.flatMap((p) => p.guidelines.flatMap((g) => g.criteria.map((c) => c.num))));
+const usedBy = new Map<string, WcagUse[]>();
+for (const u of uses) {
+  const found = new Set([...u.text.matchAll(/(?<![\d.])([1-4]\.\d{1,2}\.\d{1,2})(?![\d.])/g)].map((m) => m[1]).filter((n) => nums.has(n)));
+  for (const n of found) usedBy.set(n, [...(usedBy.get(n) ?? []), u]);
+}
+const all = wcag.principles.flatMap((p) => p.guidelines.flatMap((g) => g.criteria));
+const anchor = (num: string) => `sc-${num.replaceAll('.', '-')}`;
+const isNew = (v: string[]) => v.length === 1 && v[0] === '2.2';
+const removed = (c: { level: string }) => !c.level;
+---
+<div class="wcag">
+  <p class="credit">
+    W3C 「<a href={wcag.url} target="_blank" rel="noopener">{wcag.title}</a>」의 성공 기준 {all.length}개를 원문 그대로 실었어요 ·
+    문서 상태: {wcag.status} · <a href={wcag.licenseUrl} target="_blank" rel="noopener">{wcag.license}</a>에 따라 고치거나 번역하지 않아요 · {`${wcag.fetchedAt} 기준`} ·
+    <code>npm run sync-wcag</code>로 갱신<br>
+    {wcag.notice}
+  </p>
+
+  <div class="row filter wc-filter">
+    <label class="label" for="wcFilter">기준 거르기</label>
+    <input type="text" id="wcFilter" placeholder="예: 1.4.3, contrast, focus" autocomplete="off">
+    <div class="chips" role="group" aria-label="수준">
+      {['A', 'AA', 'AAA'].map((l) => <button type="button" class="chip" data-level={l} aria-pressed="true">{l}</button>)}
+      <button type="button" class="chip" data-new aria-pressed="false">2.2에서 새로</button>
+      <button type="button" class="chip" data-used aria-pressed="false">Regula에서 쓴 것</button>
+    </div>
+    <span class="mono" id="wcCount"></span>
+  </div>
+
+  {wcag.principles.map((p) => (
+    <section class="wc-principle" data-principle>
+      <h3><span class="mono">{p.num}</span> {p.handle}</h3>
+      <div class="wc-text" set:html={p.html} />
+      {p.guidelines.map((g) => (
+        <section class="wc-guideline" data-guideline>
+          <h4><span class="mono">{g.num}</span> {g.handle}</h4>
+          <div class="wc-text" set:html={g.html} />
+          {g.criteria.map((c) => (
+            <article class="wc-sc" id={anchor(c.num)} data-level={c.level || 'removed'} data-new={isNew(c.versions) ? '' : undefined}
+              data-used={usedBy.has(c.num) ? '' : undefined} data-text={`${c.num} ${c.handle}`.toLowerCase()}>
+              <header>
+                <a class="mono num" href={`#${anchor(c.num)}`}>{c.num}</a>
+                <h5>{c.handle}</h5>
+                <span class="lv mono">{removed(c) ? '삭제됨' : c.level}</span>
+                {isNew(c.versions) && <span class="lv mono new">2.2에서 새로</span>}
+              </header>
+              <div class="wc-text" set:html={c.html} />
+              <p class="wc-links mono">
+                <a href={`https://www.w3.org/WAI/WCAG22/Understanding/${c.id}.html`} target="_blank" rel="noopener">Understanding ↗</a>
+                {!removed(c) && <a href={`https://www.w3.org/WAI/WCAG22/quickref/#${c.id}`} target="_blank" rel="noopener">How to Meet ↗</a>}
+              </p>
+              {usedBy.has(c.num) && (
+                <p class="wc-used">
+                  <span class="mono">Regula에서</span>
+                  {usedBy.get(c.num)!.map((u) => <a href={u.to}>{u.name}</a>)}
+                </p>
+              )}
+            </article>
+          ))}
+        </section>
+      ))}
+    </section>
+  ))}
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.wcag');
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>('#wcFilter')!;
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('.chip')];
+    const items = [...root.querySelectorAll<HTMLElement>('.wc-sc')];
+    const out = root.querySelector('#wcCount')!;
+    const on = (sel: string) => root.querySelector(sel)?.getAttribute('aria-pressed') === 'true';
+    const apply = () => {
+      const q = input.value.trim().toLowerCase();
+      const levels = new Set(chips.filter((c) => c.dataset.level && c.getAttribute('aria-pressed') === 'true').map((c) => c.dataset.level));
+      const onlyNew = on('[data-new].chip');
+      const onlyUsed = on('[data-used].chip');
+      let n = 0;
+      for (const el of items) {
+        const lv = el.dataset.level!;
+        const hit =
+          (lv === 'removed' ? levels.size === 3 : levels.has(lv)) &&
+          (!onlyNew || el.hasAttribute('data-new')) &&
+          (!onlyUsed || el.hasAttribute('data-used')) &&
+          (!q || el.dataset.text!.includes(q) || el.textContent!.toLowerCase().includes(q));
+        el.hidden = !hit;
+        if (hit) n++;
+      }
+      // 보이는 기준이 하나도 없는 지침 · 원칙은 접는다
+      for (const sec of root.querySelectorAll<HTMLElement>('[data-guideline], [data-principle]')) {
+        sec.hidden = !sec.querySelector('.wc-sc:not([hidden])');
+      }
+      out.textContent = `${n} / ${items.length}`;
+    };
+    for (const c of chips) c.addEventListener('click', () => {
+      c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true'));
+      apply();
+    });
+    input.addEventListener('input', apply);
+    apply();
+  }
+</script>

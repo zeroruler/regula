@@ -6,6 +6,8 @@ import SeenSync from '../../components/SeenSync.astro';
 import { href } from '../../lib/url';
 import { patternGroups, section } from '../../lib/site';
 import { prepareImported } from '../../lib/imported';
+import WcagCriteria from '../../components/WcagCriteria.astro';
+import embedHeights from '../../imported/measured/embed-heights.json';
 
 type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
 const imported = import.meta.glob<Imported>('../../imported/*.json', { eager: true, import: 'default' });
@@ -25,17 +27,23 @@ const r = reference.data;
 const { Content } = await render(reference);
 const snapshot = imported[`../../imported/${reference.id}.json`];
 
-// 이 레퍼런스를 출처로 쓴 공식과 패턴
+// 이 레퍼런스를 출처로 쓴 공식과 패턴(text: 원문 스냅숏에서 기준 번호 등을 찾을 때 쓰는 항목 전체 글)
+const text = (e: { data: object; body?: string }) => JSON.stringify(e.data) + (e.body ?? '');
 const usedIn = [
   ...(await getCollection('formulas', (f) => f.data.refs.includes(reference.id)))
-    .map((f) => ({ label: `§${section('principles').no} 공식`, name: f.data.name, to: href(`principles/#f-${f.id}`) })),
+    .map((f) => ({ label: `§${section('principles').no} 공식`, name: f.data.name, to: href(`principles/#f-${f.id}`), text: text(f) })),
   ...(await getCollection('patterns', (p) => p.data.refs.includes(reference.id)))
-    .map((p) => ({ label: `§${section('patterns').no} 패턴`, name: p.data.name, to: href(`${patternGroups.find((g) => g.name === p.data.category)?.path ?? 'patterns/'}#p-${p.id.split('/').pop()}`) })),
+    .map((p) => ({ label: `§${section('patterns').no} 패턴`, name: p.data.name, to: href(`${patternGroups.find((g) => g.name === p.data.category)?.path ?? 'patterns/'}#p-${p.id.split('/').pop()}`), text: text(p) })),
   ...(await getCollection('palettes', (p) => p.data.refs.includes(reference.id)))
     .map((p) => ({ label: `§${section('colors').no} 색 견본`, name: p.data.name, to: href(`colors/#pal-${p.id}`) })),
   ...(await getCollection('combos', (c) => c.data.refs.includes(reference.id)))
     .map((c) => ({ label: `§${section('colors').no} 색 조합`, name: c.data.name, to: href(`colors/#combo-${c.id}`) })),
 ];
+
+// 사이트 전체 높이(scripts/measure-embeds.mjs로 잰 값). fit이 아니면 예전처럼 상자 안에서 스크롤한다.
+type Measured = { url: string; fit: true; heights: [number, number | null][] } | { url: string; fit: false; reason: 'vh' | 'inner' };
+const measured = (embedHeights.sites as Record<string, Measured>)[reference.id];
+const fit = measured?.fit && measured.url === r.url ? measured : undefined;
 ---
 <Base title={`${r.title} · Regula`} description={r.summary} current="references">
   <Fragment slot="sub">
@@ -72,7 +80,9 @@ const usedIn = [
 
     <section>
       <h2 class="label">원문</h2>
-      {snapshot ? (
+      {r.imported === 'wcag22' ? (
+        <WcagCriteria uses={usedIn} />
+      ) : snapshot ? (
         <div class="imported-wrap">
           <p class="credit">
             <a href={`https://github.com/${snapshot.repo}`} target="_blank" rel="noopener">{snapshot.repo}</a>의 README를 그대로 가져왔어요 ·
@@ -86,10 +96,28 @@ const usedIn = [
           <div class="imported prose" set:html={prepareImported(snapshot.html, ['impFilter', 'impCount'])} />
         </div>
       ) : r.embed && r.url ? (
-        <div class="frame">
+        <div class="frame" data-fit={fit ? 'full' : undefined}>
+          {fit ? (
+            <p class="credit">
+              사이트 전체 길이로 펼쳐 띄웠어요. 화면은 원본 사이트에서 바로 불러오고, 내용은 원저자의 것이에요.
+              높이는 {embedHeights.measuredAt}에 잰 값이라 그 뒤 사이트가 바뀌면 끝이 잘리거나 빈칸이 남을 수 있어요.
+              {fit.heights.some(([, h]) => h === null) && '창 폭에 따라 높이를 창 크기에 맞춰 늘리는 사이트라, 그런 폭에서는 상자 안에서 스크롤해요.'}
+              <button type="button" class="frame-toggle" aria-pressed="false">상자로 보기</button>
+            </p>
+          ) : (
+            <p class="credit">
+              {measured && !measured.fit
+                ? measured.reason === 'vh'
+                  ? '이 사이트는 높이를 창 크기에 맞춰 늘리는 구조라 전체 길이로 펼칠 수 없어, 상자 안에서 스크롤해요. '
+                  : '이 사이트는 안쪽 영역만 스크롤되는 구조라 전체 길이로 펼칠 수 없어, 상자 안에서 스크롤해요. '
+                : ''}
+              사이트를 이 페이지 안에 띄운 미리보기예요. 내용은 원저자의 것이며, 화면이 비어 보이면 원본을 새 탭에서 열어 주세요.
+            </p>
+          )}
           <iframe src={r.url} title={`${r.title} 원문`} loading="lazy" referrerpolicy="no-referrer"
+            data-heights={fit ? JSON.stringify(fit.heights) : undefined}
             sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"></iframe>
-          <p class="credit">사이트를 이 페이지 안에 띄운 미리보기예요. 내용은 원저자의 것이며, 화면이 비어 보이면 원본을 새 탭에서 열어 주세요.</p>
+          {fit && <p class="credit frame-end">펼친 미리보기 끝 · <a href={r.url} target="_blank" rel="noopener">원본 새 탭에서 열기 ↗</a></p>}
         </div>
       ) : r.url ? (
         <p class="blocked">이 사이트는 다른 페이지 안에서 열리지 않도록 막아 두었어요. <a href={r.url} target="_blank" rel="noopener">원본 새 탭에서 열기 ↗</a></p>
@@ -107,6 +135,44 @@ const usedIn = [
 </Base>
 
 <script>
+  // 펼친 미리보기: 다른 사이트의 문서 높이는 읽을 수 없어(교차 출처) 미리 잰 숫자를 쓴다.
+  // 40px 간격으로 재고 브레이크포인트는 1px 앞뒤로 따로 재 두었으므로, 그 사이는 직선으로 이어도 맞는다.
+  // 둘 중 하나라도 null(그 폭에서는 페이지가 창 높이를 따라 늘어남)이면 상자로 보인다.
+  // 조금 모자라도 iframe 안에서 나머지를 스크롤할 수 있다.
+  const frame = document.querySelector<HTMLIFrameElement>('.frame[data-fit] iframe');
+  if (frame) {
+    const pts: [number, number | null][] = JSON.parse(frame.dataset.heights!);
+    const heightAt = (w: number): number | null => {
+      if (w <= pts[0][0]) return pts[0][1];
+      for (let i = 1; i < pts.length; i++) {
+        const [w0, h0] = pts[i - 1];
+        const [w1, h1] = pts[i];
+        if (w > w1) continue;
+        if (w === w1) return h1;
+        if (h0 === null || h1 === null) return null;
+        return Math.ceil(h0 + ((h1 - h0) * (w - w0)) / (w1 - w0));
+      }
+      return pts[pts.length - 1][1];
+    };
+    const box = frame.closest<HTMLElement>('.frame')!;
+    const toggle = box.querySelector<HTMLButtonElement>('.frame-toggle')!;
+    const fit = () => {
+      const h = heightAt(frame.clientWidth);
+      const full = h !== null && toggle.getAttribute('aria-pressed') !== 'true';
+      // 잰 폭 사이를 직선으로 이은 값은 1% 안팎 모자랄 수 있어, 잘리지 않도록 1.5% 여유를 둔다
+      frame.style.height = full ? `${Math.ceil(h * 1.015) + frame.offsetHeight - frame.clientHeight}px` : '';
+      box.toggleAttribute('data-full', full);
+      toggle.hidden = h === null;
+    };
+    new ResizeObserver(fit).observe(frame);
+    toggle.addEventListener('click', () => {
+      const boxed = toggle.getAttribute('aria-pressed') !== 'true';
+      toggle.setAttribute('aria-pressed', String(boxed));
+      toggle.textContent = boxed ? '전체 길이로 보기' : '상자로 보기';
+      fit();
+    });
+  }
+
   // 가져온 목록(목록 항목과 표의 행)에서 글자가 포함된 것만 남긴다
   const input = document.querySelector<HTMLInputElement>('#impFilter');
   if (input) {

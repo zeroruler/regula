@@ -48,8 +48,8 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
   { name: '게슈탈트', path: 'principles/gestalt/', blurb: '근접성, 유사성, 공통 영역, 연속성, 폐합, 균일 연결성' },
   { name: '조형', path: 'principles/composition/', blurb: '크기 위계, 여백, 시각적 무게, 대칭, 질감, 형태, 동세, 율동 — 『디자인 구구단』 9단' },
   { name: '그리드', path: 'principles/grid/', blurb: '12단 그리드, 열 너비, 거터, 브레이크포인트' },
-  { name: '사용성과 접근성', path: 'principles/usability/', blurb: '피츠, 힉, 밀러, 제이콥, 테슬러, 응답 시간, 터치 영역, 포커스, 리플로 — WCAG 2.2' },
-  { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드, 심미적 사용성, 폰 레스토프, 계열 위치, 목표 경사' },
+  { name: '사용성과 접근성', path: 'principles/usability/', blurb: '피츠, 힉, 밀러, 제이콥, 테슬러, 포스텔, 인지 부하, 응답 시간, 터치 영역, 포커스 — WCAG 2.2' },
+  { name: '심리와 편향', path: 'principles/psychology/', blurb: '앵커링, 손실 회피, 기본값, 사회적 증거, 선택 과부하, 피크엔드, 심미적 사용성, 폰 레스토프, 계열 위치, 목표 경사, 배너 맹시' },
   { name: '움직임', path: 'principles/motion/', blurb: '이즈 인 · 아웃, 스프링, 순차 등장, 페이드, 슬라이드, 화면 전환' },
   { name: '비주얼 스타일', path: 'principles/styles/', blurb: '스큐어모피즘부터 리퀴드 글래스까지, 이름과 재료로 말하기' },
   { name: '좋은 디자인', path: 'principles/rams/', blurb: 'Dieter Rams 10원칙, 덜어내기, 점검표' },
@@ -130,6 +130,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-02', text: 'Laws of UX의 남은 법칙 중 화면 설계에 바로 쓰이는 것을 옮김. 사용성과 접근성에 포스텔의 법칙 · 인지 부하 · 멘탈 모델 · 능동적 사용자의 역설, 심리와 편향에 선택적 주의 · 배너 맹시. 포스텔의 법칙은 RFC 761 · 1122 원문과 GOV.UK 전화번호 지침으로 확인하고, 같은 전화번호 칸을 엄격하게 / 너그럽게 받아 보는 실습을 붙임(출처 9차 검증).' },
   { date: '2026-11-02', text: 'Laws of UX의 법칙을 더 옮김. 심리와 편향에 폰 레스토프 효과 · 계열 위치 효과 · 목표 경사 효과, 게슈탈트에 균일 연결성. 목표 경사는 Kivetz 외(2006) 논문 PDF에서 쿠폰 실험 수치(10칸 15.6일 vs 보너스 2개 12칸 12.7일)를 확인하고, 같은 쿠폰 두 장에 한 잔씩 도장을 찍어 보는 실습을 붙임. 폰 레스토프는 Hunt(1995)를 따라 "나머지가 서로 비슷해야 차이가 힘을 가진다"로 적음(출처 8차 검증).' },
   { date: '2026-11-01', text: 'Laws of UX에서 옮길 후보로 남아 있던 법칙을 원문으로 확인해 원리에 더함. 사용성과 접근성에 밀러의 법칙과 청크 · 제이콥의 법칙 · 테슬러의 법칙 · 응답 시간 한계(0.1 · 1 · 10초), 심리와 편향에 심미적 사용성 효과. 도허티 임계값 "400ms"는 1982년 IBM 보고서 사본에서 찾지 못해 확인하지 못한 수치로 적음(출처 7차 검증).' },
   { date: '2026-11-01', text: '원리의 마지막 주제 "비율과 간격"에 실습 페이지(/principles/spacing/)를 만듦. 간격 스케일 · 간격의 위계 · 부품 간격과 레이아웃 간격 · 수직 리듬 4개를 더하고, 8pt 그리드 출처를 원문으로 확인한 것(Atlassian · USWDS · Carbon)으로 바꿈. 같은 카드에 임의 값 · 한 값 · 스케일 값을 넣어 보는 실습, 문단 사이 여백을 바꿔 글줄이 박자에서 밀리는 걸 보는 수직 리듬 실습을 붙이고, 원리 목록 맨 위에 있던 황금비 실험을 이 페이지로 옮김. 출처는 6차 검증으로 기록.' },

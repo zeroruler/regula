@@ -52,7 +52,7 @@ section > header p{margin:0;color:var(--ink-2)}
 .formulas{border-top:1px solid var(--ink)}
 .f{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--rule);align-items:baseline}
 .f h3{font-family:var(--body);font-size:16px;font-weight:600;letter-spacing:0}
-.f .eq{font-family:var(--mono);font-size:15px;color:var(--ink);overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.f .eq{font-family:var(--mono);font-size:15px;color:var(--ink);overflow-wrap:break-word;padding-bottom:2px}
 .f p{margin:0;color:var(--ink-2);font-size:14.5px}
 .f .web{display:block;margin-top:8px;padding-left:10px;border-left:2px solid var(--rule);color:var(--ink)}
 .f .web b{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--ink-3);margin-right:6px}
@@ -204,7 +204,7 @@ nav.toc a[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);fon
 .filter input{flex:1;max-width:320px}
 .filter .mono{font-size:12px;color:var(--ink-3)}
 .imported{max-width:none;border-top:1px solid var(--rule);padding-top:18px;overflow-wrap:anywhere}
-.imported h1{font-size:28px;margin:0 0 12px}
+.imported h1,.imported h2.readme-title{font-size:28px;margin:0 0 12px}
 .imported h2{font-family:var(--display);font-size:22px;margin:32px 0 10px}
 .imported h3{font-family:var(--body);font-size:16px;font-weight:600;margin:20px 0 6px}
 .imported ul{list-style:square}

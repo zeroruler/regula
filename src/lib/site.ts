@@ -137,6 +137,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-02', text: '전체 점검 뒤 고침. 원리와 공식의 수식 줄이 한 줄로 고정돼 짧은 공식도 가로 스크롤되던 것을 줄바꿈되게 바꿈(넓은 화면 53개 · 400px 46개). 결제 양식 미리보기의 "변경" 버튼을 WCAG 2.5.8 최소 24px 높이로. 가져온 README의 제목에 GitHub식 id를 붙여 목차 링크가 동작하게 하고 README의 h1을 h2로 낮춤. 검색 결과 미리보기에 화면에 안 보이는 h1, 디자인 파일 만들기 미리보기의 견본 글자를 h1에서 p로. 404 페이지와 파비콘 추가, package.json 버전을 사이트 표기(v0.6)에 맞춤.' },
   { date: '2026-11-02', text: 'UI 패턴 › 버튼에 "아이콘 이름" 섹션 추가. 메뉴 아이콘 별명 9가지(햄버거 · 케밥 · 미트볼 · 와플 · 벤토 · 도너 · 베지 버거 · 계단 · 슬라이더)를 흑백 도형으로 다시 그리고, 흔히 여는 것과 Google Material Icons의 공식 이름(menu · more_vert · more_horiz · apps · filter_list · drag_handle · sort · tune)을 붙임. 햄버거 · 케밥 · 미트볼 · 와플은 위키백과 「Hamburger button」으로 확인했고, 와플을 점(릴스)과 네모(위키백과)로 다르게 그리는 것과 두 줄 아이콘이 Material에서 "끌어서 옮기기"라는 점을 적음. 나머지 넷의 별명은 릴스 밖 출처를 찾지 못했다고 표시.' },
   { date: '2026-11-02', text: '디자인 파일 만들기: 안내 · 완료 · 오류 알림 왼쪽의 세로 띠를 기본값에서 빼고, 효과 설정에 "알림 왼쪽에 세로 띠" 옵션으로 둠(토큰 --alert-bar). 스타일 프리셋을 바꿔도 이 선택은 유지됨.' },
   { date: '2026-11-02', text: '디자인 파일 만들기의 DESIGN.md를 절반으로 줄임(약 400줄 · 26KB → 약 210줄 · 13KB). 라이트 · 다크 대비 표 34줄은 "모두 통과" 한 줄(미달이 있을 때만 그 조합 표)로, 같은 내용을 되풀이하던 Reference CSS · 빠른 결정 규칙 · 색 역할 표 · 타입 스케일 표 · 그림자 표는 빼고 섹션을 11개에서 6개로. 전체 대비 표는 DESIGN.html과 tokens.json, 컴포넌트 CSS는 preview.html에 그대로 있음.' },

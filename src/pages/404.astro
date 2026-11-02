@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { nav } from '../lib/site';
+import { href } from '../lib/url';
+---
+<Base title="페이지를 찾을 수 없어요 · Regula" description="찾는 페이지가 없거나 주소가 바뀌었어요.">
+  <header class="pagehead">
+    <span class="label">404</span>
+    <h1>페이지를 찾을 수 없어요</h1>
+    <p>주소를 직접 입력했다면 철자를 확인해 주세요. 주소가 바뀌었을 수도 있어요. 아래에서 섹션을 고르거나 <a href={href('search/')}>찾기</a>에서 검색어로 찾을 수 있어요.</p>
+  </header>
+  <div class="log">
+    {nav.flatMap((g) => g.items).map((s) => (
+      <div class="e"><span><a href={href(s.path)}>{s.title}</a></span><span>{s.blurb}</span></div>
+    ))}
+  </div>
+</Base>

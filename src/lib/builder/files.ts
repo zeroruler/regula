@@ -97,7 +97,7 @@ export function sampleHtml(t: Tokens, s: Spec): string {
   <div class="ds-col">
     <div class="ds-card">
       <p class="ds-small ds-num">${name} · 미리보기</p>
-      <h1 class="ds-h ds-display" ${stack(`font-size:${clamp('--text-display')}`)}>가나다 Aa</h1>
+      <p class="ds-h ds-display" ${stack(`font-size:${clamp('--text-display')}`)}>가나다 Aa</p>
       <h2 class="ds-h ds-h3">제목은 display 서체</h2>
       <p>본문은 sans 서체입니다. 같은 설정으로 만든 모든 화면이 이 글자 크기와 행간을 따릅니다.</p>
       <p class="ds-small">보조 설명 · <span class="ds-num">1,234.56</span> 숫자는 고정폭</p>

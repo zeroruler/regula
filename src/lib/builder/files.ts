@@ -32,7 +32,7 @@ export function tokensCss(t: Tokens, s: Spec): string {
   return `${light}\n\n/* Dark mode — 값이 달라지는 토큰만. 나머지는 위와 같다 */\n[data-theme="dark"] {\n${body}\n}`;
 }
 
-// 색 조합의 보조 색. builder 색 키가 아니라 DESIGN.md §1에만 들어간다(PLAN §6).
+// 색 조합의 보조 색. builder 색 키가 아니라 DESIGN.md §1에만 들어간다(PLAN §7).
 export function accentCss(s: Spec): string {
   const a = s.combo?.accent;
   if (!a || !a.light.length) return '';

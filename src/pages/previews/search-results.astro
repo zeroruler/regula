@@ -1,0 +1,216 @@
+---
+// 검색 결과 양식 미리보기. ?system=<디자인 시스템>&state=<default|filtered|empty> 로 토큰과 상태를 바꾼다.
+// 사이트 레이아웃 없이 단독 화면으로 열린다 (양식 상세 페이지의 iframe 안). 상점 · 상품 · 가격은 모두 예시.
+import { loadThemes } from '../../lib/themes';
+
+const themes = await loadThemes();
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>검색 결과 미리보기 · Regula</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/complete/WantedSansVariable.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Serif+KR:wght@600&family=Archivo+Black&family=Black+Han+Sans&family=Gothic+A1:wght@400;700&family=Hahmlet:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style is:global>
+:root{
+  --stroke:1px; --button-shadow:none; --input-shadow:none; --card-shadow:none;
+  --title-weight:700; --title-tracking:-0.02em;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;padding:24px 16px 40px}
+.embedded body{min-height:0}
+.page{max-width:960px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* 검색창: 입력칸 + 버튼 */
+form.search{display:flex;gap:8px}
+.box{flex:1;min-width:0;display:flex;align-items:center;background:var(--surface);border:var(--stroke) solid var(--border);border-radius:var(--radius);box-shadow:var(--input-shadow)}
+.box:focus-within{outline:2px solid var(--key);outline-offset:2px}
+.box input{flex:1;min-width:0;height:44px;border:0;background:transparent;padding:0 12px;font:inherit;color:var(--ink);outline:none}
+.primary{height:44px;padding:0 18px;border:var(--stroke) solid var(--key);border-radius:var(--radius);background:var(--key);color:var(--on-key);font:inherit;font-weight:600;font-size:15px;box-shadow:var(--button-shadow);cursor:pointer}
+.secondary{height:40px;padding:0 14px;border:var(--stroke) solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px;align-items:start}
+/* 필터: 결과보다 덜 눈에 띄게 (작은 글자 · 작은 컨트롤) */
+.filters{display:grid;gap:18px;font-size:14px}
+#facets{display:grid;gap:18px}
+.filters fieldset{border:0;margin:0;padding:0;display:grid;gap:4px}
+.filters legend{font-weight:600;font-size:13px;color:var(--ink2);padding:0;margin-bottom:4px}
+.filters label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.filters input{accent-color:var(--key);width:16px;height:16px;margin:0}
+.filters .n{margin-left:auto;color:var(--ink3);font-size:12px;font-variant-numeric:tabular-nums}
+.trayhead{display:none}
+.openfilters{display:none}
+.bar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.count{margin:0;font-size:15px}
+.count b{font-weight:700}
+.sort{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)}
+.sort select{height:36px;border:var(--stroke) solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;padding:0 8px}
+.applied{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.applied:empty{display:none}
+.tag{height:30px;padding:0 10px;border:var(--stroke) solid var(--border);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.clear{border:0;background:none;color:var(--ink2);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:0 4px}
+ol.results{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.item{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);padding:12px}
+.thumb{width:72px;height:72px;border-radius:calc(var(--card-radius) / 2);background:color-mix(in srgb,var(--ink) 8%,var(--surface))}
+.item h2{margin:0;font-size:16px;line-height:1.35}
+.item h2 a{color:var(--ink);text-decoration:none}
+.item h2 a:hover{text-decoration:underline}
+.item p{margin:2px 0 0;font-size:13px;color:var(--ink2)}
+.price{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+nav.pages{display:flex;justify-content:center;gap:4px;margin-top:16px;flex-wrap:wrap}
+nav.pages a,nav.pages span{min-width:40px;height:40px;display:inline-grid;place-items:center;padding:0 10px;border-radius:var(--radius);color:var(--ink);font-size:14px;text-decoration:none}
+nav.pages a:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+nav.pages [aria-current]{background:var(--key);color:var(--on-key);font-weight:700}
+.empty{background:var(--surface);border:var(--stroke) solid var(--card-border);border-radius:var(--card-radius);padding:28px 24px;display:grid;gap:10px}
+.empty h2{margin:0;font-family:var(--display);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);font-size:22px;line-height:1.25}
+.empty ul{margin:0;padding-left:20px;color:var(--ink2);font-size:14px;display:grid;gap:4px}
+.empty .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+/* 좁은 화면: 필터는 결과 위에 뜨는 판(tray) */
+@media (max-width:719px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .openfilters{display:inline-flex;align-items:center}
+  .filters{display:none;position:fixed;left:0;right:0;bottom:0;max-height:78vh;overflow:auto;background:var(--surface);border-top:var(--stroke) solid var(--border);border-radius:var(--card-radius) var(--card-radius) 0 0;padding:0 16px 16px;z-index:10;box-shadow:0 -8px 30px color-mix(in srgb,var(--ink) 18%,transparent)}
+  .filters.open{display:grid}
+  .trayhead{display:flex;position:sticky;top:0;background:var(--surface);align-items:center;justify-content:space-between;gap:8px;padding:14px 0 10px;border-bottom:var(--stroke) solid var(--card-border)}
+  .trayhead b{font-size:15px}
+  .scrim{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 25%,transparent);z-index:9}
+  .item{grid-template-columns:56px minmax(0,1fr);}
+  .thumb{width:56px;height:56px}
+  .price{grid-column:2}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <form class="search" role="search" id="searchForm">
+    <label class="sr-only" for="q">상점 안 검색</label>
+    <div class="box"><input id="q" type="search" placeholder="상품 이름, 종류로 찾기" autocomplete="off"></div>
+    <button class="primary" type="submit">검색</button>
+  </form>
+  <div class="layout">
+    <aside class="filters" id="filters" aria-label="필터">
+      <div class="trayhead"><b id="trayCount" aria-live="polite"></b><button class="primary" type="button" id="closeTray">결과 보기</button></div>
+      <div id="facets"></div>
+    </aside>
+    <section aria-labelledby="countText">
+      <div class="bar">
+        <p class="count" id="countText" role="status"></p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="secondary openfilters" type="button" id="openTray" aria-controls="filters" aria-expanded="false">필터</button>
+          <label class="sort">정렬 <select id="sort"><option value="rel">추천순</option><option value="low">낮은 가격순</option><option value="new">새 상품순</option></select></label>
+        </div>
+      </div>
+      <div class="applied" id="applied"></div>
+      <div id="out"></div>
+    </section>
+  </div>
+</main>
+<div class="scrim" id="scrim" hidden></div>
+
+<script is:inline define:vars={{ themes }}>
+  if (window.self !== window.top) document.documentElement.classList.add('embedded');
+  const params = new URLSearchParams(location.search);
+  const theme = themes.find((t) => t.id === params.get('system')) ?? themes[0];
+  for (const [role, value] of Object.entries(theme.vars)) if (value) document.documentElement.style.setProperty(`--${role}`, value);
+  const state = params.get('state') ?? 'default';
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const nf = new Intl.NumberFormat('ko-KR');
+
+  // ── 예시 상품 (고정 값) ──
+  const KIND = ['가디건', '풀오버', '조끼'], COLOR = ['검정', '회색', '베이지'];
+  const ADJ = ['울', '캐시미어 혼방', '코튼', '라운드넥', '브이넥', '오버핏', '케이블', '골지'];
+  const items = Array.from({ length: 14 }, (_, i) => ({
+    // 색은 종류와 따로 돌게 (3개마다 한 칸 밀림) — 어떤 종류든 세 색이 다 있다
+    name: `${ADJ[i % ADJ.length]} ${COLOR[(i + Math.floor(i / 3)) % 3]} 니트 ${KIND[i % 3]}`,
+    kind: KIND[i % 3], color: COLOR[(i + Math.floor(i / 3)) % 3],
+    price: 19000 + ((i * 7919) % 9) * 6000, rel: i, age: (i * 5) % 14,
+  }));
+  const band = (p) => (p < 30000 ? '3만 원 미만' : p < 60000 ? '3–6만 원' : '6만 원 이상');
+  const FACETS = [
+    { key: 'kind', name: '종류', values: KIND, get: (it) => it.kind },
+    { key: 'color', name: '색', values: COLOR, get: (it) => it.color },
+    { key: 'price', name: '가격', values: ['3만 원 미만', '3–6만 원', '6만 원 이상'], get: (it) => band(it.price) },
+  ];
+  const PER = 6;
+
+  let query = state === 'empty' ? '니트 조끼 빨강' : '니트';
+  let sel = { kind: [], color: [], price: [] };
+  if (state === 'filtered') sel = { kind: ['풀오버'], color: ['회색'], price: [] };
+  let sort = 'rel', page = 1;
+
+  const matchesQuery = (it) => query.trim().split(/\s+/).every((w) => (it.name + ' ' + it.kind + ' ' + it.color).includes(w));
+  const pass = (it, skip) => FACETS.every((f) => f.key === skip || !sel[f.key].length || sel[f.key].includes(f.get(it)));
+  const result = () => {
+    const r = items.filter((it) => matchesQuery(it) && pass(it));
+    return r.sort((a, b) => (sort === 'low' ? a.price - b.price : sort === 'new' ? a.age - b.age : a.rel - b.rel));
+  };
+
+  function drawFacets() {
+    const base = items.filter(matchesQuery);
+    $('#facets').innerHTML = FACETS.map((f) => `<fieldset><legend>${f.name}</legend>${f.values.map((v) => {
+      const n = base.filter((it) => pass(it, f.key) && f.get(it) === v).length;
+      return `<label><input type="checkbox" data-k="${f.key}" value="${esc(v)}" ${sel[f.key].includes(v) ? 'checked' : ''}> ${esc(v)} <span class="n">${n}</span></label>`;
+    }).join('')}</fieldset>`).join('');
+  }
+
+  function render() {
+    const r = result(), total = r.length, pages = Math.max(1, Math.ceil(total / PER));
+    page = Math.min(page, pages);
+    $('#q').value = query;
+    const msg = `'${query}' 결과 ${nf.format(total)}개`;
+    $('#countText').innerHTML = `‘${esc(query)}’ 결과 <b>${nf.format(total)}</b>개`;
+    $('#trayCount').textContent = `결과 ${nf.format(total)}개`;
+    document.title = pages > 1 ? `${msg} (${page}/${pages}쪽) · 예시 상점` : `${msg} · 예시 상점`;
+    const tags = FACETS.flatMap((f) => sel[f.key].map((v) => `<button class="tag" type="button" data-k="${f.key}" data-v="${esc(v)}" aria-label="${esc(v)} 조건 빼기">${esc(v)} <span aria-hidden="true">×</span></button>`));
+    $('#applied').innerHTML = tags.length ? tags.join('') + '<button class="clear" type="button" data-all>모두 지우기</button>' : '';
+    $('#openTray').textContent = tags.length ? `필터 (${tags.length})` : '필터';
+    drawFacets();
+
+    if (!total) {
+      const any = tags.length > 0;
+      $('#out').innerHTML = `<div class="empty"><h2>‘${esc(query)}’에 맞는 상품이 없어요</h2>
+        <ul>${any ? '<li>걸린 조건을 하나 빼 보세요.</li>' : ''}<li>철자를 확인하거나 더 짧은 말로 찾아보세요. 예: ‘${esc(query.split(/\s+/)[0])}’</li><li>비슷한 상품을 둘러볼 수도 있어요.</li></ul>
+        <div class="row">${any ? '<button class="secondary" type="button" data-all>조건 모두 지우기</button>' : ''}<button class="secondary" type="button" data-q="${esc(query.split(/\s+/)[0])}">‘${esc(query.split(/\s+/)[0])}’(으)로 찾기</button></div></div>`;
+      return;
+    }
+    const shown = r.slice((page - 1) * PER, page * PER);
+    const mark = (s) => esc(s).replace(new RegExp(query.trim().split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g'), (m) => `<b>${m}</b>`);
+    $('#out').innerHTML = `<ol class="results" start="${(page - 1) * PER + 1}">${shown.map((it) => `<li class="item"><div class="thumb" aria-hidden="true"></div>
+        <div><h2><a href="#" onclick="return false">${mark(it.name)}</a></h2><p>${it.kind} · ${it.color}${it.age < 3 ? ' · 새 상품' : ''}</p></div>
+        <span class="price">${nf.format(it.price)}원</span></li>`).join('')}</ol>` +
+      (pages > 1 ? `<nav class="pages" aria-label="페이지">${page > 1 ? `<a href="#" data-p="${page - 1}">‹ 이전</a>` : ''}${Array.from({ length: pages }, (_, i) => i + 1).map((p) => p === page ? `<span aria-current="page">${p}</span>` : `<a href="#" data-p="${p}" aria-label="${p}쪽">${p}</a>`).join('')}${page < pages ? `<a href="#" data-p="${page + 1}">다음 ›</a>` : ''}</nav>` : '');
+  }
+
+  // 필터는 고를 때마다 바로 적용 (빠른 예시 데이터라서). 필터 · 정렬이 바뀌면 첫 페이지로.
+  $('#facets').addEventListener('change', (e) => {
+    const b = e.target; const k = b.dataset.k;
+    sel[k] = b.checked ? [...sel[k], b.value] : sel[k].filter((v) => v !== b.value);
+    page = 1; render();
+  });
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('button,a');
+    if (!t) return;
+    if (t.matches('.tag')) { sel[t.dataset.k] = sel[t.dataset.k].filter((v) => v !== t.dataset.v); page = 1; render(); }
+    else if (t.hasAttribute('data-all')) { sel = { kind: [], color: [], price: [] }; page = 1; render(); }
+    else if (t.dataset.q) { query = t.dataset.q; sel = { kind: [], color: [], price: [] }; page = 1; render(); }
+    else if (t.dataset.p) { e.preventDefault(); page = +t.dataset.p; render(); $('#countText').scrollIntoView({ block: 'start' }); }
+  });
+  $('#sort').addEventListener('change', (e) => { sort = e.target.value; page = 1; render(); });
+  $('#searchForm').addEventListener('submit', (e) => { e.preventDefault(); query = $('#q').value.trim() || query; page = 1; render(); });
+  // 좁은 화면의 판
+  const tray = (open) => { $('#filters').classList.toggle('open', open); $('#scrim').hidden = !open; $('#openTray').setAttribute('aria-expanded', String(open)); if (open) $('#filters input')?.focus(); else $('#openTray').focus(); };
+  $('#openTray').addEventListener('click', () => tray(true));
+  $('#closeTray').addEventListener('click', () => tray(false));
+  $('#scrim').addEventListener('click', () => tray(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#filters').classList.contains('open')) tray(false); });
+  render();
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ import WcagCriteria from '../../components/WcagCriteria.astro';
 import GovukPages from '../../components/GovukPages.astro';
 import DocPages from '../../components/DocPages.astro';
 import embedHeights from '../../imported/measured/embed-heights.json';
+import { citedIn, type Use } from '../../lib/citedby';
 
 type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
 const imported = import.meta.glob<Imported>('../../imported/*.json', { eager: true, import: 'default' });
@@ -31,7 +32,7 @@ const snapshot = imported[`../../imported/${reference.id}.json`];
 
 // 이 레퍼런스를 출처로 쓴 공식과 패턴(text: 원문 스냅숏에서 기준 번호 등을 찾을 때 쓰는 항목 전체 글)
 const text = (e: { data: object; body?: string }) => JSON.stringify(e.data) + (e.body ?? '');
-const usedIn = [
+const usedIn: Use[] = [
   ...(await getCollection('formulas', (f) => f.data.refs.includes(reference.id)))
     .map((f) => ({ label: `§${section('principles').no} 공식`, name: f.data.name, to: href(`principles/#f-${f.id}`), text: text(f) })),
   ...(await getCollection('patterns', (p) => p.data.refs.includes(reference.id)))
@@ -41,6 +42,18 @@ const usedIn = [
   ...(await getCollection('combos', (c) => c.data.refs.includes(reference.id)))
     .map((c) => ({ label: `§${section('colors').no} 색 조합`, name: c.data.name, to: href(`colors/#combo-${c.id}`) })),
 ];
+
+// refs에 넣지 않았어도 출처 줄에 적어 원문 위치를 가리킨 곳(양식 규칙 · 규칙 표 등). refs로 이미 이은 항목은 빼고 더한다.
+if (r.imported) {
+  const linked = new Set(usedIn.map((u) => u.to));
+  usedIn.push(...(await citedIn(reference.id)).filter((u) => !linked.has(u.to)));
+}
+// 목록에는 양식 하나 · 규칙 표 하나를 한 줄로, 같은 종류(label)끼리 모아서
+const labels = [...new Set(usedIn.map((u) => u.label))];
+const usedList = usedIn
+  .map((u) => (u.group ? { label: u.label, name: u.group.name, to: u.group.to ?? u.to } : u))
+  .filter((u, i, all) => all.findIndex((x) => x.name === u.name && x.label === u.label) === i)
+  .sort((a, b) => labels.indexOf(a.label) - labels.indexOf(b.label));
 
 // 사이트 전체 높이(scripts/measure-embeds.mjs로 잰 값). fit이 아니면 예전처럼 상자 안에서 스크롤한다.
 type Measured = { url: string; fit: true; heights: [number, number | null][] } | { url: string; fit: false; reason: 'vh' | 'inner' };
@@ -73,11 +86,11 @@ const showFrame = Boolean(r.embed && r.url && !snapshot);
       <div class="prose"><Content /></div>
     </section>
 
-    {usedIn.length > 0 && (
+    {usedList.length > 0 && (
       <section>
         <h2 class="label">Regula에서 쓴 곳</h2>
         <ul class="used">
-          {usedIn.map((u) => <li><span class="mono">{u.label}</span><a href={u.to}>{u.name}</a></li>)}
+          {usedList.map((u) => <li><span class="mono">{u.label}</span><a href={u.to}>{u.name}</a></li>)}
         </ul>
       </section>
     )}

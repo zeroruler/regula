@@ -3,19 +3,23 @@
 // 스냅숏: src/imported/w3c/wcag22.json (npm run sync-wcag)
 import wcag from '../imported/w3c/wcag22.json';
 import { wcagAnchor as anchor, wcagCriteria as all } from '../lib/cite';
+import { usesAt, type Use } from '../lib/citedby';
+import UsedLink from './UsedLink.astro';
 
-export type WcagUse = { label: string; name: string; to: string; text: string };
 interface Props {
   // 이 레퍼런스를 출처로 쓴 공식·패턴. 본문에 적힌 기준 번호(1.4.3 등)로 각 기준 아래에 붙인다.
-  uses: WcagUse[];
+  uses: Use[];
 }
 const { uses } = Astro.props;
 
 const nums = new Set(wcag.principles.flatMap((p) => p.guidelines.flatMap((g) => g.criteria.map((c) => c.num))));
-const usedBy = new Map<string, WcagUse[]>();
-for (const u of uses) {
-  const found = new Set([...u.text.matchAll(/(?<![\d.])([1-4]\.\d{1,2}\.\d{1,2})(?![\d.])/g)].map((m) => m[1]).filter((n) => nums.has(n)));
-  for (const n of found) usedBy.set(n, [...(usedBy.get(n) ?? []), u]);
+// refs로 이은 항목은 본문 전체에서 기준 번호를 찾고, 출처 줄로 찾은 항목은 가리킨 기준만
+const numsIn = (u: Use) => new Set([...(u.text ?? '').matchAll(/(?<![\d.])([1-4]\.\d{1,2}\.\d{1,2})(?![\d.])/g)].map((m) => m[1]).filter((n) => nums.has(n)));
+const found = new Map(uses.map((u) => [u, numsIn(u)]));
+const usedBy = new Map<string, Use[]>();
+for (const n of nums) {
+  const at = usesAt(uses, anchor(n), (u) => found.get(u)!.has(n));
+  if (at.length) usedBy.set(n, at);
 }
 const isNew = (v: string[]) => v.length === 1 && v[0] === '2.2';
 const removed = (c: { level: string }) => !c.level;
@@ -64,7 +68,7 @@ const removed = (c: { level: string }) => !c.level;
               {usedBy.has(c.num) && (
                 <p class="wc-used">
                   <span class="mono">Regula에서</span>
-                  {usedBy.get(c.num)!.map((u) => <a href={u.to}>{u.name}</a>)}
+                  {usedBy.get(c.num)!.map((u) => <UsedLink use={u} />)}
                 </p>
               )}
             </article>

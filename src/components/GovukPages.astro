@@ -3,15 +3,16 @@
 // 스냅숏: src/imported/govuk/pages.json (npm run sync-govuk)
 import govuk from '../imported/govuk/pages.json';
 import { govukNames as names, govukMatches as matches } from '../lib/cite';
+import { usesAt, type Use } from '../lib/citedby';
+import UsedLink from './UsedLink.astro';
 
-export type GovukUse = { label: string; name: string; to: string; text: string };
 interface Props {
   // 이 레퍼런스를 출처로 쓴 공식·패턴. 글에 적힌 "GOV.UK Design System <페이지 이름>"으로 각 페이지에 붙인다.
-  uses: GovukUse[];
+  uses: Use[];
 }
 const { uses } = Astro.props;
 
-const usedBy = (p: (typeof govuk.pages)[number]) => uses.filter((u) => names(u.text).some((n) => matches(p, n)));
+const usedBy = (p: (typeof govuk.pages)[number]) => usesAt(uses, p.id, (u) => names(u.text ?? '').some((n) => matches(p, n)));
 const groups = [
   { label: '컴포넌트', pages: govuk.pages.filter((p) => p.section === 'Component') },
   { label: '패턴', pages: govuk.pages.filter((p) => p.section === 'Pattern') },
@@ -42,7 +43,7 @@ const groups = [
                 <a href={p.url} target="_blank" rel="noopener">원문 페이지 ↗</a>
                 {used.length > 0 && (
                   <span class="gv-used">
-                    Regula에서 {used.map((u) => <a href={u.to}>{u.name}</a>)}
+                    Regula에서 {used.map((u) => <UsedLink use={u} />)}
                   </span>
                 )}
               </p>

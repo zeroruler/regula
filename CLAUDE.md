@@ -28,6 +28,8 @@
 - 레퍼런스 `embed: true`는 iframe 안에서 실제로 열리는지 확인한 사이트에만 켠다. 이용 약관이 콘텐츠의 복제 · 전시나 자동 접근을 막는 곳은 열려도 켜지 않고 `noembed: "terms"`를 적는다(Apple HIG · 디자인 나침반 · Wanted Montage, 출처 33차). 켜거나 url을 바꾸면 `npm run measure-embeds`를 다시 돌린다(잰 값이 없거나 url이 다르면 예전처럼 상자 안에서 스크롤).
 - 레퍼런스 원문 가져오기: 저장소 README는 `github:`, 그 밖의 원문은 `imported:`(지금은 `wcag22` · `govuk` · `carbon` · `primer`). 원문의 라이선스를 직접 읽고 허용될 때만 가져오며, 기록은 `docs/source-check.md` 20 · 21 · 22차. GOV.UK는 refs에 `gov-uk`를 넣고 source에 "GOV.UK Design System <페이지 이름>"을 적은 페이지를 가져오니, 새로 쓰면 `npm run sync-govuk`를 다시 돌린다.
 
+- 페이지 규칙 표(대상 · 규칙 · 출처)는 `src/lib/rules.ts`에 페이지 key별로 적고, 페이지는 `rulesOf('<key>')`로 읽어 줄마다 `ruleId`를 단다. 출처 칸 · 양식 규칙의 source에 WCAG 번호나 "GOV.UK Design System <페이지>"를 적으면 출처 줄은 원문으로 링크되고(`src/lib/cite.ts`), 레퍼런스 원문 아래 "Regula에서"에도 자동으로 붙는다(`src/lib/citedby.ts`).
+
 ## 규칙
 
 - 섹션마다 별도 페이지다(src/pages/*.astro). 새 섹션은 홈에 붙이지 말고 페이지를 만들고 `src/lib/site.ts`의 nav에 등록한다. 작업 기록도 site.ts의 `log`에 추가한다.

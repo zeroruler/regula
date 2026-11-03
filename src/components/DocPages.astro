@@ -4,18 +4,19 @@
 import carbon from '../imported/docs/carbon.json';
 import primer from '../imported/docs/primer.json';
 import { docCited } from '../lib/cite';
+import { usesAt, type Use } from '../lib/citedby';
+import UsedLink from './UsedLink.astro';
 
-export type DocUse = { label: string; name: string; to: string; text: string };
 interface Props {
   source: 'carbon' | 'primer';
   // 이 레퍼런스를 출처로 쓴 공식·패턴. 글에 적힌 "<Carbon|Primer> <페이지 이름>"으로 각 페이지에 붙인다.
-  uses: DocUse[];
+  uses: Use[];
 }
 const { source, uses } = Astro.props;
 const doc = { carbon, primer }[source];
 
 const cited = (text: string) => docCited(doc.cite, text);
-const usedBy = (title: string) => uses.filter((u) => cited(u.text).includes(title.toLowerCase()));
+const usedBy = (p: { id: string; title: string }) => usesAt(uses, p.id, (u) => cited(u.text ?? '').includes(p.title.toLowerCase()));
 ---
 <div class="govuk docs">
   <p class="credit">
@@ -39,7 +40,7 @@ const usedBy = (title: string) => uses.filter((u) => cited(u.text).includes(titl
 
   <section class="gv-group">
     {doc.pages.map((p) => {
-      const used = usedBy(p.title);
+      const used = usedBy(p);
       return (
         <details class="gv-page" id={p.id}>
           <summary>
@@ -51,7 +52,7 @@ const usedBy = (title: string) => uses.filter((u) => cited(u.text).includes(titl
               <a href={p.url} target="_blank" rel="noopener">지금 사이트에서 보기 ↗</a>
               {used.length > 0 && (
                 <span class="gv-used">
-                  Regula에서 {used.map((u) => <a href={u.to}>{u.name}</a>)}
+                  Regula에서 {used.map((u) => <UsedLink use={u} />)}
                 </span>
               )}
             </p>

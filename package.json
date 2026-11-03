@@ -10,6 +10,7 @@
     "sync-refs": "node scripts/sync-refs.mjs",
     "sync-design-md": "node scripts/sync-design-md.mjs",
     "sync-wcag": "node scripts/sync-wcag.mjs",
+    "sync-govuk": "node scripts/sync-govuk.mjs",
     "measure-embeds": "node scripts/measure-embeds.mjs"
   },
   "dependencies": {

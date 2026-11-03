@@ -2,6 +2,21 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 21차: GOV.UK Design System 원문 가져오기
+
+### 원문을 읽고 확인
+
+- 사이트(https://design-system.service.gov.uk) 바닥글: "All content is available under the Open Government Licence v3.0, except where otherwise stated". 저장소 alphagov/govuk-design-system의 LICENSE 파일: MIT License, Copyright (c) 2017 Crown Copyright (Government Digital Service)
+- OGL v3.0 원문(National Archives)을 읽음: 복제 · 배포 · 고치기 · 상업적 이용 허용. 조건은 정보 제공자가 정한 출처 표시를 넣거나 링크하고, 가능하면 라이선스에 링크할 것. 따로 정한 문구가 없으면 "Contains public sector information licensed under the Open Government Licence v3.0."를 쓴다 → 페이지에 이 문구와 라이선스 링크를 함께 보임
+- 가져온 페이지 13개: Regula 공식 · 패턴 14개가 source에 적은 GOV.UK 페이지 10개(Button · Checkboxes · Error message · File upload · Pagination · Radios · Select · Text input · Textarea · Phone numbers)와 레퍼런스 정리의 "볼 것" 3개(Error summary · Recover from validation errors · Question pages). 기준 커밋 1403d1b(2026-11-02)
+- 글은 고치지 않음. 바꾼 것은 Nunjucks 템플릿 문법을 걷어 낸 것, 예시 화면을 원문 사이트의 예시 페이지 링크로 바꾼 것, 사이트 안 링크를 절대 주소로(함께 가져온 페이지면 이 페이지 안으로) 바꾼 것, 이미지를 원문 사이트에서 불러오게 한 것
+- postels-law의 source에 적힌 「Telephone numbers」는 지금 페이지 제목이 "Phone numbers"(별칭: phone numbers, telephone)라 별칭으로 연결됨
+- 갱신은 `npm run sync-govuk`. 바닥글의 OGL 문구나 저장소 LICENSE(MIT)가 바뀌면 멈춤
+
+### 가져오지 않은 것
+
+- 나머지 컴포넌트 · 패턴 페이지(Regula가 출처로 쓰지 않은 것). 쓰게 되면 source에 페이지 이름을 적고 다시 가져온다
+
 ## 2026-11-02 — 20차: 레퍼런스 원문 가져오기 (WCAG 2.2) · 펼친 미리보기
 
 ### 원문을 읽고 확인

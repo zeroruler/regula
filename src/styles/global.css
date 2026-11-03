@@ -1353,3 +1353,32 @@ article.note .prose p:last-child{margin-bottom:0}
 .dm-yaml summary{cursor:pointer;font-family:var(--mono);font-size:13px}
 .dm-yaml pre{margin:10px 0 0;max-height:420px;overflow:auto;background:var(--surface);border:1px solid var(--rule);padding:12px 14px;font-size:12px;line-height:1.55}
 .dmdoc .imported pre{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);padding:12px 14px;font-size:12.5px}
+/* GOV.UK 안내 페이지 원문 */
+.govuk{border-top:1px solid var(--rule);padding-top:18px;min-width:0}
+.gv-group{margin-top:22px}
+.gv-group > h3.label{display:block;margin:0 0 8px}
+.gv-page{border-bottom:1px solid var(--rule);scroll-margin-top:80px}
+.gv-page:first-of-type{border-top:1px solid var(--rule)}
+.gv-page > summary{display:grid;gap:2px;padding:12px 0 12px 22px;cursor:pointer;list-style:none;position:relative}
+.gv-page > summary::-webkit-details-marker{display:none}
+.gv-page > summary::before{content:"+";position:absolute;left:2px;top:11px;font-family:var(--mono);color:var(--ink-3)}
+.gv-page[open] > summary::before{content:"−"}
+.gv-title{font-weight:600;font-size:16px}
+.gv-desc{font-size:13.5px;color:var(--ink-3)}
+.gv-body{padding:0 0 22px 22px;min-width:0}
+.gv-links{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0 0 12px;font-size:12px}
+.gv-used{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--ink-3)}
+.gv-text{max-width:68ch;font-size:14.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.gv-text h2{font-family:var(--body);font-size:16px;font-weight:600;color:var(--ink);margin:22px 0 6px;scroll-margin-top:80px}
+.gv-text h3{font-family:var(--body);font-size:14.5px;font-weight:600;color:var(--ink);margin:16px 0 4px;scroll-margin-top:80px}
+.gv-text h4{font-size:14px;margin:12px 0 4px}
+.gv-text p{margin:0 0 8px}
+.gv-text ul,.gv-text ol{padding-left:18px;margin:0 0 8px}
+.gv-text img{max-width:100%;height:auto;border:1px solid var(--rule)}
+.gv-text table{display:block;overflow-x:auto;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
+.gv-text th,.gv-text td{border-bottom:1px solid var(--rule);padding:6px 10px 6px 0;text-align:left;vertical-align:top}
+.gv-text pre{overflow-x:auto;font-size:12.5px;padding:10px;background:var(--surface);border:1px solid var(--rule)}
+.gv-inset{margin:6px 0 10px;padding-left:12px;border-left:2px solid var(--rule)}
+.gv-example{font-family:var(--mono);font-size:12px;margin:4px 0 12px}
+.gv-example a::after{content:" ↗"}
+.gv-text :target{background:linear-gradient(var(--mark),var(--mark)) left bottom/100% 3px no-repeat}

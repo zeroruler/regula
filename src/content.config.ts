@@ -132,8 +132,9 @@ const references = defineCollection({
     embed: z.boolean().default(false),
     // 자유 라이선스 저장소: scripts/sync-refs.mjs가 README를 src/imported/에 스냅숏으로 가져온다
     github: z.string().regex(/^[\w.-]+\/[\w.-]+$/).optional(),
-    // 저장소 README가 아닌 원문 스냅숏. wcag22: scripts/sync-wcag.mjs가 W3C의 성공 기준을 src/imported/w3c/에 가져온다
-    imported: z.enum(['wcag22']).optional(),
+    // 저장소 README가 아닌 원문 스냅숏. wcag22: scripts/sync-wcag.mjs가 W3C의 성공 기준을 src/imported/w3c/에,
+    // govuk: scripts/sync-govuk.mjs가 Regula가 출처로 쓴 GOV.UK 안내 페이지를 src/imported/govuk/에 가져온다
+    imported: z.enum(['wcag22', 'govuk']).optional(),
   }),
 });
 

@@ -28,6 +28,7 @@ export const ruleTables: RuleTable[] = [
     { s: '검증', rule: '칸을 떠난 뒤 확인하는 인라인 검증이 오류와 작성 시간을 줄였다. 쓰는 도중의 확인은 오히려 방해', src: 'Luke Wroblewski, 「Inline Validation in Web Forms」 (A List Apart, 2009)' },
     { s: '검증', rule: '제출 시 오류가 있으면 맨 위에 요약을 두고 각 칸으로 이동하는 링크를 단다', src: 'GOV.UK Design System Error summary' },
     { s: '오류', rule: '오류를 색만으로 알리지 않는다. 문장으로, 무엇을 어떻게 고칠지', src: 'WCAG 2.2 1.4.1 Use of Color · 3.3.1 Error Identification · 3.3.3 Error Suggestion' },
+    { s: '시간', rule: '작성에 시간 제한이 있으면 끄거나 10배 이상 늘릴 수 있게, 아니면 끝나기 전에 알리고 간단한 동작으로 최소 20초 안에 늘리게 한다(열 번까지). 끄게 하는 것이 가장 낫다', src: 'WCAG 2.2 2.2.1 Timing Adjustable (A) · Understanding Timing Adjustable' },
   ] },
   // 문구 규칙. 출처가 있는 것만 적는다. 예시는 Regula가 지은 것.
   { key: 'writing', name: '문구', path: 'patterns/writing/', section: 'patterns', rules: [
@@ -39,6 +40,8 @@ export const ruleTables: RuleTable[] = [
     { s: '용어', rule: '같은 것은 끝까지 같은 말로. "저장"과 "보관"을 섞지 않는다', ex: '저장 → 저장한 글', src: 'Jakob Nielsen, 10 Usability Heuristics (1994) #4 Consistency and standards' },
     { s: '용어', rule: '시스템의 말이 아니라 사용자의 말로', ex: '세션 만료 → 오래 쉬어서 다시 로그인해야 해요', src: 'Jakob Nielsen, 10 Usability Heuristics (1994) #2 Match between system and the real world' },
     { s: '읽기', rule: '사람들은 읽지 않고 훑는다. 핵심을 문장 앞에', ex: '결제되지 않았어요. 카드 한도가…', src: 'Nielsen Norman Group 「How Users Read on the Web」 (1997)' },
+    { s: '안내', rule: '"오른쪽 동그란 버튼"처럼 모양 · 크기 · 위치 · 소리로만 가리키지 않는다. 이름을 함께 말한다', ex: '오른쪽 아래 「다음」 버튼을 누르세요.', src: 'WCAG 2.2 1.3.3 Sensory Characteristics (A)' },
+    { s: '이름', rule: '버튼 · 링크에 보이는 글자가 코드의 이름(aria-label 등)에도 그대로 들어가게, 되도록 그 글자로 시작하게. 음성 입력 사용자는 보이는 글자를 말해서 누른다', ex: '보이는 글자 「보내기」 → 이름도 「보내기」', src: 'WCAG 2.2 2.5.3 Label in Name (A) · Understanding Label in Name' },
   ] },
   // 화면 구성 규칙. 원문을 읽고 확인한 것만 적는다(docs/source-check.md 5차).
   { key: 'layout', name: '화면 구성', path: 'patterns/layout/', section: 'patterns', rules: [
@@ -49,6 +52,8 @@ export const ruleTables: RuleTable[] = [
     { s: '자동 넘김', rule: '자동으로 넘기지 않는다. 넘긴다면 멈춤 버튼을 두고, 키보드 포커스가 들어오거나 마우스를 올리면 멈춘다. 5초 넘게 움직이면 멈출 수단이 필수', src: 'Jakob Nielsen, 「Auto-Forwarding Carousels…」 (NN/g, 2013) · W3C WAI-ARIA APG Carousel · WCAG 2.2 2.2.2 (A)' },
     { s: '아코디언', rule: '사용자가 몇 칸만 열어 볼 긴 내용에 쓴다. 대부분 다 열어야 하면 펼쳐 둔다. "모두 펼치기"와 인쇄를 챙긴다', src: 'Huei-Hsin Wang, 「Accordions on Desktop」 (NN/g, 2023)' },
     { s: '접근성', rule: '아코디언 머리는 버튼이고 aria-expanded로 열림을 알린다. 팝오버(popover="auto")는 바깥을 누르거나 Esc로 닫힌다', src: 'W3C WAI-ARIA APG Accordion · MDN popover 전역 속성' },
+    { s: '순서', rule: 'CSS로 자리를 바꿔 보여 줄 때도 코드에 적힌 순서가 뜻이 통하게 둔다. 보조 기술은 코드의 순서로 읽는다', src: 'WCAG 2.2 1.3.2 Meaningful Sequence (A) · Understanding Meaningful Sequence' },
+    { s: '방향', rule: '화면을 세로나 가로 한쪽으로 고정하지 않는다. 기기를 한 방향으로 고정해 쓰는 사람이 있다. 수표 · 피아노 앱처럼 방향이 꼭 필요한 것만 예외', src: 'WCAG 2.2 1.3.4 Orientation (AA)' },
   ] },
   // 내비게이션 규칙. 출처가 있는 것만 적는다.
   { key: 'navigation', name: '내비게이션', path: 'patterns/navigation/', section: 'patterns', rules: [
@@ -128,6 +133,7 @@ export const ruleTables: RuleTable[] = [
     { s: '숫자', rule: '표 · 금액 · 시계처럼 세로로 줄 서는 숫자는 고정폭 숫자로', src: 'W3C CSS Fonts Module Level 4 (font-variant-numeric: tabular-nums)' },
     { s: '서체 수', rule: '역할(본문 · 제목 · 숫자/코드)마다 하나씩, 양식 하나에 2–3개', src: 'Regula 양식 4개의 공통점 (DESIGN.md)' },
     { s: '라이선스', rule: '여기 서체는 모두 SIL OFL — 상업적 사용 · 수정 · 재배포는 되고, 서체만 따로 파는 것은 안 된다', src: 'SIL Open Font License 1.1' },
+    { s: '글자 이미지', rule: '글자를 그림으로 넣지 않는다. 그림 속 글자는 크기 · 색 · 서체 · 행간을 사용자가 바꿀 수 없다. 로고처럼 그 모양이 꼭 필요한 것만 예외', src: 'WCAG 2.2 1.4.5 Images of Text (AA) · Understanding Images of Text' },
   ] },
   // 움직임 규칙. 출처가 있는 것만 적는다.
   { key: 'motion', name: '움직임', path: 'principles/motion/', section: 'principles', rules: [

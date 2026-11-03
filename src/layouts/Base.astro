@@ -1,6 +1,6 @@
 ---
 import Ruler from '../components/Ruler.astro';
-import { nav, version, type SectionKey } from '../lib/site';
+import { nav, version, section, type SectionKey } from '../lib/site';
 import { href } from '../lib/url';
 import '../styles/global.css';
 
@@ -44,6 +44,7 @@ const { title, description = '웹디자인의 원리와 공식, UI 패턴, 페�
         ))}
       </div>
     ))}
+    <a class="toc-corner" href={href(section('sitemap').path)} aria-current={current === 'sitemap' ? 'page' : undefined}>{section('sitemap').title}</a>
   </nav>
   <main><slot /></main>
 </div>

@@ -1,7 +1,7 @@
 // 사이트의 페이지 구성. 목적별로 페이지를 오간다 — 공부할 때는 "공부", 양식을 볼 때는 "만들기".
 export const version = 'v0.9';
 
-export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes' | 'builder' | 'colors' | 'designmd';
+export type SectionKey = 'principles' | 'tools' | 'patterns' | 'references' | 'templates' | 'log' | 'search' | 'notes' | 'builder' | 'colors' | 'designmd' | 'sitemap';
 
 export const nav: { group: string; items: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] }[] = [
   {
@@ -9,7 +9,7 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
     items: [
       { key: 'principles', no: 1, title: '원리와 공식', path: 'principles/', blurb: '비율, 간격, 글자 크기, 대비처럼 숫자로 남길 수 있는 규칙' },
       { key: 'tools', no: 2, title: '계산 도구', path: 'tools/', blurb: '타입 스케일, 명도 대비, 간격을 직접 넣어 보는 곳' },
-      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 제스처, 화면 구성, 찾기와 거르기, AI 화면, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
+      { key: 'patterns', no: 3, title: 'UI 패턴', path: 'patterns/', blurb: '알림, 버튼, 입력, 내비게이션, 로딩과 빈 상태, 제스처, 화면 구성, 찾기와 거르기, 키보드와 구조, AI 화면, 다크 패턴, 문구 — 언제 쓰고 언제 피하는지' },
       { key: 'references', no: 4, title: '레퍼런스', path: 'references/', blurb: '책, 디자인 시스템, 저장소, 커뮤니티 — 정리와 원문' },
       { key: 'designmd', no: 5, title: '사이트 DESIGN.md', path: 'design-md/', blurb: '이름난 사이트 84곳의 디자인 언어를 해석한 DESIGN.md 모음(awesome-design-md, MIT) — 색 · 서체를 보고 파일째 받기' },
     ],
@@ -36,9 +36,10 @@ export const nav: { group: string; items: { key: SectionKey; no: number; title: 
   },
 ];
 
-// 내비게이션에는 없지만 페이지는 있는 섹션. 출처 기록은 항목 아래 "본 곳"과 작업 기록에서 들어간다.
+// 내비게이션에는 없지만 페이지는 있는 섹션. 출처 기록은 항목 아래 "본 곳"과 작업 기록에서, 사이트맵은 사이드바 맨 아래 링크에서 들어간다.
 const unlisted: { key: SectionKey; no: number; title: string; path: string; blurb: string }[] = [
   { key: 'notes', no: 11, title: '출처 기록', path: 'notes/', blurb: '자료를 어디서 봤는지 날짜별로' },
+  { key: 'sitemap', no: 12, title: '사이트맵', path: 'sitemap/', blurb: '어떤 페이지가 있고, 무엇이 어디로 이어지는지' },
 ];
 
 export const sections = [...nav.flatMap((g) => g.items), ...unlisted];
@@ -145,6 +146,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-03', text: '사이트맵(/sitemap/)을 추가하고 사이드바 맨 아래 구석에 링크를 둠(내비게이션 밖, §12). 섹션마다 하위 페이지와 항목 수를 콘텐츠에서 바로 세어 보여 주고, 출처 줄이 레퍼런스 원문으로 모였다가 원문 쪽 "Regula에서"로 되돌아오는 흐름과, 공식 · 패턴 · 양식 · 색 · 도구 · 출처 기록 · 찾기가 서로 어디로 이어지는지 표로 정리. UI 패턴 소개 문구에 빠져 있던 "키보드와 구조"도 넣음.' },
   { date: '2026-11-03', text: 'UI 패턴 "영상과 소리"를 되돌림. 남은 WCAG 영상 · 음성 기준(1.2.1–1.2.5: 자막 · 음성 해설 · 대본)을 채우려고 만들었지만, 영상을 만드는 쪽의 일이라 웹디자인 아카이브 범위에 맞지 않아서. 1.4.2 자동 재생 소리는 랜딩 페이지 양식 규칙에 그대로 있음(출처 37차). WCAG A · AA 55개 중 Regula가 다루는 것은 50개.' },
   { date: '2026-11-03', text: '남은 WCAG A · AA 기준 7개를 채움. 제스처에 "흔들기 · 기울이기"(2.5.4: 같은 일을 하는 버튼과 끄기 설정)를 더하고, 규칙 표에 6줄 — 입력에 시간 제한(2.2.1), 문구에 모양 · 위치로만 안내하지 않기(1.3.3)와 보이는 글자를 이름에도(2.5.3), 화면 구성에 읽는 순서(1.3.2)와 화면 방향 고정하지 않기(1.3.4), 타이포그래피에 글자를 그림으로 넣지 않기(1.4.5). WCAG 원문과 Understanding을 읽고 확인(출처 36차). A · AA 55개 중 Regula가 다룬 것이 50개가 됐고, 남은 것은 영상 · 음성(1.2.x)뿐.' },
   { date: '2026-11-03', text: 'UI 패턴에 "키보드와 구조"(/patterns/keyboard/) 추가. 키보드만 쓰는 사람과 화면 낭독기 사용자가 페이지를 오가게 하는 장치 8가지(페이지 언어 · 페이지 제목 · 랜드마크 · 제목 구조 · 건너뛰기 링크 · 묶음 안 화살표 이동 · 키보드 단축키 · 포커스 가두기)를 화면에 보이는 정도 순으로 놓음. 같은 예시 페이지에서 건너뛰기 링크와 서식 도구의 이동 방식을 바꿔 "주문하기"까지 키를 몇 번 누르는지(13 · 9 · 3번) 세는 실습과, 포커스 · 입력 · 일관성 · 여러 길 · 툴팁 규칙 8줄을 붙임. 근거는 WCAG 원문과 Understanding · Techniques(G1 · ARIA11 · G141 · H42) · APG를 읽고 확인한 것만(출처 35차). WCAG A · AA 기준 중 Regula가 다룬 것이 28개에서 43개로.' },

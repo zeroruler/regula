@@ -1,0 +1,146 @@
+---
+// 사이트맵: 어떤 페이지가 있고 무엇이 어디로 이어지는지. 내비게이션 밖(사이드바 맨 아래 링크).
+// 숫자와 목록은 콘텐츠 · site.ts에서 빌드 때 센다 — 항목을 더하면 저절로 맞는다.
+import { getCollection } from 'astro:content';
+import { refGroups } from '../content.config';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { nav, sections, topics, log, section, type SectionKey } from '../lib/site';
+import { patternsByGroup } from '../lib/patterns';
+import { loadDesignMd } from '../lib/designmd';
+import { ruleTables } from '../lib/rules';
+import { wcagCriteria } from '../lib/cite';
+import { href } from '../lib/url';
+import govuk from '../imported/govuk/pages.json';
+import carbon from '../imported/docs/carbon.json';
+import primer from '../imported/docs/primer.json';
+
+const [formulas, darks, references, templates, notes, fonts, palettes, combos] = await Promise.all([
+  getCollection('formulas'), getCollection('darkpatterns'), getCollection('references'), getCollection('templates'),
+  getCollection('notes'), getCollection('fonts'), getCollection('palettes'), getCollection('combos'),
+]);
+const groups = await patternsByGroup();
+const designmd = loadDesignMd();
+const pageTemplates = templates.filter((t) => t.data.kind === '페이지 양식').sort((a, b) => a.data.order - b.data.order);
+const systems = templates.filter((t) => t.data.kind !== '페이지 양식').sort((a, b) => a.data.order - b.data.order);
+const originals = wcagCriteria.length + govuk.pages.length + carbon.pages.length + primer.pages.length;
+const patternCount = groups.reduce((n, g) => n + g.items.length, 0);
+
+type Row = { name: string; path?: string; n?: number | string };
+// 섹션마다 안에 든 것
+const inside: Partial<Record<SectionKey, { text: string; rows?: Row[] }>> = {
+  principles: {
+    text: `공식 ${formulas.length}개를 주제 ${topics.length}개로 나누고, 주제마다 실습 페이지가 있습니다.`,
+    rows: topics.map((t) => ({ name: t.name, path: t.path, n: formulas.filter((f) => f.data.topic === t.name).length })),
+  },
+  tools: { text: '타입 스케일 · 명도 대비 · 간격을 값을 넣어 바로 계산하는 페이지 하나.' },
+  patterns: {
+    text: `입구 아래 카테고리마다 실습 페이지. 카드 · 눈금 · 비교표 · 규칙 표가 있습니다. 패턴 ${patternCount}개 · 다크 패턴 ${darks.length}개.`,
+    rows: groups.map(({ group: g, items }) => ({ name: g.name, path: g.path, n: g.level ? items.length : g.id === 'dark' ? darks.length : '실습' })),
+  },
+  references: {
+    text: `목록과 레퍼런스마다 상세 페이지 ${references.length}개. 상세는 정리 → Regula에서 쓴 곳 → 원문(또는 사이트 미리보기) 순입니다.`,
+    rows: [
+      ...refGroups.map((g) => ({ name: g, n: references.filter((r) => r.data.group === g).length })),
+      { name: '원문을 실은 곳', n: references.filter((r) => r.data.imported || r.data.github).length },
+    ],
+  },
+  designmd: { text: `이름난 사이트 ${designmd.length}곳의 디자인 언어 해석(awesome-design-md, MIT). 목록과 사이트마다 상세 페이지.` },
+  templates: {
+    text: `Regula가 만든 디자인 시스템 ${systems.length}개와 페이지 양식 ${pageTemplates.length}개. 페이지 양식은 디자인 시스템을 바꿔 입혀 보는 미리보기가 안에 있습니다.`,
+    rows: [
+      { name: `디자인 시스템 — ${systems.map((t) => t.data.name).join(' · ')}`, n: systems.length },
+      { name: `페이지 양식 — ${pageTemplates.map((t) => t.data.name).join(' · ')}`, n: pageTemplates.length },
+    ],
+  },
+  colors: { text: `한 페이지에 색 조합 ${combos.length}개와 자유 라이선스 색 견본 ${palettes.length}개(${palettes.sort((a, b) => a.data.order - b.data.order).map((p) => p.data.name).join(' · ')}).` },
+  builder: { text: `서체(후보 ${fonts.length}) · 모서리 · 효과 · 색 · 간격 · 움직임을 골라 DESIGN.md · tokens.json을 받는 도구. 설정은 주소 #에 남습니다.` },
+  log: { text: `날짜별로 더한 것과 다음에 할 것 ${log.length}줄. 출처 기록으로 가는 링크가 있습니다.` },
+  search: { text: `모든 항목을 한 목록으로 펼쳐 검색어 · 종류 · 태그로 거릅니다. 레퍼런스에 실은 원문 ${originals}개(WCAG 기준 · GOV.UK · Carbon · Primer 페이지)도 들어 있어요.` },
+  notes: { text: `자료를 어디서 봤는지 날짜별로 ${notes.length}개. 작업 기록과 각 항목 아래 "본 곳"에서 들어옵니다.` },
+  sitemap: { text: '지금 보는 페이지. 사이드바 맨 아래에서 들어옵니다.' },
+};
+const unlisted = sections.filter((s) => !nav.some((g) => g.items.some((i) => i.key === s.key)));
+
+// 연결: 어디서 → 무엇으로 → 어디로. key는 이 사이트의 뼈대가 되는 두 줄.
+const links: { from: string; how: string; to: string; key?: boolean; eg?: { label: string; path: string } }[] = [
+  { from: '출처 줄 · 출처 칸', how: '"WCAG 2.2 1.4.3", "GOV.UK Design System Button" 같은 부분만 링크가 됩니다. 글은 그대로예요', to: '레퍼런스 원문의 그 기준 · 그 페이지', key: true, eg: { label: '1.4.3', path: 'references/wcag-22/#sc-1-4-3' } },
+  { from: '레퍼런스 원문', how: '기준 · 페이지마다 "Regula에서" — 그 원문을 출처로 쓴 항목', to: '공식 · 패턴 · 양식 규칙 · 규칙 표의 그 줄', key: true, eg: { label: '3.3.8', path: 'references/wcag-22/#sc-3-3-8' } },
+  { from: '공식', how: '레퍼런스 링크, "이 원리로 고른 조합", 아래 "본 곳"', to: '레퍼런스 · 색 조합 · 출처 기록' },
+  { from: '패턴 카드 · 비교표', how: '레퍼런스 링크, 비교표의 출처 칸', to: '레퍼런스 · 원문 위치' },
+  { from: `규칙 표 (${ruleTables.length}곳)`, how: '대상 · 규칙 · 출처. 줄마다 주소가 있어 원문에서 그 줄로 바로 옵니다', to: '원문 위치 ↔ 규칙 줄', eg: { label: '입력 규칙', path: `${ruleTables.find((t) => t.key === 'forms')?.path ?? 'patterns/'}#rule-forms-1` } },
+  { from: '다크 패턴', how: '"기대는 심리"', to: '심리와 편향의 공식', eg: { label: '다크 패턴', path: 'patterns/dark/' } },
+  { from: '레퍼런스 상세', how: '"Regula에서 쓴 곳", 원본 새 탭 링크', to: 'Regula의 각 항목 · 원본 사이트' },
+  { from: '페이지 양식', how: '미리보기(디자인 시스템 바꿔 입히기), 규칙 출처, "이어 보기", 이전 · 다음', to: '원문 위치 · 관련 패턴 · 원리' },
+  { from: '색 조합', how: '근거 공식, 값의 출처, "디자인 파일 만들기에서 열기"', to: '공식 · 양식 · 견본 · 디자인 파일 만들기', eg: { label: '색', path: 'colors/' } },
+  { from: '디자인 파일 만들기', how: '서체 후보와 "조합에서 고르기"를 콘텐츠에서 읽고, 규칙 표 출처를 잇습니다', to: '서체 · 색 조합 · 원문 위치' },
+  { from: '출처 기록', how: '기록이 가리키는 항목', to: '공식 · 패턴 · 다크 패턴 · 레퍼런스 · 서체 아래 "본 곳"' },
+  { from: '찾기', how: '제목 · 설명 · 출처 · 태그를 색인', to: '모든 항목과 원문의 위치' },
+];
+// 레퍼런스 원문으로 출처가 모이는 곳
+const hub = [
+  { name: section('principles').title, path: section('principles').path },
+  { name: section('patterns').title, path: section('patterns').path },
+  { name: `${section('templates').title} 규칙`, path: section('templates').path },
+  { name: '규칙 표', path: ruleTables[0]?.path ?? 'patterns/' },
+  { name: section('builder').title, path: section('builder').path },
+];
+const imported = references.filter((r) => r.data.imported).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="사이트맵 · Regula" current="sitemap" description="Regula의 페이지 구성과, 공식 · 패턴 · 레퍼런스 · 양식 · 색이 서로 어디로 이어지는지 한 장에 정리한 사이트맵">
+  <PageHead current="sitemap" title="어디에 무엇이, 어디로 이어지나">
+    <p>Regula의 페이지를 내비게이션 순서대로 놓고, 그 안의 무엇이 어디로 이어지는지 정리했습니다. 숫자는 사이트를 만들 때 콘텐츠에서 바로 셉니다.</p>
+  </PageHead>
+
+  <section class="smap">
+    <header>
+      <span class="label">1 · 구조</span>
+      <h2>내비게이션 순서대로</h2>
+      <p>내비게이션은 네 묶음이고 섹션 번호(§)가 그 순서입니다. {unlisted.map((s) => s.title).join(' · ')}은 내비게이션에 없이 다른 페이지의 링크로 들어갑니다.</p>
+    </header>
+    <div class="smap-groups">
+      {[...nav.map((g) => ({ group: g.group, items: g.items, off: false })), { group: '내비게이션 밖', items: unlisted, off: true }].map((g) => (
+        <div class="smap-group">
+          <span class="label">{g.group}</span>
+          {g.items.map((s) => {
+            const d = inside[s.key];
+            return (
+              <div class={`smap-sec${g.off ? ' off' : ''}`}>
+                <div class="smap-top"><span class="mono">§{s.no}</span><h3><a href={href(s.path)}>{s.title}</a></h3><span class="mono path">/{s.path}</span></div>
+                {d && <p>{d.text}</p>}
+                {d?.rows && (
+                  <ul class="smap-sub">
+                    {d.rows.map((r) => <li><span>{r.path ? <a href={href(r.path)}>{r.name}</a> : r.name}</span><span class="mono">{r.n}</span></li>)}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="smap">
+    <header>
+      <span class="label">2 · 연결</span>
+      <h2>출처는 레퍼런스로 모이고, 다시 돌아온다</h2>
+      <p>공식 · 패턴 · 양식 · 도구의 출처 줄은 레퍼런스에 실은 원문({imported.map((r) => r.data.title).join(' · ')})의 그 자리로 이어지고, 원문 쪽에서도 그 출처를 쓴 항목으로 되돌아옵니다.</p>
+    </header>
+    <div class="smap-hub" aria-label="출처가 모이는 곳">
+      <ul class="smap-hub-from">{hub.map((h) => <li><a href={href(h.path)}>{h.name}</a></li>)}</ul>
+      <div class="smap-hub-arrows" aria-hidden="true"><span>출처 줄 →</span><span>← Regula에서</span></div>
+      <div class="smap-hub-to"><a href={href(section('references').path)}>{section('references').title}</a><small>실은 원문 {originals}개 — 기준 · 페이지</small></div>
+    </div>
+    <div class="compare">
+      <table class="smap-links">
+        <thead><tr><th>어디서</th><th>무엇으로</th><th>어디로</th><th>예</th></tr></thead>
+        <tbody>
+          {links.map((l) => (
+            <tr class={l.key ? 'key' : undefined}><td>{l.from}</td><td>{l.how}</td><td>{l.to}</td><td>{l.eg && <a href={href(l.eg.path)}>{l.eg.label}</a>}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>

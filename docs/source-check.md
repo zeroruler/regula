@@ -2,6 +2,33 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 35차: UI 패턴 "키보드와 구조" (WCAG Understanding · Techniques · APG)
+
+### 읽은 원문
+
+- WCAG 2.2 성공 기준 원문: `src/imported/w3c/wcag22.json`(20차에 실은 것) — 1.3.1 · 1.4.13 · 2.1.1 · 2.1.2 · 2.1.4 · 2.4.1 · 2.4.2 · 2.4.5 · 2.4.6 · 3.1.1 · 3.1.2 · 3.2.1 · 3.2.2 · 3.2.3 · 3.2.4
+- Understanding 문서: 이 작업 환경에서 w3.org에 닿지 않아, 같은 글의 원본 저장소 w3c/wcag(main)의 `understanding/20/*.html` · `understanding/21/*.html`을 읽음 — Bypass Blocks · Page Titled · Info and Relationships · Headings and Labels · Keyboard · No Keyboard Trap · Character Key Shortcuts · Language of Page · Language of Parts · On Focus · On Input · Consistent Navigation · Consistent Identification · Multiple Ways · Content on Hover or Focus
+- Techniques(같은 저장소 `techniques/`): G1(본문으로 가는 링크) · ARIA11(랜드마크) · G141(제목으로 페이지 나누기) · H42(h1–h6)
+- W3C WAI-ARIA APG(w3c/aria-practices main): 「Developing a Keyboard Interface」 · Dialog (Modal) Pattern
+- 모두 W3C 문서라 글을 옮기지 않고 Regula의 말로 요약하고 출처만 적음(W3C Document License)
+
+### 원문과 맞춘 것
+
+- 건너뛰기 링크: 첫 번째로 포커스가 가는 것이 본문으로 가는 링크(G1). G1은 늘 보이는 것이 더 좋다고 하면서, 포커스가 없을 때 숨기는 것은 2.4.1이 막지 않는다고 적는다 → "늘 보이게가 가장 좋고, 숨기더라도 포커스 때 보이게"로 씀. 되풀이되는 메뉴가 페이지 아래에만 있으면 따로 두지 않아도 된다는 것은 Understanding Bypass Blocks
+- 랜드마크: 같은 역할의 영역이 둘 이상이면 이름을 붙이고, 모든 내용을 영역 안에 두길 권하며, 제목 · 목록 같은 구조 표시를 대신하지 않고 더하는 것(ARIA11)
+- 제목 구조: 단계에 맞게 쌓기(h1 다음 h2, h2 다음 h2나 h3)는 G141, 화면 낭독기가 제목과 단계를 알리고 제목으로 옮겨 다닌다는 것은 H42. 2.4.6 자체는 제목을 요구하지 않고, 있으면 내용을 말하게 하라는 기준(Understanding)
+- 페이지 제목: 탭 · 창 제목 · 검색 결과 목록에 보이고, 한 주소에서 화면만 바뀌는 앱은 화면마다 제목을 바꾼다(Understanding Page Titled). "구체적인 말을 앞에"는 Understanding의 예("X Pattern | APG | WAI | W3C")가 그 순서인 것을 따른 Regula의 권장이고 기준은 아님
+- 페이지 언어: 화면 낭독기가 알맞은 발음 규칙을 불러온다(Understanding Language of Page). 고유명사 · 전문 용어 · 이미 우리말처럼 쓰는 낱말은 3.1.2의 예외
+- 묶음 안 화살표: Tab · Shift+Tab은 부품 사이, 화살표는 여러 항목이 든 부품 안(라디오 묶음은 하나만 Tab 순서에 든다)(APG Keyboard Interface)
+- 단축키: 끄기 · 바꾸기 · 포커스 있을 때만 중 하나. 말로 입력하는 사람과 키보드 사용자가 잘못 누르기 쉬운 이유, 목록 · 드롭다운의 글자 고르기는 해당 없음(Understanding Character Key Shortcuts)
+- 포커스 가두기: Tab · Shift+Tab이 상자 밖으로 나가지 않고 Esc로 닫히며, 닫으면 연 요소로 포커스가 돌아온다(APG Dialog). 모달 안에 가두는 것은 나가는 법을 사용자가 알면 2.1.2 위반이 아니다(Understanding No Keyboard Trap)
+- 규칙 표 8줄: 2.1.1 · APG · 3.2.1 · 3.2.2 · 3.2.3 · 3.2.4 · 2.4.5(과정의 한 단계 예외) · 1.4.13(치울 수 있게 · 호버해도 남게 · 계속 남게)
+
+### 쓰지 않은 것
+
+- 처음 쓴 문장 중 원문에서 찾지 못한 것은 뺌: "main은 한 페이지에 하나", "팝오버 · 사이드 시트는 가두지 않는다", "단축키 목록을 둔다", accesskey 비교
+- 실습의 횟수(13 · 9 · 3번)는 예시 페이지의 링크 수로 센 것이라 출처가 따로 없다
+
 ## 2026-11-03 — 34차: Primer 원문의 빈자리 채우기 (토큰 표 · 열리지 않는 그림) · Steve Schoger는 확인 못 함
 
 ### Primer Typography — Storybook 데모 자리에 토큰 표

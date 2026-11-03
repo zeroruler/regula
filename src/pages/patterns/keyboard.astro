@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import PatternSection from '../../components/PatternSection.astro';
+import PatternSubnav from '../../components/PatternSubnav.astro';
+import TabCount from '../../demos/keyboard/TabCount.astro';
+import { patternsByGroup } from '../../lib/patterns';
+import { href } from '../../lib/url';
+import Cite from '../../components/Cite.astro';
+import { rulesOf, ruleId } from '../../lib/rules';
+
+const groups = await patternsByGroup();
+const { group, items } = groups.find((x) => x.group.id === 'keyboard')!;
+
+const { rules } = rulesOf('keyboard');
+---
+<Base title="키보드와 구조 · UI 패턴 · Regula" current="patterns" description="페이지 언어 · 페이지 제목 · 랜드마크 · 제목 구조 · 건너뛰기 링크 · 묶음 안 화살표 이동 · 단축키 · 포커스 가두기를 언제 쓰고 피하는지, 본문까지 키를 몇 번 누르는지 세어 보는 실습 페이지">
+  <Fragment slot="sub"><PatternSubnav current={['keyboard']} /></Fragment>
+
+  <header class="pagehead">
+    <span class="label"><a href={href('patterns/')}>§ 3 UI 패턴</a> · 실습</span>
+    <h1>마우스로 한 번이면, 키보드로도 몇 번이면</h1>
+    <p>마우스를 쓰는 사람은 화면 가운데 버튼을 바로 누르지만, 키보드만 쓰는 사람은 그 앞의 링크를 하나씩 지나야 합니다. 화면 낭독기로 듣는 사람은 제목과 영역을 골라 들으며 길을 찾고요. 이 페이지의 장치들은 대부분 눈에 잘 안 보여서, 빠뜨려도 마우스로 확인할 때는 티가 나지 않아요.</p>
+  </header>
+
+  <section>
+    <header>
+      <span class="label">1 · Tab 세기</span>
+      <h2>본문 첫 버튼까지 몇 번 누르나</h2>
+      <p>건너뛰기 링크와 서식 도구의 이동 방식을 바꿔 보세요. 같은 페이지인데 "주문하기"까지 눌러야 하는 키의 수가 13번에서 3번까지 달라집니다.</p>
+    </header>
+    <TabCount />
+    <div class="compare">
+      <table>
+        <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
+        <tbody>
+          {rules.map((r, i) => <tr id={ruleId('keyboard', i)}><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p class="note-line">포커스가 어디 있는지 보이게 하는 법은 <a href={href('principles/#f-focus-visible')}>포커스 표시</a>, Tab이 도는 차례는 <a href={href('principles/#f-focus-order')}>포커스 순서</a>, 모달 자체를 언제 쓸지는 <a href={href('patterns/feedback/')}>알림</a>에 있어요. 기준 원문은 <a href={href('references/wcag-22/')}>WCAG 2.2</a>에서 볼 수 있습니다.</p>
+  </section>
+
+  <PatternSection group={group} items={items} cols={[{ h: '확인하는 법', k: 'fits' }]} />
+</Base>

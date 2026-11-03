@@ -71,6 +71,17 @@ export const ruleTables: RuleTable[] = [
     { s: '결과 없음', rule: '결과가 없다고 분명히 말하고, 다음에 할 일을 주고, 사용자를 탓하지 않는다', src: 'Kathryn Whitenton, 「3 Guidelines for Search Engine "No Results" Pages」 (NN/g, 2014)' },
     { s: '접근성', rule: '결과 수 변화는 포커스를 옮기지 않고 화면 낭독기에 알린다(role="status"). 정렬된 열 머리에는 aria-sort', src: 'WCAG 2.2 4.1.3 Status Messages (AA) · W3C WAI-ARIA APG Sortable Table' },
   ] },
+  // 키보드와 구조 규칙. WCAG 원문과 Understanding · APG를 읽고 확인한 것만 적는다(docs/source-check.md 35차).
+  { key: 'keyboard', name: '키보드와 구조', path: 'patterns/keyboard/', section: 'patterns', rules: [
+    { s: '키보드', rule: '마우스로 되는 일은 모두 키보드로도 된다. 키를 누르는 빠르기 · 타이밍을 요구하지 않는다', src: 'WCAG 2.2 2.1.1 Keyboard (A)' },
+    { s: '키보드', rule: 'Tab · Shift+Tab은 부품 사이를, 화살표는 여러 항목이 든 부품 안을 움직인다', src: 'W3C WAI-ARIA APG 「Developing a Keyboard Interface」' },
+    { s: '포커스', rule: '포커스를 받았다는 것만으로 제출 · 새 창 · 포커스 옮기기 같은 큰 변화가 일어나지 않는다', src: 'WCAG 2.2 3.2.1 On Focus (A)' },
+    { s: '입력', rule: '고르거나 체크만 했는데 페이지가 넘어가지 않는다. 그렇게 만들었다면 쓰기 전에 미리 알린다', src: 'WCAG 2.2 3.2.2 On Input (A)' },
+    { s: '내비게이션', rule: '여러 페이지에 되풀이되는 메뉴는 늘 같은 순서로 둔다', src: 'WCAG 2.2 3.2.3 Consistent Navigation (AA)' },
+    { s: '이름', rule: '같은 일을 하는 부품은 페이지마다 같은 이름 · 같은 아이콘으로 부른다', src: 'WCAG 2.2 3.2.4 Consistent Identification (AA)' },
+    { s: '찾아가기', rule: '한 페이지에 닿는 길을 둘 이상 둔다(메뉴와 검색, 사이트맵 등). 결제 단계처럼 차례대로 가는 과정의 한 단계는 예외', src: 'WCAG 2.2 2.4.5 Multiple Ways (AA)' },
+    { s: '툴팁', rule: '호버 · 포커스로 뜬 내용은 Esc로 치울 수 있고, 포인터를 그 위로 옮겨도 사라지지 않고, 사용자가 치울 때까지 남는다', src: 'WCAG 2.2 1.4.13 Content on Hover or Focus (AA)' },
+  ] },
   // 로딩·빈 상태 규칙. 출처가 있는 것만 적는다.
   { key: 'states', name: '로딩과 빈 상태', path: 'patterns/states/', section: 'patterns', rules: [
     { s: '시간', rule: '0.1초 안이면 즉각, 1초 안이면 흐름이 끊기지 않음, 10초를 넘으면 주의가 떠난다', src: 'Jakob Nielsen, 『Usability Engineering』 (1993) 응답 시간 한계' },

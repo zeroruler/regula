@@ -60,7 +60,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
 // level은 카드와 눈금에 쓰는 1–9 값의 필드. level이 없는 카테고리(문구)는 카드 없이 실습만 있다.
 export const patternGroups: {
-  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage' | 'hide' | 'browse'; levelName?: string;
+  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage' | 'hide' | 'browse' | 'shown'; levelName?: string;
   title: string; intro: string; ends?: [string, string];
 }[] = [
   {
@@ -118,6 +118,12 @@ export const patternGroups: {
     ends: ['아는 것을 바로 찾음', '둘러보며 좁혀 감'],
   },
   {
+    id: 'keyboard', name: '키보드와 구조', path: 'patterns/keyboard/', level: 'shown', levelName: '화면에 보이는 정도',
+    title: '마우스 없이, 보지 않고도 쓰게',
+    intro: '키보드만 쓰는 사람, 화면 낭독기로 듣는 사람이 페이지를 오가게 해 주는 장치를 화면에 보이는 정도 순으로 놓았습니다. 왼쪽은 코드에만 있어 눈에는 안 보이지만 보조 기술이 읽고, 오른쪽은 누구에게나 보입니다. 보이지 않는 쪽일수록 빠뜨리기 쉬워요.',
+    ends: ['코드에만 · 보조 기술이 읽음', '화면에 · 누구나 봄'],
+  },
+  {
     id: 'ai', name: 'AI 화면', path: 'patterns/ai/', level: 'stage', levelName: '대화의 시점',
     title: 'AI와 주고받는 화면',
     intro: '챗봇·AI 도우미 화면의 요소를 대화에서 쓰이는 시점 순으로 놓았습니다. 왼쪽은 묻기 전에 무엇을 할 수 있는지 알려 주고, 가운데는 기다리는 동안 무슨 일이 일어나는지, 오른쪽은 받은 답을 믿고 고치는 법을 줍니다.',
@@ -139,6 +145,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-03', text: 'UI 패턴에 "키보드와 구조"(/patterns/keyboard/) 추가. 키보드만 쓰는 사람과 화면 낭독기 사용자가 페이지를 오가게 하는 장치 8가지(페이지 언어 · 페이지 제목 · 랜드마크 · 제목 구조 · 건너뛰기 링크 · 묶음 안 화살표 이동 · 키보드 단축키 · 포커스 가두기)를 화면에 보이는 정도 순으로 놓음. 같은 예시 페이지에서 건너뛰기 링크와 서식 도구의 이동 방식을 바꿔 "주문하기"까지 키를 몇 번 누르는지(13 · 9 · 3번) 세는 실습과, 포커스 · 입력 · 일관성 · 여러 길 · 툴팁 규칙 8줄을 붙임. 근거는 WCAG 원문과 Understanding · Techniques(G1 · ARIA11 · G141 · H42) · APG를 읽고 확인한 것만(출처 35차). WCAG A · AA 기준 중 Regula가 다룬 것이 28개에서 43개로.' },
   { date: '2026-11-03', text: '레퍼런스 원문 아래 "Regula에서" 연결을 채움. 지금까지는 refs에 그 레퍼런스를 넣은 공식 · 패턴만 이어져, 출처 줄에 적어 놓고도 빠진 곳이 많았음(양식 규칙 · 페이지 규칙 표 · refs가 없는 패턴). 출처 줄 → 원문 링크와 같은 매칭을 거꾸로 써서 WCAG 기준 · GOV.UK 페이지 아래에 그 규칙 줄로 바로 가는 링크를 붙임 — WCAG에서 Regula가 쓴 A · AA 기준이 12개에서 28개로. 같은 양식 · 같은 표의 규칙은 "검색 결과 양식 · 규칙 10 · 11 · 12"처럼 한 줄로 묶음. 페이지마다 흩어져 있던 규칙 표 14개는 src/lib/rules.ts로 모으고, 표의 줄과 양식 규칙에 id를 달아 그 줄을 형광펜으로 보임.' },
   { date: '2026-11-03', text: 'Primer 레퍼런스 원문의 빈자리를 채움. Typography 페이지의 글자 크기 · 굵기 · 서체는 원문이 Storybook 데모라 링크뿐이었는데, 데모가 그리는 @primer/primitives 10.7.0(MIT, 문서 판본 바로 전 릴리스)의 토큰 값을 표로 옮겨 각 링크 아래에 붙임 — 원문이 아니라 Regula가 덧붙인 표라고 적고 점선으로 나눔. Layout 페이지에서 로그인하지 않으면 403이 나는 그림 하나는 깨진 그림 대신 원문의 그림 설명과 그림 주소로 바꿈(npm run sync-docs, 출처 34차).' },
   { date: '2026-11-03', text: '출처 줄에서 실린 원문으로 바로 가기. 공식 · 패턴 · 다크 패턴 · 양식 규칙 · 규칙 표의 출처에 적힌 "WCAG 2.2 1.4.3" · "GOV.UK Design System Button" · "IBM Carbon, Spacing" 같은 부분을 레퍼런스 페이지에 실은 원문의 그 기준 · 그 페이지로 연결(접어 둔 페이지는 펼쳐서 열림). 출처 글은 고치지 않고 화면에 그릴 때만 링크로 바꾸며, 원문을 싣지 않은 페이지(Password input 등)나 다른 문서의 번호(RFC 1122 §1.2.2 등)는 글자 그대로 둠. 찾기에 원문 108개(WCAG 2.2 성공 기준 87 · GOV.UK 13 · Carbon 6 · Primer 2)를 넣음 — 원문 전체가 아니라 번호 · 이름 · 기준 문장, 페이지 제목 · 설명 · 소제목만 색인하고 결과는 원문 위치로 연결.' },

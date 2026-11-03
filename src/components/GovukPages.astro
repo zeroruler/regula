@@ -2,6 +2,7 @@
 // GOV.UK Design System 안내 페이지 원문(Open Government Licence v3.0). 글은 고치지 않고 그대로 싣는다.
 // 스냅숏: src/imported/govuk/pages.json (npm run sync-govuk)
 import govuk from '../imported/govuk/pages.json';
+import { govukNames as names, govukMatches as matches } from '../lib/cite';
 
 export type GovukUse = { label: string; name: string; to: string; text: string };
 interface Props {
@@ -10,10 +11,6 @@ interface Props {
 }
 const { uses } = Astro.props;
 
-const names = (text: string) =>
-  [...text.matchAll(/GOV\.UK Design System\s*「?([A-Z][A-Za-z' -]*?)\s*(?:」|"|\(|·|,|$)/gm)].map((m) => m[1].trim().toLowerCase());
-const matches = (p: (typeof govuk.pages)[number], name: string) =>
-  name === p.title.toLowerCase() || p.aliases.some((a) => name === a || name.startsWith(`${a} `));
 const usedBy = (p: (typeof govuk.pages)[number]) => uses.filter((u) => names(u.text).some((n) => matches(p, n)));
 const groups = [
   { label: '컴포넌트', pages: govuk.pages.filter((p) => p.section === 'Component') },

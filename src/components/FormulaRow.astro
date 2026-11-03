@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { href } from '../lib/url';
 import ItemNotes from './ItemNotes.astro';
+import Cite from './Cite.astro';
 import { combosFor } from '../lib/combos';
 
 interface Props { formula: CollectionEntry<'formulas'>; refTitles: Record<string, string> }
@@ -17,7 +18,7 @@ const combos = await combosFor(formula.id);
     {f.meaning}
     {f.note && <span class="note">{f.note}</span>}
     {f.web && <span class="web"><b>웹에서</b> {f.web}</span>}
-    <span class="src">{f.source}{f.refs.map((r) => <> · <a href={href(`references/${r}/`)}>{refTitles[r] ?? r}</a></>)}</span>
+    <span class="src"><Cite text={f.source} />{f.refs.map((r) => <> · <a href={href(`references/${r}/`)}>{refTitles[r] ?? r}</a></>)}</span>
   </p>
   {combos.length > 0 && (
     <p class="f-combos"><b>이 원리로 고른 조합</b> {combos.map((c, i) => <>{i ? ' · ' : ''}<a href={href(`colors/#combo-${c.id}`)}><span class="f-chip" aria-hidden="true">{c.option.strip.slice(0, 5).map((h) => <i style={`background:${h}`}></i>)}</span>{c.data.name}</a></>)}</p>

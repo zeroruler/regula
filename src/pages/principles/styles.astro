@@ -5,6 +5,7 @@ import FormulaRow from '../../components/FormulaRow.astro';
 import Styles from '../../demos/styles/Styles.astro';
 import { topics } from '../../lib/site';
 import { href } from '../../lib/url';
+import Cite from '../../components/Cite.astro';
 
 const T = '비주얼 스타일';
 const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
@@ -41,7 +42,7 @@ const rules = [
     <div class="compare">
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
-        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}</tbody>
+        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}</tbody>
       </table>
     </div>
   </section>

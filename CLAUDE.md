@@ -10,7 +10,7 @@
 - `npm run sync-refs` — `github:` 필드가 있는 레퍼런스의 README를 src/imported/에 다시 가져온다 (자유 라이선스만)
 - `npm run sync-wcag` — WCAG 2.2 성공 기준 원문을 src/imported/w3c/에 다시 가져온다 (W3C Document License: 고치거나 번역하지 않는다)
 - `npm run sync-govuk` — Regula가 출처로 쓴 GOV.UK Design System 안내 페이지를 src/imported/govuk/에 다시 가져온다 (OGL v3.0, 출처 표시 문구를 지우지 않는다)
-- `npm run sync-docs` — Carbon(Apache-2.0) · Primer(MIT) 문서 저장소에서 Regula가 쓰는 페이지를 src/imported/docs/에 다시 가져온다 (둘 다 보관된 저장소 판본, 가져올 페이지는 scripts/sync-docs.mjs의 SOURCES에 적는다)
+- `npm run sync-docs` — Carbon(Apache-2.0) · Primer(MIT) 문서 저장소에서 Regula가 쓰는 페이지를 src/imported/docs/에 다시 가져온다 (둘 다 보관된 저장소 판본, 가져올 페이지는 scripts/sync-docs.mjs의 SOURCES에 적는다. Primer Typography의 토큰 표는 @primer/primitives(MIT)에서 만들고, 로그인 없이 안 열리는 그림은 그림 설명으로 바꾼다 — 출처 34차)
 - `npm run measure-embeds` — `embed: true` 사이트의 폭별 페이지 높이를 재서 src/imported/measured/에 남긴다 (Playwright 필요, 레퍼런스 iframe을 사이트 길이만큼 펼치는 데 씀)
 
 ## 콘텐츠 추가

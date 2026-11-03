@@ -6,6 +6,7 @@ import { loadTemplate } from '../../lib/templates';
 import { loadThemes } from '../../lib/themes';
 import { href } from '../../lib/url';
 import { section } from '../../lib/site';
+import Cite from '../../components/Cite.astro';
 
 export async function getStaticPaths() {
   const all = (await getCollection('templates')).sort((a, b) => a.data.order - b.data.order);
@@ -47,7 +48,7 @@ const themes = isPage ? await loadThemes() : [];
         </div>
         <div>
           <h2 class="label">규칙 · {t.rules.length}</h2>
-          <ol class="parts">{t.rules.map((r) => <li>{r.text}<small class="src">{r.source}</small></li>)}</ol>
+          <ol class="parts">{t.rules.map((r) => <li>{r.text}<small class="src"><Cite text={r.source} /></small></li>)}</ol>
           {t.see.length > 0 && <p class="see"><span class="label">이어 보기</span>{t.see.map((l) => <a href={href(l.path)}>{l.label}</a>)}</p>}
         </div>
       </section>

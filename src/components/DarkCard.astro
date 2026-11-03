@@ -3,6 +3,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { href } from '../lib/url';
 import ItemNotes from './ItemNotes.astro';
+import Cite from './Cite.astro';
 
 interface Props { item: CollectionEntry<'darkpatterns'>; biasNames: Record<string, string> }
 const { item, biasNames } = Astro.props;
@@ -19,6 +20,6 @@ const d = item.data;
     <dt>정직하게</dt><dd>{d.honest}</dd>
     {d.bias.length > 0 && <><dt>기대는 심리</dt><dd>{d.bias.map((b, i) => <>{i > 0 && ' · '}<a href={href(`principles/psychology/#f-${b}`)}>{biasNames[b] ?? b}</a></>)}</dd></>}
   </dl>
-  <p class="src">{d.source}</p>
+  <p class="src"><Cite text={d.source} /></p>
   <ItemNotes ref={`darkpatterns/${item.id}`} />
 </article>

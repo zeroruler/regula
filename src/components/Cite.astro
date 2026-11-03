@@ -1,0 +1,8 @@
+---
+// 출처 문자열을 그리면서, 가져온 원문(WCAG · GOV.UK · Carbon · Primer)을 가리키는 부분만 그 원문 위치로 잇는다. 글은 그대로.
+import { citeSegments } from '../lib/cite';
+
+interface Props { text: string }
+const segs = citeSegments(Astro.props.text);
+---
+{segs.map((s) => (s.to ? <a class="cite" href={s.to}>{s.text}</a> : s.text))}

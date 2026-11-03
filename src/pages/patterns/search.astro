@@ -5,6 +5,7 @@ import PatternSubnav from '../../components/PatternSubnav.astro';
 import Filter from '../../demos/search/Filter.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
+import Cite from '../../components/Cite.astro';
 
 const groups = await patternsByGroup();
 const { group, items } = groups.find((x) => x.group.id === 'search')!;
@@ -42,7 +43,7 @@ const rules = [
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
         <tbody>
-          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
         </tbody>
       </table>
     </div>

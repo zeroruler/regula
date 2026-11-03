@@ -7,6 +7,7 @@ import States from '../../demos/buttons/States.astro';
 import MenuIcons from '../../demos/buttons/MenuIcons.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
+import Cite from '../../components/Cite.astro';
 
 const groups = await patternsByGroup();
 const { group, items: buttons } = groups.find((x) => x.group.id === 'buttons')!;
@@ -50,7 +51,7 @@ const stateRules = [
       <table>
         <thead><tr><th>상태</th><th>규칙</th><th>출처</th></tr></thead>
         <tbody>
-          {stateRules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+          {stateRules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
         </tbody>
       </table>
     </div>

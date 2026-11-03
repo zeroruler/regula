@@ -2,6 +2,15 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 26차: Nielsen Norman Group 원문은 가져오지 않음
+
+### 확인한 것
+
+- 글 바닥글: "Copyright © 1998-2026 Nielsen Norman Group, All Rights Reserved." · Terms & Conditions · Copyright & Reprint Policy
+- Copyright and Reprint Information(nngroup.com/copyright-and-reprint-info/): 다른 웹사이트가 글을 옮겨 싣는 것은 허락하지 않고, 글마다 250달러 라이선스 비용을 내야 한다. 링크는 얼마든지 걸어도 된다. 몇 단어나 몇 줄 인용은 따로 허락 없이 할 수 있다(원문 링크를 붙이길 권함). 번역도 유료(글당 250달러 또는 연 1만 달러). 그림은 따로 허락이 필요하다. 무료 종이 인쇄 허락은 온라인판에는 적용되지 않는다
+- 그래서 원문을 싣지 않고, 지금처럼 Regula의 요약 · 짧은 인용과 원문 링크만 둔다. Regula에서 nngroup을 출처로 쓴 항목 41개도 이 범위(요약과 링크) 안에 있다
+- 사이트가 다른 페이지 안에 띄우는 것을 막고 있어(embed 꺼짐) 미리보기도 없다
+
 ## 2026-11-03 — 25차: Laws of UX 라이선스 확인 (원문은 아직 싣지 않음)
 
 ### 확인한 것

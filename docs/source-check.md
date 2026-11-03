@@ -2,6 +2,16 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 27차: Deceptive Patterns 원문은 가져오지 않음
+
+### 확인한 것
+
+- deceptive.design(www.deceptive.design에서 옮겨 감) 바닥글: "©2026 Testimonium Ltd." · Terms and Conditions · Privacy Policy. 자유 라이선스 표시 없음
+- Terms and Conditions "Intellectual Property": 서비스와 그 원래 콘텐츠는 회사와 라이선스 제공자의 독점 재산이며 저작권 · 상표법으로 보호된다. 복제나 재게시를 허락하는 조항은 없음
+- robots.txt와 llms.txt는 인용과 색인을 환영한다고 적고, "How to cite this website" 페이지에서 인용 형식(APA · BibTeX 등)을 안내한다. 인용 · 링크를 권하는 것이지 글을 옮겨 실어도 된다는 허락은 아님
+- 그래서 원문을 싣지 않고, 지금처럼 Regula의 요약(다크 패턴 9개 항목)과 링크만 둔다
+- 응답 헤더에 X-Frame-Options · frame-ancestors가 없어 iframe 미리보기는 될 수도 있으나, 실제로 열리는지는 확인하지 않음(embed는 꺼 둔 그대로)
+
 ## 2026-11-03 — 26차: Nielsen Norman Group 원문은 가져오지 않음
 
 ### 확인한 것

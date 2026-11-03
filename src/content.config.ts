@@ -27,7 +27,7 @@ const patterns = defineCollection({
     name: z.string(),
     en: z.string(),
     category: z.string(),
-    // 카테고리마다 1–9 눈금 하나로 정렬한다. 알림은 방해 정도, 버튼은 시각적 무게, 입력은 입력 수고, 내비게이션은 다루는 범위, 로딩은 기다리는 시간, 빈 상태는 막힌 정도, 제스처는 알아채기 어려운 정도, AI 화면은 대화의 시점, 화면 구성은 가려진 정도, 찾기와 거르기는 둘러보는 정도, 키보드와 구조는 화면에 보이는 정도 (src/lib/site.ts patternGroups)
+    // 카테고리마다 1–9 눈금 하나로 정렬한다. 알림은 방해 정도, 버튼은 시각적 무게, 입력은 입력 수고, 내비게이션은 다루는 범위, 로딩은 기다리는 시간, 빈 상태는 막힌 정도, 제스처는 알아채기 어려운 정도, AI 화면은 대화의 시점, 화면 구성은 가려진 정도, 찾기와 거르기는 둘러보는 정도, 키보드와 구조는 화면에 보이는 정도, 영상과 소리는 영상을 대신하는 정도 (src/lib/site.ts patternGroups)
     intrusiveness: z.number().int().min(1).max(9).optional(),
     emphasis: z.number().int().min(1).max(9).optional(),
     effort: z.number().int().min(1).max(9).optional(),
@@ -43,6 +43,8 @@ const patterns = defineCollection({
     browse: z.number().int().min(1).max(9).optional(),
     // 키보드와 구조: 화면에 보이는 정도(코드에만 있음 → 늘 보임)
     shown: z.number().int().min(1).max(9).optional(),
+    // 영상과 소리: 영상을 대신하는 정도(영상에 덧붙임 → 영상을 대신함)
+    replace: z.number().int().min(1).max(9).optional(),
     use_when: z.string(),
     avoid_when: z.string(),
     // 알림

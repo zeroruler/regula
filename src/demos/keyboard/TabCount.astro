@@ -1,0 +1,107 @@
+---
+// 실습: 같은 페이지에서 본문 첫 버튼까지 키를 몇 번 눌러야 하나.
+// 건너뛰기 링크(WCAG 2.4.1 · Technique G1)와 묶음 안 화살표 이동(W3C APG 「Developing a Keyboard Interface」)을 켜고 끈다.
+const menu = ['소개', '상품', '할인', '고객센터', '공지', '로그인'];
+const tools = ['굵게', '기울임', '밑줄', '링크', '목록'];
+---
+<div class="lab kblab" id="kbLab">
+  <div class="kb-fig">
+    <button type="button" class="chip kb-start" id="kbStart">여기서 시작 → Tab</button>
+    <div class="kb-page" id="kbPage">
+      <a class="kb-skip" id="kbSkip" href="#kbMain" hidden>본문으로 건너뛰기</a>
+      <div class="kb-head">
+        <a href="#" data-demo>로고</a>
+        <nav aria-label="예시 사이트 메뉴">{menu.map((m) => <a href="#" data-demo>{m}</a>)}</nav>
+      </div>
+      <div class="kb-tools" role="toolbar" aria-label="예시 서식 도구" id="kbTools">
+        {tools.map((t) => <button type="button">{t}</button>)}
+      </div>
+      <div class="kb-main" id="kbMain" tabindex="-1">
+        <p>주문서 본문</p>
+        <button type="button" class="kb-target" id="kbTarget">주문하기</button>
+      </div>
+    </div>
+  </div>
+  <div class="lab-side">
+    <span class="label">실험 · 본문까지 몇 번</span>
+    <h3>"주문하기"까지 키를 몇 번 누르나</h3>
+    <div class="chips" id="kbSkipMode" role="group" aria-label="건너뛰기 링크">
+      <button class="chip" type="button" data-v="off" aria-pressed="true">건너뛰기 링크 없음</button>
+      <button class="chip" type="button" data-v="on" aria-pressed="false">건너뛰기 링크 있음</button>
+    </div>
+    <div class="chips" id="kbToolMode" role="group" aria-label="서식 도구 이동">
+      <button class="chip" type="button" data-v="tab" aria-pressed="true">도구마다 Tab</button>
+      <button class="chip" type="button" data-v="arrow" aria-pressed="false">도구 안은 화살표</button>
+    </div>
+    <div class="readout" id="kbStat"></div>
+    <p id="kbNote"></p>
+    <div class="g-ui">
+      <span class="label">UI에서</span>
+      <p>키보드가 있다면 "여기서 시작"을 누르고 Tab으로 가 보세요. 위 숫자는 지금 구성에서 가장 적게 누르는 횟수이고, 직접 해 보면 누른 횟수가 함께 셈해집니다. 메뉴가 늘어날수록 차이가 커져요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const lab = document.querySelector<HTMLElement>('#kbLab')!;
+  const page = lab.querySelector<HTMLElement>('#kbPage')!;
+  const skip = lab.querySelector<HTMLAnchorElement>('#kbSkip')!;
+  const tools = [...lab.querySelectorAll<HTMLButtonElement>('#kbTools button')];
+  const main = lab.querySelector<HTMLElement>('#kbMain')!;
+  const target = lab.querySelector<HTMLButtonElement>('#kbTarget')!;
+  const start = lab.querySelector<HTMLButtonElement>('#kbStart')!;
+  const links = lab.querySelectorAll<HTMLAnchorElement>('.kb-head a').length;
+  let skipOn = false, arrow = false, pressed = 0, counting = false, done: number | null = null;
+
+  // 지금 구성에서 가장 적게 누르는 횟수: Tab으로 한 칸씩 + 건너뛰기면 Enter 한 번
+  const least = () => (skipOn ? 3 : links + (arrow ? 1 : tools.length) + 1);
+
+  function roving(active = 0) {
+    tools.forEach((b, i) => (b.tabIndex = arrow ? (i === active ? 0 : -1) : 0));
+  }
+  function stat() {
+    const mine = done !== null ? `직접 ${done}번 만에 닿음` : counting ? `지금까지 ${pressed}번` : '가장 적게 누르는 횟수';
+    lab.querySelector('#kbStat')!.innerHTML = `${least()}번<small>${mine}</small>`;
+    lab.querySelector('#kbNote')!.textContent = skipOn
+      ? '첫 Tab에 "본문으로 건너뛰기"가 나타나고, Enter를 누르면 메뉴와 도구를 지나 본문으로 갑니다. 메뉴가 몇 개든 횟수는 그대로예요.'
+      : arrow
+        ? `도구 다섯 개가 Tab 한 번으로 줄었습니다. 도구 안에서는 ← →로 움직이고, 다시 Tab을 누르면 본문으로 나갑니다. 그래도 메뉴 ${links}개는 하나하나 지나가요.`
+        : `로고와 메뉴 ${links}개, 도구 ${tools.length}개를 하나씩 지나야 본문에 닿습니다. 마우스로는 한 번이면 되는 곳이에요.`;
+  }
+  function reset() { pressed = 0; done = null; counting = false; stat(); }
+
+  start.addEventListener('click', () => { reset(); counting = true; stat(); });
+  lab.addEventListener('keydown', (e) => {
+    if (!counting || done !== null) return;
+    if (['Tab', 'Enter', ' ', 'ArrowLeft', 'ArrowRight'].includes(e.key)) { pressed++; stat(); }
+  });
+  target.addEventListener('focus', () => { if (counting && done === null) { done = pressed; stat(); } });
+  // 예시 링크는 아무 데도 가지 않는다
+  page.querySelectorAll('[data-demo]').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+  // 건너뛰기: 주소의 #를 바꾸지 않고 본문으로 포커스만 옮긴다
+  skip.addEventListener('click', (e) => { e.preventDefault(); main.focus(); });
+  // 화살표 이동(roving tabindex)
+  lab.querySelector('#kbTools')!.addEventListener('keydown', (e) => {
+    const ev = e as KeyboardEvent;
+    if (!arrow || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ev.key)) return;
+    ev.preventDefault();
+    const i = tools.indexOf(document.activeElement as HTMLButtonElement);
+    const n = ev.key === 'Home' ? 0 : ev.key === 'End' ? tools.length - 1 : (i + (ev.key === 'ArrowRight' ? 1 : -1) + tools.length) % tools.length;
+    roving(n);
+    tools[n].focus();
+  });
+  function group(id: string, fn: (v: string) => void) {
+    const g = lab.querySelector(id)!;
+    g.addEventListener('click', (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      fn(b.dataset.v!);
+      reset();
+    });
+  }
+  group('#kbSkipMode', (v) => { skipOn = v === 'on'; skip.hidden = !skipOn; });
+  group('#kbToolMode', (v) => { arrow = v === 'arrow'; roving(); });
+  roving();
+  stat();
+</script>

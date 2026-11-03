@@ -2,6 +2,25 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 22차: Carbon · Primer 문서 원문 가져오기
+
+### 원문을 읽고 확인
+
+- Carbon: 문서 저장소 carbon-design-system/carbon-website의 LICENSE가 Apache License 2.0(부록 예시 문구 "Copyright 2018 IBM Corp."). 그런데 README 맨 위에 "The Carbon website has moved to PayloadCMS. This version of the website is now archived."라고 적혀 있고 마지막 커밋이 "chore: archive website repo"(5e9cd1d, 2026-09-30). 지금 carbondesignsystem.com은 Next.js로 새로 만들어졌고 바닥글에 "Copyright © 2026 IBM"만 있어 라이선스를 따로 밝히지 않음 → 라이선스가 분명한 보관본을 가져옴
+- Primer: 문서 저장소 primer/design의 LICENSE가 MIT(Copyright (c) GitHub, Inc.). 마지막 커밋 87f799f(2025-07-01). 지금 primer.style은 Next.js로 바뀌어 이 저장소에서 나오지 않음 → 저장소 판본을 가져옴
+- 두 곳 모두 "지금 사이트와 다를 수 있다"고 화면에 적고, 라이선스 전문(MIT는 고지와 허락 문구를 모든 사본에 넣어야 함)을 접어서 함께 실음
+- Apache-2.0 4(b)(바꾼 파일에는 바꿨다는 표시): 화면용 MDX 컴포넌트(배치 Row · Column · Box, 목차 AnchorLinks, 데모 StorybookDemo · StorybookEmbed 등)를 걷어 낸 것, Do · Don't 설명(caption)을 본문으로 옮긴 것, 데모를 Storybook 링크로 바꾼 것을 화면에 적음. 글 자체는 고치지 않음
+- 이미지는 저장소의 그 커밋에서 불러옴(raw.githubusercontent.com). Carbon 문서의 "/images/…"는 사이트 뿌리가 아니라 페이지 폴더의 images/라서(gatsby-remark-images) 그렇게 고쳐 연결. 이미지 107개 중 106개가 열림, Primer의 github.com/user-attachments 이미지 하나는 로그인하지 않은 요청에 403
+
+### 가져온 페이지
+
+- Carbon 6쪽: Spacing(공식 8pt 그리드 · 간격 스케일 · 간격의 위계가 출처로 씀), Notification(패턴 토스트), Progress indicator(패턴 단계 표시), 정리의 "볼 것"인 Data table · Forms · Notifications 패턴
+- Primer 2쪽: 정리의 "볼 것"(정보 밀도가 높은 화면의 간격과 타이포그래피)에 맞춰 Layout · Typography. Primer를 출처로 쓴 공식 · 패턴은 아직 없음
+
+### 주의
+
+- 페이지 안 링크는 지금 사이트 주소로 연결하는데, 사이트가 새로 만들어지며 주소가 바뀐 곳은 열리지 않을 수 있음
+
 ## 2026-11-03 — 21차: GOV.UK Design System 원문 가져오기
 
 ### 원문을 읽고 확인

@@ -1,0 +1,73 @@
+---
+// 공개 디자인 시스템 문서 저장소에서 가져온 페이지(Carbon: Apache-2.0, Primer: MIT). 글은 고치지 않고 그대로 싣는다.
+// 스냅숏: src/imported/docs/<key>.json (npm run sync-docs)
+import carbon from '../imported/docs/carbon.json';
+import primer from '../imported/docs/primer.json';
+
+export type DocUse = { label: string; name: string; to: string; text: string };
+interface Props {
+  source: 'carbon' | 'primer';
+  // 이 레퍼런스를 출처로 쓴 공식·패턴. 글에 적힌 "<Carbon|Primer> <페이지 이름>"으로 각 페이지에 붙인다.
+  uses: DocUse[];
+}
+const { source, uses } = Astro.props;
+const doc = { carbon, primer }[source];
+
+const cited = (text: string) =>
+  [...text.matchAll(new RegExp(`${doc.cite},?\\s+「?([A-Z][A-Za-z -]*?)\\s*(?:」|「|"|\\(|·|,|$)`, 'gm'))].map((m) => m[1].trim().toLowerCase());
+const usedBy = (title: string) => uses.filter((u) => cited(u.text).includes(title.toLowerCase()));
+---
+<div class="govuk docs">
+  <p class="credit">
+    <a href={doc.site} target="_blank" rel="noopener">{doc.name}</a> 문서 저장소
+    <a href={`https://github.com/${doc.repo}`} target="_blank" rel="noopener">{doc.repo}</a>에서
+    Regula가 쓰는 페이지 {doc.pages.length}개를 원문 그대로 실었어요 · {doc.license} · {doc.copyright} ·
+    {`커밋 ${doc.commit.slice(0, 7)}(${doc.committed}) 기준`} · 화면용 MDX 컴포넌트 문법(배치 · 목차 · 데모)만 걷어 냈고,
+    이미지는 저장소에서, 예시 · 다른 페이지는 원문 사이트로 연결돼요 · <code>npm run sync-docs</code>로 갱신
+  </p>
+  <p class="credit doc-archived">{doc.archived}</p>
+  <details class="doc-license">
+    <summary class="mono">{doc.license} 전문</summary>
+    <pre>{doc.licenseText}</pre>
+  </details>
+
+  <section class="gv-group">
+    {doc.pages.map((p) => {
+      const used = usedBy(p.title);
+      return (
+        <details class="gv-page" id={p.id}>
+          <summary>
+            <span class="gv-title">{p.title}</span>
+            <span class="gv-desc">{p.description}</span>
+          </summary>
+          <div class="gv-body">
+            <p class="gv-links mono">
+              <a href={p.url} target="_blank" rel="noopener">지금 사이트에서 보기 ↗</a>
+              {used.length > 0 && (
+                <span class="gv-used">
+                  Regula에서 {used.map((u) => <a href={u.to}>{u.name}</a>)}
+                </span>
+              )}
+            </p>
+            <div class="gv-text doc-text" set:html={p.html} />
+          </div>
+        </details>
+      );
+    })}
+  </section>
+</div>
+
+<script>
+  // 주소의 #가 접힌 페이지 안을 가리키면 그 페이지를 펼치고 그 자리로 간다
+  const reveal = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id.startsWith('doc-')) return;
+    const el = document.getElementById(id);
+    const page = el?.closest<HTMLDetailsElement>('details.gv-page');
+    if (!el || !page) return;
+    page.open = true;
+    el.scrollIntoView();
+  };
+  window.addEventListener('hashchange', reveal);
+  reveal();
+</script>

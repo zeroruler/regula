@@ -8,6 +8,7 @@ import { patternGroups, section } from '../../lib/site';
 import { prepareImported } from '../../lib/imported';
 import WcagCriteria from '../../components/WcagCriteria.astro';
 import GovukPages from '../../components/GovukPages.astro';
+import DocPages from '../../components/DocPages.astro';
 import embedHeights from '../../imported/measured/embed-heights.json';
 
 type Imported = { repo: string; license: string; branch: string; fetchedAt: string; html: string };
@@ -88,6 +89,8 @@ const showFrame = Boolean(r.embed && r.url && !snapshot);
         <WcagCriteria uses={usedIn} />
       ) : r.imported === 'govuk' ? (
         <GovukPages uses={usedIn} />
+      ) : r.imported === 'carbon' || r.imported === 'primer' ? (
+        <DocPages source={r.imported} uses={usedIn} />
       ) : snapshot ? (
         <div class="imported-wrap">
           <p class="credit">

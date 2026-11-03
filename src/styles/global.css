@@ -1375,10 +1375,23 @@ article.note .prose p:last-child{margin-bottom:0}
 .gv-text p{margin:0 0 8px}
 .gv-text ul,.gv-text ol{padding-left:18px;margin:0 0 8px}
 .gv-text img{max-width:100%;height:auto;border:1px solid var(--rule)}
-.gv-text table{display:block;overflow-x:auto;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
+.gv-text table{display:block;overflow-x:auto;min-width:0;max-width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
 .gv-text th,.gv-text td{border-bottom:1px solid var(--rule);padding:6px 10px 6px 0;text-align:left;vertical-align:top}
 .gv-text pre{overflow-x:auto;font-size:12.5px;padding:10px;background:var(--surface);border:1px solid var(--rule)}
 .gv-inset{margin:6px 0 10px;padding-left:12px;border-left:2px solid var(--rule)}
 .gv-example{font-family:var(--mono);font-size:12px;margin:4px 0 12px}
 .gv-example a::after{content:" ↗"}
 .gv-text :target{background:linear-gradient(var(--mark),var(--mark)) left bottom/100% 3px no-repeat}
+/* Carbon · Primer 문서 원문 (GOV.UK와 같은 접힘 목록을 쓴다) */
+.doc-archived{color:var(--ink-2)}
+.doc-license{margin:0 0 6px}
+.doc-license summary{font-size:12px;color:var(--ink-3);cursor:pointer}
+.doc-license pre{white-space:pre-wrap;font-size:11.5px;max-height:320px;overflow:auto;padding:10px;background:var(--surface);border:1px solid var(--rule)}
+.doc-text .doc-lead p{font-size:15.5px;color:var(--ink)}
+.doc-text .doc-note{margin:6px 0 10px;padding-left:12px;border-left:2px solid var(--rule)}
+.doc-text .doc-caption{font-size:12.5px;color:var(--ink-3)}
+.doc-text .doc-title{font-weight:600;color:var(--ink);margin-top:12px}
+.doc-text .doc-dd{margin:8px 0 12px;padding:8px 0 4px 12px;border-left:2px solid var(--ink)}
+.doc-text .doc-dont{border-left-style:dashed;border-left-color:var(--ink-3)}
+.doc-text .doc-dd-label{font-family:var(--mono);font-size:11.5px;margin:0 0 4px;color:var(--ink)}
+.doc-text td img{max-width:160px;border:none}

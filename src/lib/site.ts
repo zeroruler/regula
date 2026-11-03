@@ -60,7 +60,7 @@ export const topics: { name: string; path?: string; blurb: string }[] = [
 // UI 패턴의 카테고리 순서. 카테고리마다 자기 페이지(path)가 있고, /patterns/는 입구만 둔다.
 // level은 카드와 눈금에 쓰는 1–9 값의 필드. level이 없는 카테고리(문구)는 카드 없이 실습만 있다.
 export const patternGroups: {
-  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage' | 'hide' | 'browse' | 'shown'; levelName?: string;
+  id: string; name: string; path: string; level?: 'intrusiveness' | 'emphasis' | 'effort' | 'scope' | 'wait' | 'block' | 'discover' | 'stage' | 'hide' | 'browse' | 'shown' | 'replace'; levelName?: string;
   title: string; intro: string; ends?: [string, string];
 }[] = [
   {
@@ -124,6 +124,12 @@ export const patternGroups: {
     ends: ['코드에만 · 보조 기술이 읽음', '화면에 · 누구나 봄'],
   },
   {
+    id: 'media', name: '영상과 소리', path: 'patterns/media/', level: 'replace', levelName: '영상을 대신하는 정도',
+    title: '듣지 못해도, 보지 못해도 같은 내용을',
+    intro: '영상 · 음성을 듣지 못하는 사람과 보지 못하는 사람에게 같은 내용을 건네는 방법을, 영상을 대신하는 정도 순으로 놓았습니다. 왼쪽은 영상을 보는 동안 곁에서 돕고, 오른쪽은 영상 없이도 그 내용을 다 담습니다.',
+    ends: ['영상에 덧붙임', '영상을 대신함'],
+  },
+  {
     id: 'ai', name: 'AI 화면', path: 'patterns/ai/', level: 'stage', levelName: '대화의 시점',
     title: 'AI와 주고받는 화면',
     intro: '챗봇·AI 도우미 화면의 요소를 대화에서 쓰이는 시점 순으로 놓았습니다. 왼쪽은 묻기 전에 무엇을 할 수 있는지 알려 주고, 가운데는 기다리는 동안 무슨 일이 일어나는지, 오른쪽은 받은 답을 믿고 고치는 법을 줍니다.',
@@ -145,6 +151,7 @@ export const section = (key: SectionKey) => sections.find((s) => s.key === key)!
 
 // 작업 기록 — 위가 최신
 export const log: { date: string; text: string }[] = [
+  { date: '2026-11-03', text: 'UI 패턴에 "영상과 소리"(/patterns/media/) 추가. 재생 조절 · 자막 · 실시간 자막 · 음성 해설 · 대본 5가지를 영상을 대신하는 정도 순으로 놓음. Regula가 지은 짧은 영상 대본(3단 우산 접는 법)을 소리 없이 보거나 화면 없이 들으며, 자막(말만 · 말과 소리) · 음성 해설 · 대본을 켜고 끌 때 놓치는 정보를 세는 실습(3 · 1 · 0 / 7, 4 · 0 / 7)과 규칙 7줄을 붙임. WCAG 1.2.1–1.2.5 · 1.4.2 원문과 Understanding · G170으로 확인(출처 37차). 이로써 WCAG 2.2 A · AA 기준 55개를 모두 Regula의 공식 · 패턴 · 규칙에서 다룸.' },
   { date: '2026-11-03', text: '남은 WCAG A · AA 기준 7개를 채움. 제스처에 "흔들기 · 기울이기"(2.5.4: 같은 일을 하는 버튼과 끄기 설정)를 더하고, 규칙 표에 6줄 — 입력에 시간 제한(2.2.1), 문구에 모양 · 위치로만 안내하지 않기(1.3.3)와 보이는 글자를 이름에도(2.5.3), 화면 구성에 읽는 순서(1.3.2)와 화면 방향 고정하지 않기(1.3.4), 타이포그래피에 글자를 그림으로 넣지 않기(1.4.5). WCAG 원문과 Understanding을 읽고 확인(출처 36차). A · AA 55개 중 Regula가 다룬 것이 50개가 됐고, 남은 것은 영상 · 음성(1.2.x)뿐.' },
   { date: '2026-11-03', text: 'UI 패턴에 "키보드와 구조"(/patterns/keyboard/) 추가. 키보드만 쓰는 사람과 화면 낭독기 사용자가 페이지를 오가게 하는 장치 8가지(페이지 언어 · 페이지 제목 · 랜드마크 · 제목 구조 · 건너뛰기 링크 · 묶음 안 화살표 이동 · 키보드 단축키 · 포커스 가두기)를 화면에 보이는 정도 순으로 놓음. 같은 예시 페이지에서 건너뛰기 링크와 서식 도구의 이동 방식을 바꿔 "주문하기"까지 키를 몇 번 누르는지(13 · 9 · 3번) 세는 실습과, 포커스 · 입력 · 일관성 · 여러 길 · 툴팁 규칙 8줄을 붙임. 근거는 WCAG 원문과 Understanding · Techniques(G1 · ARIA11 · G141 · H42) · APG를 읽고 확인한 것만(출처 35차). WCAG A · AA 기준 중 Regula가 다룬 것이 28개에서 43개로.' },
   { date: '2026-11-03', text: '레퍼런스 원문 아래 "Regula에서" 연결을 채움. 지금까지는 refs에 그 레퍼런스를 넣은 공식 · 패턴만 이어져, 출처 줄에 적어 놓고도 빠진 곳이 많았음(양식 규칙 · 페이지 규칙 표 · refs가 없는 패턴). 출처 줄 → 원문 링크와 같은 매칭을 거꾸로 써서 WCAG 기준 · GOV.UK 페이지 아래에 그 규칙 줄로 바로 가는 링크를 붙임 — WCAG에서 Regula가 쓴 A · AA 기준이 12개에서 28개로. 같은 양식 · 같은 표의 규칙은 "검색 결과 양식 · 규칙 10 · 11 · 12"처럼 한 줄로 묶음. 페이지마다 흩어져 있던 규칙 표 14개는 src/lib/rules.ts로 모으고, 표의 줄과 양식 규칙에 id를 달아 그 줄을 형광펜으로 보임.' },

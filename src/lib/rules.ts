@@ -87,16 +87,6 @@ export const ruleTables: RuleTable[] = [
     { s: '찾아가기', rule: '한 페이지에 닿는 길을 둘 이상 둔다(메뉴와 검색, 사이트맵 등). 결제 단계처럼 차례대로 가는 과정의 한 단계는 예외', src: 'WCAG 2.2 2.4.5 Multiple Ways (AA)' },
     { s: '툴팁', rule: '호버 · 포커스로 뜬 내용은 Esc로 치울 수 있고, 포인터를 그 위로 옮겨도 사라지지 않고, 사용자가 치울 때까지 남는다', src: 'WCAG 2.2 1.4.13 Content on Hover or Focus (AA)' },
   ] },
-  // 영상과 소리 규칙. WCAG 원문과 Understanding · Techniques를 읽고 확인한 것만 적는다(docs/source-check.md 37차).
-  { key: 'media', name: '영상과 소리', path: 'patterns/media/', section: 'patterns', rules: [
-    { s: '자동 재생', rule: '들어오자마자 소리를 틀지 않는다. 3초 넘게 저절로 난다면 멈추기나 따로 줄이는 조절을 페이지 앞쪽에 — 기기 볼륨을 줄이는 것은 멈춤이 아니다', src: 'WCAG 2.2 1.4.2 Audio Control (A) · Technique G170' },
-    { s: '자막', rule: '말 · 말하는 사람 · 뜻이 있는 소리를 함께 옮긴다', src: 'WCAG 2.2 1.2.2 Captions (Prerecorded) (A) · Understanding Captions (Prerecorded)' },
-    { s: '실시간', rule: '실시간 방송 · 중계는 방송하는 동안 자막을 함께 내보낸다. 영상 통화 앱 자체에는 해당하지 않는다', src: 'WCAG 2.2 1.2.4 Captions (Live) (AA) · Understanding Captions (Live)' },
-    { s: '음성 해설', rule: '대사가 쉬는 틈에 행동 · 인물 · 장면 바뀜 · 화면 속 글자를 말로. 소리만으로 다 전달되면 따로 없어도 된다', src: 'WCAG 2.2 1.2.5 Audio Description (Prerecorded) (AA) · Understanding Audio Description (Prerecorded)' },
-    { s: '소리만', rule: '팟캐스트 · 녹음처럼 소리만 있는 것은 같은 내용의 글을 함께 둔다', src: 'WCAG 2.2 1.2.1 Audio-only and Video-only (Prerecorded) (A)' },
-    { s: '화면만', rule: '소리 없는 영상은 같은 내용의 글이나, 같은 내용을 말하는 소리 트랙을 둔다', src: 'WCAG 2.2 1.2.1 Audio-only and Video-only (Prerecorded) (A)' },
-    { s: '예외', rule: '이미 페이지에 글로 다 있는 내용을 영상으로 한 번 더 보여 주는 것이라면, 그렇다고 분명히 밝히고 자막 · 해설을 생략할 수 있다', src: 'WCAG 2.2 1.2.2 Captions (Prerecorded) (A) · 1.2.3 Audio Description or Media Alternative (Prerecorded) (A)' },
-  ] },
   // 로딩·빈 상태 규칙. 출처가 있는 것만 적는다.
   { key: 'states', name: '로딩과 빈 상태', path: 'patterns/states/', section: 'patterns', rules: [
     { s: '시간', rule: '0.1초 안이면 즉각, 1초 안이면 흐름이 끊기지 않음, 10초를 넘으면 주의가 떠난다', src: 'Jakob Nielsen, 『Usability Engineering』 (1993) 응답 시간 한계' },

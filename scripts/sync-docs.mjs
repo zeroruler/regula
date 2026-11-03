@@ -7,6 +7,9 @@
 //   라이선스가 분명한 보관본을 가져온다.
 // - Primer: primer/design, MIT. 2025-07-01 이후 커밋이 없고 지금 primer.style은 다른 곳에서 빌드된다. 마찬가지로 저장소 판본.
 // 바꾸는 건 MDX 컴포넌트 문법을 걷어 내는 것(Apache-2.0 4(b)에 따라 화면에 적는다)과 링크 · 이미지 주소뿐이다.
+// 덧붙이는 것(원문이 아니라고 화면에 적는다, docs/source-check.md 34차):
+// - 로그인하지 않은 요청에 4xx를 돌려주는 그림은 깨진 그림 대신 원문의 그림 설명(alt)과 그림 주소로 바꾼다
+// - Primer Typography의 Storybook 데모 자리에는 같은 값을 담은 @primer/primitives(MIT)의 토큰 표를 붙인다
 import { execSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -48,6 +51,9 @@ const SOURCES = {
     copyright: 'Copyright (c) GitHub, Inc.',
     archived: 'primer/design 저장소는 2025-07-01 뒤로 바뀌지 않았고, 지금 primer.style은 다른 곳에서 만들어져요. 라이선스가 분명한 저장소 판본을 실었고, 지금 사이트와 다를 수 있어요.',
     cite: 'Primer',
+    // Typography 페이지의 Storybook 데모(글자 크기 · 굵기 · 서체)는 @primer/primitives 토큰을 그린 것이라, 같은 토큰 값을 표로 붙인다.
+    // 문서 판본(2025-07-01) 바로 전 릴리스를 쓴다(11.0.0은 2025-07-03).
+    tokens: { package: '@primer/primitives', version: '10.7.0', licenseCheck: /Permission is hereby granted, free of charge/ },
     // 레퍼런스 정리의 "볼 것"(정보 밀도가 높은 화면의 간격과 타이포그래피)
     pages: [
       { file: 'foundations/layout.mdx', path: 'foundations/layout/' },
@@ -132,6 +138,92 @@ function mdxToMd(body) {
   );
 }
 
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+// 그림 주소가 로그인 없이 열리는지. 4xx · 5xx면 그 상태 코드를, 열리거나 이 컴퓨터에서 닿지 않으면(000) null
+const imageStatus = new Map();
+function brokenImage(src) {
+  if (!imageStatus.has(src)) {
+    let code = '000';
+    try {
+      code = execSync(`curl -sS -o /dev/null -L --max-time 20 -w '%{http_code}' ${JSON.stringify(src)}`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    } catch {}
+    if (code === '000') console.warn(`그림을 확인하지 못함(네트워크): ${src}`);
+    imageStatus.set(src, /^[45]\d\d$/.test(code) ? code : null);
+  }
+  return imageStatus.get(src);
+}
+const fixImages = (html) =>
+  html.replace(/<img src="([^"]+)" alt="([^"]*)"[^>]*\/?>/g, (m, src, alt) => {
+    const code = brokenImage(src.replaceAll('&amp;', '&'));
+    if (!code) return m;
+    return `<span class="doc-noimg">그림을 불러올 수 없어요 — 이 그림 주소는 로그인하지 않은 요청에 ${code}을 돌려줘요.${alt ? ` 원문의 그림 설명: “${alt}”` : ''} <a href="${src}" target="_blank" rel="noopener">그림 주소 ↗</a></span>`;
+  });
+
+// @primer/primitives 판본의 토큰 값(dist/docs: 참조를 풀어 둔 값)으로 Typography 페이지의 데모 자리에 붙일 표를 만든다
+function primerTokenTables(t, dir) {
+  try {
+    return tokenTables(t, dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+function tokenTables(t, dir) {
+  execSync(`npm pack ${t.package}@${t.version} --silent --pack-destination "${dir}"`, { stdio: ['ignore', 'pipe', 'inherit'] });
+  const tgz = execSync(`ls "${dir}"/*.tgz`).toString().trim();
+  execSync(`tar xzf "${tgz}" -C "${dir}"`);
+  const pkg = join(dir, 'package');
+  const license = readFileSync(join(pkg, 'LICENSE'), 'utf8');
+  if (!t.licenseCheck.test(license)) throw new Error(`${t.package}: LICENSE가 MIT가 아님 — 라이선스를 다시 확인할 것`);
+  const fn = JSON.parse(readFileSync(join(pkg, 'dist/docs/functional/typography/typography.json'), 'utf8'));
+  const base = JSON.parse(readFileSync(join(pkg, 'dist/docs/base/typography/typography.json'), 'utf8'));
+  const v = (name) => {
+    if (!(name in fn)) throw new Error(`${t.package}@${t.version}: 토큰 ${name} 없음`);
+    return fn[name].value;
+  };
+  const px = (rem) => (/rem$/.test(rem) ? `${rem} (${Math.round(parseFloat(rem) * 16 * 100) / 100}px)` : rem);
+  const credit = (what) =>
+    `<p class="doc-caption">Regula가 덧붙인 표 — 원문이 아니에요. 위 Storybook 데모가 그리는 값(${what})을 <a href="https://www.npmjs.com/package/${t.package}/v/${t.version}" target="_blank" rel="noopener">${t.package} ${t.version}</a>(MIT, Copyright (c) 2018 GitHub Inc.)의 토큰 파일에서 옮겼어요. 이 문서 판본 바로 전 릴리스라 지금 데모와 다를 수 있어요.</p>`;
+  const table = (head, rows) =>
+    `<table><thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows
+      .map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`)
+      .join('')}</tbody></table>`;
+
+  // Storybook 이야기 이름 → 토큰 이름(text-<스타일>-…[-<크기>])
+  const styles = [
+    ['Display', 'display'], ['Title (large)', 'title', 'large'], ['Title (medium)', 'title', 'medium'], ['Title (small)', 'title', 'small'],
+    ['Subtitle', 'subtitle'], ['Body (large)', 'body', 'large'], ['Body (medium)', 'body', 'medium'], ['Body (small)', 'body', 'small'],
+    ['Caption', 'caption'], ['Code block', 'codeBlock'], ['Inline code', 'codeInline'],
+  ];
+  const tok = (style, part, size) => `text-${style}-${part}${size && part !== 'weight' ? `-${size}` : ''}`;
+  const weightTok = (style, size) => (`text-${style}-weight-${size}` in fn ? `text-${style}-weight-${size}` : `text-${style}-weight`);
+  const functional = table(
+    ['스타일', '크기', '줄 높이', '굵기', '토큰', '설명(토큰 파일의 원문)'],
+    styles.map(([label, style, size]) => {
+      const short = `text-${style}-shorthand${size ? `-${size}` : ''}`;
+      const lh = tok(style, 'lineHeight', size) in fn ? v(tok(style, 'lineHeight', size)) : null;
+      const sz = v(tok(style, 'size', size));
+      const lhPx = lh && /rem$/.test(sz) ? ` (${Math.round(parseFloat(sz) * 16 * lh)}px)` : '';
+      return [esc(label), px(sz), lh ? `${lh}${lhPx}` : '—', String(v(size ? weightTok(style, size) : `text-${style}-weight`)), `<code>--${short}</code>`, esc(fn[short].description ?? '')];
+    }),
+  );
+  const weights = table(
+    ['이름', '토큰', '값'],
+    ['light', 'normal', 'medium', 'semibold'].map((w) => [w, `<code>--base-text-weight-${w}</code>`, String(base[`base-text-weight-${w}`].value)]),
+  );
+  const stacks = table(
+    ['이름', '토큰', '값'],
+    ['sansSerif', 'sansSerifDisplay', 'system', 'monospace'].map((n) => [n, `<code>--fontStack-${n}</code>`, `<code>${esc(v(`fontStack-${n}`))}</code>`]),
+  );
+  const block = (what, body) => `<div class="doc-tokens">${credit(what)}${body}</div>`;
+  return {
+    license,
+    'typography-functional--overview': block('글자 스타일의 크기 · 줄 높이 · 굵기', functional),
+    'typography-base--base': block('굵기 값', weights),
+    'typography-functional--font-family': block('서체 묶음', stacks),
+  };
+}
+
 for (const key of keys) {
   const s = SOURCES[key];
   if (!s) throw new Error(`모르는 이름: ${key}`);
@@ -143,6 +235,7 @@ for (const key of keys) {
     const commit = execSync('git log -1 --format=%H', { cwd: dir }).toString().trim();
     const committed = execSync('git log -1 --format=%cs', { cwd: dir }).toString().trim();
     const raw = (p) => `https://raw.githubusercontent.com/${s.repo}/${commit}/${p}`;
+    const { license: tokensLicense, ...extras } = s.tokens ? primerTokenTables(s.tokens, mkdtempSync(join(tmpdir(), `${key}-tokens-`))) : {};
     const ids = new Map(s.pages.map((p) => [p.path.replace(/\/$/, ''), `doc-${key}-${p.path.replace(/\/$/, '').replaceAll('/', '-')}`]));
 
     const pages = s.pages.map((p) => {
@@ -169,7 +262,7 @@ for (const key of keys) {
         if (src.startsWith('/') && s.staticDir) return raw(`${s.staticDir}${src}`);
         return raw(`${fileDir}/${src.replace(/^\.\//, '')}`);
       };
-      const html = sanitizeHtml(marked.parse(mdxToMd(body), { async: false }), {
+      let html = sanitizeHtml(marked.parse(mdxToMd(body), { async: false }), {
         allowedTags: ['h2', 'h3', 'h4', 'h5', 'p', 'a', 'ul', 'ol', 'li', 'strong', 'em', 'code', 'pre', 'blockquote', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'br', 'hr'],
         allowedAttributes: { a: ['href', 'target', 'rel'], img: ['src', 'alt', 'loading', 'width'], div: ['class'], p: ['class'] },
         allowedClasses: { div: ['doc-dd', 'doc-do', 'doc-dont', 'doc-lead', 'doc-note'], p: ['doc-dd-label', 'doc-caption', 'doc-title', 'doc-resource', 'gv-example'] },
@@ -189,6 +282,11 @@ for (const key of keys) {
         })
         .replace(/<p>\s*<\/p>/g, '')
         .replace(/\n{2,}/g, '\n');
+      html = fixImages(html);
+      for (const [story, block] of Object.entries(extras)) {
+        const at = html.match(new RegExp(`<p class="gv-example"><a href="[^"]*path=/story/${story}"[^>]*>[^<]*</a></p>`));
+        if (at) html = html.replace(at[0], `${at[0]}${block}`);
+      }
       const left = html.match(/<\/?[A-Z][\w.]*[\s>]/g);
       if (left) console.warn(`${key}/${p.file}: 남은 컴포넌트 ${left.join(' ')}`);
       return { id, title: data.title ?? p.path, description: data.description ?? '', path: p.path, url: pageUrl, html };
@@ -211,6 +309,7 @@ for (const key of keys) {
           copyright: s.copyright,
           archived: s.archived,
           cite: s.cite,
+          ...(s.tokens ? { tokens: { name: s.tokens.package, version: s.tokens.version, license: 'MIT', licenseText: tokensLicense } } : {}),
           fetchedAt: new Date().toISOString().slice(0, 10),
           pages,
         },

@@ -30,6 +30,12 @@ const usedBy = (title: string) => uses.filter((u) => cited(u.text).includes(titl
     <summary class="mono">{doc.license} 전문</summary>
     <pre>{doc.licenseText}</pre>
   </details>
+  {'tokens' in doc && doc.tokens && (
+    <details class="doc-license">
+      <summary class="mono">{doc.tokens.name} {doc.tokens.version} {doc.tokens.license} 전문 (Regula가 덧붙인 토큰 표의 출처)</summary>
+      <pre>{doc.tokens.licenseText}</pre>
+    </details>
+  )}
 
   <section class="gv-group">
     {doc.pages.map((p) => {

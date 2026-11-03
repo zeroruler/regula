@@ -2,6 +2,26 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 34차: Primer 원문의 빈자리 채우기 (토큰 표 · 열리지 않는 그림) · Steve Schoger는 확인 못 함
+
+### Primer Typography — Storybook 데모 자리에 토큰 표
+
+- 원문(primer/design `content/foundations/typography.mdx`)의 글자 크기 · 굵기 · 서체 표는 Storybook 데모(primer.style/primitives/storybook)라 22차에서 링크로만 남겼다. 데모가 그리는 값은 `@primer/primitives`의 타이포그래피 토큰이다
+- `@primer/primitives` 10.7.0(npm, 2025-05-21 배포, 저장소 primer/primitives): 꾸러미의 LICENSE가 MIT("Copyright (c) 2018 GitHub Inc.", "Permission is hereby granted, free of charge …")임을 직접 읽음. npm 정보의 license도 MIT. 지금 저장소(47736486, 2026-11-02)의 LICENSE도 같은 MIT
+- 판본: 이 문서 판본(primer/design 87f799f, 2025-07-01) 바로 전 릴리스를 씀(다음 11.0.0은 2025-07-03). 문서 본문의 "Font weight options include light, normal, medium, and semibold"와 10.7.0의 굵기 토큰 4개(300 · 400 · 500 · 600)가 맞음
+- 꾸러미의 `dist/docs/{functional,base}/typography/typography.json`(참조를 풀어 둔 값)에서 스타일 11개의 크기 · 줄 높이 · 굵기와 토큰 설명($description, 영어 원문 그대로), 굵기 4개, 서체 묶음 4개를 표로 옮겨 각 Storybook 링크 아래에 붙임. px 값은 Regula가 1rem = 16px로 계산한 것
+- 원문이 아니라 Regula가 덧붙인 표라는 것과 판본 · 저작권을 표마다 적고, 점선으로 원문과 나눔. MIT 전문은 Primer 레퍼런스 페이지에 primer/design의 전문과 함께 실음
+- `npm run sync-docs`가 꾸러미를 받아(npm pack) 라이선스를 다시 확인하고 표를 만든다(scripts/sync-docs.mjs의 `tokens`)
+
+### Primer Layout — 로그인하지 않으면 열리지 않는 그림
+
+- `https://github.com/user-attachments/assets/4e47b827-…`(xlarge 화면 여백 그림)는 로그인하지 않은 요청에 403을 돌려준다(curl로 다시 확인). 방문자 대부분에게 깨진 그림으로 보이므로, 그 자리에 원문의 그림 설명(alt, 영어 그대로)과 그림 주소 링크를 둔다
+- `npm run sync-docs`가 그림 주소를 하나씩 열어 보고 4xx · 5xx인 것만 바꾼다. 이 환경에서 닿지 않는 주소(user-images.githubusercontent.com 3개)는 확인하지 못했다고만 알리고 그대로 둔다
+
+### 확인하지 못한 것
+
+- Steve Schoger(X 계정, 32차에서 미룸): 이 작업 환경의 네트워크에서 x.com에 닿지 않아 X 이용 약관을 읽지 못함. Regula에서 출처로 쓰는 곳이 없고 원문을 싣거나 미리보기를 켜지 않았으므로(요약과 링크만) 지금 상태로 둔다
+
 ## 2026-11-03 — 33차: 결정 — NC-ND 원문은 싣지 않고, 약관이 엄격한 곳은 미리보기를 끔
 
 - Laws of UX(25차) · Dieter Rams 10원칙(32차)은 CC BY-NC-ND 4.0이라 원문을 싣지 않기로 함. 지금처럼 Regula의 요약과 링크만 둔다

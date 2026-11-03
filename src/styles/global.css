@@ -1390,6 +1390,12 @@ article.note .prose p:last-child{margin-bottom:0}
 .doc-text .doc-lead p{font-size:15.5px;color:var(--ink)}
 .doc-text .doc-note{margin:6px 0 10px;padding-left:12px;border-left:2px solid var(--rule)}
 .doc-text .doc-caption{font-size:12.5px;color:var(--ink-3)}
+/* 원문이 아니라 Regula가 덧붙인 것: 점선으로 원문과 나눈다 */
+.doc-text .doc-tokens{margin:4px 0 14px;padding:8px 0 2px 12px;border-left:2px dashed var(--rule)}
+.doc-text .doc-tokens table{font-size:12.5px}
+.doc-text .doc-tokens th,.doc-text .doc-tokens td{white-space:nowrap;overflow-wrap:normal}
+.doc-text .doc-tokens td:last-child{white-space:normal;min-width:28ch}
+.doc-text .doc-noimg{display:block;padding:10px 12px;border:1px dashed var(--rule);font-size:12.5px;color:var(--ink-3)}
 .doc-text .doc-title{font-weight:600;color:var(--ink);margin-top:12px}
 .doc-text .doc-dd{margin:8px 0 12px;padding:8px 0 4px 12px;border-left:2px solid var(--ink)}
 .doc-text .doc-dont{border-left-style:dashed;border-left-color:var(--ink-3)}

@@ -5,6 +5,7 @@ import PageHead from '../components/PageHead.astro';
 import { href } from '../lib/url';
 import { loadCombos } from '../lib/combos';
 import Cite from '../components/Cite.astro';
+import { rulesOf, ruleId } from '../lib/rules';
 
 // 서체 후보는 fonts 컬렉션에서 가져온다. 클라이언트 스크립트가 이 JSON으로 선택지와 서체 파일 주소를 만든다.
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order).map((f) => ({
@@ -14,16 +15,7 @@ const origin = { styles: href('principles/styles/'), motion: href('principles/mo
 // 색 조합은 /colors/와 같은 데이터(src/content/combos)를 빌드 때 풀어 넘긴다.
 const combos = (await loadCombos()).map((c) => c.option);
 
-// 도구가 쓰는 기준 중 출처가 있는 것만. 원문 확인 기록은 docs/source-check.md (15차).
-const rules = [
-  { s: '글자 대비', rule: '본문 글자는 배경과 4.5:1 이상. 도구는 글자 · 보조 글자 · 강조색 · 알림 · 위험 버튼의 조합을 계산해 미달을 표시한다', src: 'WCAG 2.2 1.4.3 Contrast (Minimum) (AA)' },
-  { s: '경계 · 포커스', rule: '입력칸 경계와 포커스 링은 주변과 3:1 이상. 그래서 입력칸 테두리는 두께 0이어도 1px를 남긴다', src: 'WCAG 2.2 1.4.11 Non-text Contrast (AA)' },
-  { s: '색에만 기대지 않기', rule: '파일의 알림 견본은 색과 함께 "안내 · 완료 · 오류" 글자를 쓴다', src: 'WCAG 2.2 1.4.1 Use of Color (A)' },
-  { s: '반투명 면', rule: '반투명 면 위 글자는 가장 나쁜 배경에서도 4.5:1. 투명도 줄이기 · 대비 높이기 설정에는 불투명한 면으로 — DESIGN.md와 preview.html에 미디어 쿼리가 들어간다', src: 'Megan Brown, 「Glassmorphism: Definition and Best Practices」 (NN/g, 2024) · W3C Media Queries Level 5 (prefers-reduced-transparency · prefers-contrast, 2026-02-19 Working Draft 원문에서 이름 확인)' },
-  { s: '움직임 줄이기', rule: 'prefers-reduced-motion이면 전환을 끈다. 5초 넘게 저절로 움직이는 것은 멈출 수단을 둔다', src: 'WCAG 2.2 2.3.3 Animation from Interactions (AAA) · 2.2.2 Pause, Stop, Hide (A)' },
-  { s: '곡선', rule: '표준 cubic-bezier(0.2, 0, 0, 1) · 감속 (0, 0, 0, 1) · 가속 (0.3, 0, 1, 1)', src: 'Material 3 토큰 md.sys.motion (material-web 저장소 tokens/versions/v0_192)' },
-  { s: '컨트롤 크기', rule: '최소 24×24px(AA), 44×44px이면 향상 기준(AAA)까지', src: 'WCAG 2.2 2.5.8 Target Size (Minimum) · 2.5.5 Target Size (Enhanced)' },
-];
+const { rules } = rulesOf('builder');
 // 이 도구가 정한 값 — 출처가 있는 기준이 아니다.
 const own = [
   { s: '색 계산', rule: '호버 = 강조색에 검정(다크는 흰색) 12% 섞기, 눌림 24%, 부드러운 배경 = 표면에 색 12% 섞기, 강조색 위 글자 = 표면색과 글자색 중 대비가 큰 쪽' },
@@ -55,7 +47,7 @@ const own = [
     <div class="compare">
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
-        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}</tbody>
+        <tbody>{rules.map((r, i) => <tr id={ruleId('builder', i)}><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}</tbody>
       </table>
     </div>
     <div class="compare">

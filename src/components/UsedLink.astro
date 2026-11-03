@@ -1,0 +1,12 @@
+---
+// 원문 위치 아래의 "Regula에서" 한 항목. 양식 · 규칙 표처럼 묶인 항목은 "이름 · 규칙 3 · 규칙 7"로 각각 잇는다.
+import type { Use } from '../lib/citedby';
+
+interface Props { use: Use }
+const { use: u } = Astro.props;
+---
+{u.parts ? (
+  <span class="used-parts">{u.name}{u.parts.map((p) => <> · <a href={p.to}>{p.text}</a></>)}</span>
+) : (
+  <a href={u.to}>{u.name}</a>
+)}

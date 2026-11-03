@@ -6,18 +6,13 @@ import Styles from '../../demos/styles/Styles.astro';
 import { topics } from '../../lib/site';
 import { href } from '../../lib/url';
 import Cite from '../../components/Cite.astro';
+import { rulesOf, ruleId } from '../../lib/rules';
 
 const T = '비주얼 스타일';
 const formulas = (await getCollection('formulas', (f) => f.data.topic === T)).sort((a, b) => a.data.order - b.data.order);
 const refTitles = Object.fromEntries((await getCollection('references')).map((r) => [r.id, r.data.title]));
 
-const rules = [
-  { s: '단서', rule: '스타일이 무엇이든 누를 수 있는 것은 누를 수 있어 보여야 한다 — 평면이면 그림자 · 밑줄 같은 단서를 조금 되살린다', src: 'Kate Moran, 「Flat Design…」 (NN/g, 2015)' },
-  { s: '경계 대비', rule: '버튼 · 입력칸의 경계와 상태는 주변과 3:1 이상 — 그림자만으로 경계를 만드는 스타일은 여기서 걸린다', src: 'WCAG 2.2 1.4.11 Non-text Contrast (AA)' },
-  { s: '글자 대비', rule: '반투명 면 위 글자는 가장 나쁜 배경에서도 4.5:1 — 흐림을 더 주거나 면을 덜 투명하게', src: 'WCAG 2.2 1.4.3 · Megan Brown, 「Glassmorphism…」 (NN/g, 2024)' },
-  { s: '설정', rule: '투명도 줄이기 · 대비 높이기 설정을 켠 사람에게는 불투명한 면으로', src: 'Megan Brown, 「Glassmorphism…」 (NN/g, 2024) · W3C Media Queries Level 5 (prefers-reduced-transparency · prefers-contrast)' },
-  { s: '절제', rule: '강한 스타일일수록 색은 2–3개, 본문 서체는 평범하게', src: 'Hayat Sheikh, 「Neobrutalism…」 (NN/g, 2025)' },
-];
+const { rules } = rulesOf('styles');
 ---
 <Base title="비주얼 스타일 · 원리와 공식 · Regula" current="principles" description="스큐어모피즘부터 리퀴드 글래스까지 비주얼 스타일 9가지를 재료로 정리하고, 같은 카드를 바꿔 보며 AI에 넘길 말을 얻는 페이지">
   <Fragment slot="sub">
@@ -42,7 +37,7 @@ const rules = [
     <div class="compare">
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
-        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}</tbody>
+        <tbody>{rules.map((r, i) => <tr id={ruleId('styles', i)}><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}</tbody>
       </table>
     </div>
   </section>

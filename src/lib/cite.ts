@@ -8,6 +8,8 @@ import primer from '../imported/docs/primer.json';
 import { href } from './url';
 
 export type Seg = { text: string; to?: string };
+// 출처가 가리키는 원문 위치: 레퍼런스 slug와 그 페이지 안의 id
+export type Target = { ref: string; anchor: string };
 
 // ── WCAG ──────────────────────────────────────────────
 export const wcagAnchor = (num: string) => `sc-${num.replaceAll('.', '-')}`;
@@ -32,7 +34,7 @@ const docPattern = (cite: string) => new RegExp(`${cite},?\\s+「?([A-Z][A-Za-z 
 export const docCited = (cite: string, text: string) => [...text.matchAll(docPattern(cite))].map((m) => m[1].trim().toLowerCase());
 
 // ── 출처 문자열 → 조각 ────────────────────────────────
-type Hit = { start: number; end: number; to: string };
+type Hit = { start: number; end: number } & Target;
 
 // " · "로 나눈 출처 조각. 괄호 안의 · 도 나뉘지만 글은 다시 그대로 이어 붙이므로 상관없다.
 const parts = (s: string) => {
@@ -58,7 +60,7 @@ function wcagHits(s: string): Hit[] {
     for (const m of p.text.slice(Math.max(from, 0)).matchAll(SC)) {
       if (!wcagNums.has(m[1])) continue;
       const start = p.at + Math.max(from, 0) + m.index!;
-      hits.push({ start, end: start + m[1].length, to: href(`references/wcag-22/#${wcagAnchor(m[1])}`) });
+      hits.push({ start, end: start + m[1].length, ref: 'wcag-22', anchor: wcagAnchor(m[1]) });
     }
   }
   return hits;
@@ -85,7 +87,7 @@ function govukHits(s: string): Hit[] {
       continue;
     }
     const start = at + m[1].length;
-    hits.push({ start, end: start + m[2].trim().length, to: href(`references/gov-uk/#${page.id}`) });
+    hits.push({ start, end: start + m[2].trim().length, ref: 'gov-uk', anchor: page.id });
   }
   return hits;
 }
@@ -98,28 +100,42 @@ function docHits(s: string): Hit[] {
       const page = doc.pages.find((p) => p.title.toLowerCase() === name.toLowerCase());
       if (!page) continue;
       const start = m.index! + m[0].indexOf(name, doc.cite.length);
-      hits.push({ start, end: start + name.length, to: href(`references/${ref}/#${page.id}`) });
+      hits.push({ start, end: start + name.length, ref, anchor: page.id });
     }
   }
   return hits;
 }
 
-const cache = new Map<string, Seg[]>();
+const cache = new Map<string, Hit[]>();
+const hitsOf = (source: string) => {
+  let hits = cache.get(source);
+  if (!hits) {
+    hits = [...wcagHits(source), ...govukHits(source), ...docHits(source)].sort((a, b) => a.start - b.start);
+    cache.set(source, hits);
+  }
+  return hits;
+};
+
+// 출처 문자열이 가리키는 원문 위치들(겹침 없이, 같은 위치는 한 번)
+export function citeTargets(source: string): Target[] {
+  const seen = new Set<string>();
+  return hitsOf(source).filter((h) => {
+    const k = `${h.ref}#${h.anchor}`;
+    return !seen.has(k) && seen.add(k);
+  }).map(({ ref, anchor }) => ({ ref, anchor }));
+}
 
 // 출처 문자열을 글 조각과 링크 조각으로 나눈다. 조각의 글을 모두 이으면 원래 문자열과 같다.
 export function citeSegments(source: string): Seg[] {
-  const hit = cache.get(source);
-  if (hit) return hit;
-  const hits = [...wcagHits(source), ...govukHits(source), ...docHits(source)].sort((a, b) => a.start - b.start);
+  const hits = hitsOf(source);
   const segs: Seg[] = [];
   let at = 0;
   for (const h of hits) {
     if (h.start < at) continue; // 겹치면 앞의 것만
     if (h.start > at) segs.push({ text: source.slice(at, h.start) });
-    segs.push({ text: source.slice(h.start, h.end), to: h.to });
+    segs.push({ text: source.slice(h.start, h.end), to: href(`references/${h.ref}/#${h.anchor}`) });
     at = h.end;
   }
   if (at < source.length) segs.push({ text: source.slice(at) });
-  cache.set(source, segs);
   return segs;
 }

@@ -41,14 +41,14 @@ const themes = isPage ? await loadThemes() : [];
     </header>
 
     {isPage && (
-      <section class="rules">
+      <section class="rules" id="rules">
         <div>
           <h2 class="label">구성 · 위에서 아래로</h2>
           <ol class="parts">{t.parts.map((p) => <li><b>{p.name}</b>{p.optional && <span class="opt">선택</span>}{p.note && <small>{p.note}</small>}</li>)}</ol>
         </div>
         <div>
           <h2 class="label">규칙 · {t.rules.length}</h2>
-          <ol class="parts">{t.rules.map((r) => <li>{r.text}<small class="src"><Cite text={r.source} /></small></li>)}</ol>
+          <ol class="parts">{t.rules.map((r, i) => <li id={`rule-${i + 1}`}>{r.text}<small class="src"><Cite text={r.source} /></small></li>)}</ol>
           {t.see.length > 0 && <p class="see"><span class="label">이어 보기</span>{t.see.map((l) => <a href={href(l.path)}>{l.label}</a>)}</p>}
         </div>
       </section>

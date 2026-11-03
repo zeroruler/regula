@@ -226,6 +226,10 @@ nav.toc a[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);fon
 .wc-sc{padding:14px 0 12px;border-bottom:1px solid var(--rule);scroll-margin-top:80px}
 .wc-sc:first-of-type{margin-top:10px;border-top:1px solid var(--rule)}
 .wc-sc:target{background:linear-gradient(var(--mark),var(--mark)) left top/4px 100% no-repeat;padding-left:14px}
+/* 레퍼런스 원문에서 규칙 한 줄로 바로 왔을 때 */
+.compare tr[id],.parts li[id]{scroll-margin-top:80px}
+.compare tr:target td:first-child{box-shadow:inset 4px 0 var(--mark);padding-left:12px}
+.parts li:target{background:linear-gradient(var(--mark),var(--mark)) left top/4px 100% no-repeat;padding-left:14px}
 .wc-sc header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
 .wc-sc .num{font-size:13px;color:var(--ink-3);text-decoration:none}
 .wc-sc h5{margin:0;font-family:var(--body);font-size:15.5px;font-weight:600}

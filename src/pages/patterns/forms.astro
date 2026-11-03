@@ -7,21 +7,12 @@ import Validation from '../../demos/forms/Validation.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 import Cite from '../../components/Cite.astro';
+import { rulesOf, ruleId } from '../../lib/rules';
 
 const groups = await patternsByGroup();
 const { group, items: inputs } = groups.find((x) => x.group.id === 'forms')!;
 
-// 폼 규칙. 출처가 있는 것만 적는다.
-const rules = [
-  { s: '라벨', rule: '라벨은 칸 위에 둔다. 시선 이동이 가장 적고 작성 시간이 가장 짧았다', src: 'Matteo Penzo, 「Label Placement in Forms」 (UXmatters, 2006)' },
-  { s: '라벨', rule: '플레이스홀더를 라벨 대신 쓰지 않는다. 쓰는 순간 사라지고, 흐려서 읽기 어렵다', src: 'Katie Sherwin, 「Placeholders in Form Fields Are Harmful」 (NN/g, 2014) · WCAG 2.2 3.3.2' },
-  { s: '라벨', rule: '필수에 별표를 다는 대신, 몇 안 되는 선택 항목에 "(선택)"을 붙인다', src: 'GOV.UK Design System Question pages' },
-  { s: '칸', rule: '칸 너비는 답의 길이에 맞춘다. 칸이 곧 힌트다', src: 'GOV.UK Design System Text input (fixed width inputs)' },
-  { s: '칸', rule: '입력 목적을 autocomplete로 알려 자동 채우기를 돕는다', src: 'WCAG 2.2 1.3.5 Identify Input Purpose' },
-  { s: '검증', rule: '칸을 떠난 뒤 확인하는 인라인 검증이 오류와 작성 시간을 줄였다. 쓰는 도중의 확인은 오히려 방해', src: 'Luke Wroblewski, 「Inline Validation in Web Forms」 (A List Apart, 2009)' },
-  { s: '검증', rule: '제출 시 오류가 있으면 맨 위에 요약을 두고 각 칸으로 이동하는 링크를 단다', src: 'GOV.UK Design System Error summary' },
-  { s: '오류', rule: '오류를 색만으로 알리지 않는다. 문장으로, 무엇을 어떻게 고칠지', src: 'WCAG 2.2 1.4.1 Use of Color · 3.3.1 Error Identification · 3.3.3 Error Suggestion' },
-];
+const { rules } = rulesOf('forms');
 ---
 <Base title="입력 · UI 패턴 · Regula" current="patterns" description="라벨 위치와 검증 시점을 바꿔 가며 직접 써 보는 폼 실습 페이지">
   <Fragment slot="sub"><PatternSubnav current={['forms']} /></Fragment>
@@ -52,7 +43,7 @@ const rules = [
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
         <tbody>
-          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
+          {rules.map((r, i) => <tr id={ruleId('forms', i)}><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
         </tbody>
       </table>
     </div>

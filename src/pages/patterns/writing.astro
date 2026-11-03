@@ -5,18 +5,9 @@ import ButtonCopy from '../../demos/writing/ButtonCopy.astro';
 import PatternSubnav from '../../components/PatternSubnav.astro';
 import { href } from '../../lib/url';
 import Cite from '../../components/Cite.astro';
+import { rulesOf, ruleId } from '../../lib/rules';
 
-// 문구 규칙. 출처가 있는 것만 적는다. 예시는 Regula가 지은 것.
-const rules = [
-  { s: '오류', rule: '무엇이 잘못됐는지와 어떻게 고칠지를 쉬운 말로. 코드와 판정어("올바르지 않음") 대신', ex: '이메일 주소에 @가 빠졌어요. name@example.com처럼 써 주세요.', src: 'Jakob Nielsen, 「Error-Message Guidelines」 (NN/g) · GOV.UK Design System Error message' },
-  { s: '오류', rule: '사용자를 탓하지 않는다. 시스템의 일이면 시스템이 주어', ex: '지금 저장하지 못했어요.', src: 'Jakob Nielsen, 「Error-Message Guidelines」 (NN/g)' },
-  { s: '오류', rule: '고칠 방법을 제안한다', ex: '두 글자 이상 더 써 주세요.', src: 'WCAG 2.2 3.3.3 Error Suggestion' },
-  { s: '버튼', rule: '"확인" 대신 누르면 일어나는 일을 동사로', ex: '삭제 · 계속 쓰기 · 해지하기', src: 'Apple HIG Alerts' },
-  { s: '링크', rule: '"여기"나 "더 보기"만 쓰지 않고 목적지를 말한다', ex: '환불 규정 보기', src: 'WCAG 2.2 2.4.4 Link Purpose (In Context)' },
-  { s: '용어', rule: '같은 것은 끝까지 같은 말로. "저장"과 "보관"을 섞지 않는다', ex: '저장 → 저장한 글', src: 'Jakob Nielsen, 10 Usability Heuristics (1994) #4 Consistency and standards' },
-  { s: '용어', rule: '시스템의 말이 아니라 사용자의 말로', ex: '세션 만료 → 오래 쉬어서 다시 로그인해야 해요', src: 'Jakob Nielsen, 10 Usability Heuristics (1994) #2 Match between system and the real world' },
-  { s: '읽기', rule: '사람들은 읽지 않고 훑는다. 핵심을 문장 앞에', ex: '결제되지 않았어요. 카드 한도가…', src: 'Nielsen Norman Group 「How Users Read on the Web」 (1997)' },
-];
+const { rules } = rulesOf('writing');
 ---
 <Base title="문구 · UI 패턴 · Regula" current="patterns" description="나쁜 오류 문구와 버튼 문구를 직접 고쳐 보는 UX 라이팅 실습 페이지">
   <Fragment slot="sub"><PatternSubnav current={['writing']} /></Fragment>
@@ -47,7 +38,7 @@ const rules = [
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>예</th><th>출처</th></tr></thead>
         <tbody>
-          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td>{r.ex}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
+          {rules.map((r, i) => <tr id={ruleId('writing', i)}><td>{r.s}</td><td>{r.rule}</td><td>{r.ex}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
         </tbody>
       </table>
     </div>

@@ -30,6 +30,7 @@ const outDir = new URL('../src/imported/measured/', import.meta.url);
 // 잰 값이 없으면 레퍼런스 페이지는 예전처럼 상자 안에서 스크롤한다(docs/source-check.md 24차).
 const NO_ROBOTS = [
   'developer.apple.com', // Apple 웹사이트 이용 약관 "Your Use of the Site"
+  'designcompass.org', // 디자인 나침반 이용약관 회원 금지 행위(로봇 · 스크레이퍼 등 자동화 수단) (docs/source-check.md 31차)
 ];
 
 const targets = readdirSync(dir)

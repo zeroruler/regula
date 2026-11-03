@@ -26,12 +26,23 @@ const MAX_H = 40000;
 const dir = new URL('../src/content/references/', import.meta.url);
 const outDir = new URL('../src/imported/measured/', import.meta.url);
 
+// 이용 약관이 자동 프로그램(robot · spider 등)으로 사이트에 접근하는 것을 막는 곳은 재지 않는다.
+// 잰 값이 없으면 레퍼런스 페이지는 예전처럼 상자 안에서 스크롤한다(docs/source-check.md 24차).
+const NO_ROBOTS = [
+  'developer.apple.com', // Apple 웹사이트 이용 약관 "Your Use of the Site"
+];
+
 const targets = readdirSync(dir)
   .filter((f) => f.endsWith('.md'))
   .map((f) => ({ slug: f.replace(/\.md$/, ''), src: readFileSync(new URL(f, dir), 'utf8') }))
   .filter((r) => /^embed:\s*true\s*$/m.test(r.src))
   .map((r) => ({ slug: r.slug, url: r.src.match(/^url:\s*"?([^"\n]+)"?/m)?.[1] }))
-  .filter((r) => r.url);
+  .filter((r) => r.url)
+  .filter((r) => {
+    const skip = NO_ROBOTS.includes(new URL(r.url).hostname);
+    if (skip) console.log(`${r.slug}: 재지 않음(약관이 자동 접근을 막음)`);
+    return !skip;
+  });
 
 const browser = await playwright.chromium.launch();
 const sites = {};

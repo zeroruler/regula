@@ -2,6 +2,16 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 24차: Apple Human Interface Guidelines 원문은 가져오지 않음
+
+### 확인한 것
+
+- HIG 페이지(developer.apple.com/design/human-interface-guidelines/…) 바닥글: "Copyright © 2026 Apple Inc. All rights reserved." · Terms of Use(apple.com/legal/internet-services/terms/site.html) · Agreements and Guidelines. 자유 라이선스 없음
+- Terms of Use "Content": 사이트의 글 · 그림 · 화면 등 모든 콘텐츠는 Apple 소유이며, 약관이 따로 허락한 경우 말고는 Apple의 서면 동의 없이 복제 · 재게시 · 번역 · 배포(미러링 포함)할 수 없다. 내려받기용 자료도 개인 · 비상업 용도로만, 네트워크에 올리지 말 것
+- 그래서 원문을 싣지 않고 지금처럼 요약과 링크만 둔다
+- 같은 약관 "Your Use of the Site"는 robot · spider 등 자동 프로그램으로 사이트에 접근 · 수집 · 감시하는 것을 막는다. 20차의 `npm run measure-embeds`가 헤드리스 브라우저로 HIG 높이를 쟀으므로, 측정 대상에서 빼고(NO_ROBOTS) 잰 값도 지움 → HIG 미리보기는 예전처럼 상자 안에서 스크롤
+- 미리보기 iframe은 방문자의 브라우저가 Apple 페이지를 그대로 불러오는 것이라 그대로 둠(사이트가 다른 페이지 안에 띄우는 것을 막지 않음). 약관이 iframe 삽입을 따로 다루지는 않는다
+
 ## 2026-11-03 — 23차: Material Design 3 원문은 가져오지 않음
 
 ### 확인한 것

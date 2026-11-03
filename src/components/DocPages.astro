@@ -3,6 +3,7 @@
 // 스냅숏: src/imported/docs/<key>.json (npm run sync-docs)
 import carbon from '../imported/docs/carbon.json';
 import primer from '../imported/docs/primer.json';
+import { docCited } from '../lib/cite';
 
 export type DocUse = { label: string; name: string; to: string; text: string };
 interface Props {
@@ -13,8 +14,7 @@ interface Props {
 const { source, uses } = Astro.props;
 const doc = { carbon, primer }[source];
 
-const cited = (text: string) =>
-  [...text.matchAll(new RegExp(`${doc.cite},?\\s+「?([A-Z][A-Za-z -]*?)\\s*(?:」|「|"|\\(|·|,|$)`, 'gm'))].map((m) => m[1].trim().toLowerCase());
+const cited = (text: string) => docCited(doc.cite, text);
 const usedBy = (title: string) => uses.filter((u) => cited(u.text).includes(title.toLowerCase()));
 ---
 <div class="govuk docs">

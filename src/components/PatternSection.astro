@@ -3,6 +3,7 @@
 import type { CollectionEntry } from 'astro:content';
 import PatternCard from './PatternCard.astro';
 import IntrusivenessScale from './IntrusivenessScale.astro';
+import Cite from './Cite.astro';
 import type { patternGroups } from '../lib/site';
 
 type Field = 'dismiss' | 'actions' | 'per_view' | 'fits';
@@ -30,7 +31,7 @@ const { group: g, items, cols, label = '종류' } = Astro.props;
       <thead><tr><th>{g.name}</th>{cols.map((c) => <th>{c.h}</th>)}<th>헷갈리는 짝과의 차이</th><th>출처</th></tr></thead>
       <tbody>
         {items.map(({ data: p }) => (
-          <tr><td>{p.name}</td>{cols.map((c) => <td>{p[c.k]}</td>)}<td>{p.confused_with}</td><td class="src-cell">{p.source}</td></tr>
+          <tr><td>{p.name}</td>{cols.map((c) => <td>{p[c.k]}</td>)}<td>{p.confused_with}</td><td class="src-cell"><Cite text={p.source} /></td></tr>
         ))}
       </tbody>
     </table>

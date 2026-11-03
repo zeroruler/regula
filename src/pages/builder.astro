@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { href } from '../lib/url';
 import { loadCombos } from '../lib/combos';
+import Cite from '../components/Cite.astro';
 
 // 서체 후보는 fonts 컬렉션에서 가져온다. 클라이언트 스크립트가 이 JSON으로 선택지와 서체 파일 주소를 만든다.
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order).map((f) => ({
@@ -54,7 +55,7 @@ const own = [
     <div class="compare">
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
-        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}</tbody>
+        <tbody>{rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}</tbody>
       </table>
     </div>
     <div class="compare">

@@ -8,6 +8,7 @@ import { hexToRgb } from '../lib/builder/derive';
 import { topics } from '../lib/site';
 import { comboGroups } from '../content.config';
 import { href } from '../lib/url';
+import Cite from '../components/Cite.astro';
 
 const combos = await loadCombos();
 const formulas = await getCollection('formulas');
@@ -125,7 +126,7 @@ const total = palettes.reduce((n, p) => n + p.data.scales.reduce((m, s) => m + s
                 <p class="cmb-meta">
                   {c.hues.length > 1 && <>색상각(OKLCH) {c.hues.map((h, i) => <>{i ? ' · ' : ''}{h.label} {h.hue == null ? '무채색' : `${h.hue}°`}{h.delta != null && ` (키에서 +${h.delta}°)`}</>)}<br /></>}
                   {d.principles.length > 0 && <>근거 {d.principles.map((p, i) => <>{i ? ' · ' : ''}<a href={fpage(p)}>{fname[p]}</a></>)}<br /></>}
-                  값 {d.template ? <a href={href(`templates/${d.template}/`)}>{templateNames[d.template] ?? d.template}</a> : d.palette ? <a href={`#pal-${d.palette}`}>{paletteName[d.palette] ?? d.palette}</a> : null} — {d.source}
+                  값 {d.template ? <a href={href(`templates/${d.template}/`)}>{templateNames[d.template] ?? d.template}</a> : d.palette ? <a href={`#pal-${d.palette}`}>{paletteName[d.palette] ?? d.palette}</a> : null} — <Cite text={d.source} />
                 </p>
 
                 <details class="cmb-checks">
@@ -161,7 +162,7 @@ const total = palettes.reduce((n, p) => n + p.data.scales.reduce((m, s) => m + s
         <tbody>
           <tr><td>색 값</td><td>조합의 HEX는 아래 견본(Tailwind CSS v3 · Open Color · CSS 이름 색)의 값 그대로이거나 Regula 양식의 토큰. 빌드할 때 원본과 다시 맞춰 본다</td><td class="src-cell">각 팔레트 저장소 (MIT) · DESIGN/&lt;이름&gt;/DESIGN.md</td></tr>
           <tr><td>배색 원리</td><td>보색 · 유사색 · 삼각 · 분할 보색은 색상환의 각도 규칙, 60-30-10은 면적 규칙</td><td class="src-cell">원리와 공식의 각 항목 출처</td></tr>
-          <tr><td>대비</td><td>글자 4.5:1, 그래프 · UI 경계 3:1</td><td class="src-cell">WCAG 2.2 1.4.3 · 1.4.11</td></tr>
+          <tr><td>대비</td><td>글자 4.5:1, 그래프 · UI 경계 3:1</td><td class="src-cell"><Cite text="WCAG 2.2 1.4.3 · 1.4.11" /></td></tr>
           <tr><td>색 고르기</td><td>어느 색을 한 조합으로 묶을지, 몇 단계를 쓸지</td><td class="src-cell">Regula가 고름 (출처 없음)</td></tr>
           <tr><td>결로 묶기</td><td>뉴트럴과 포인트 하나 · 따뜻한 바탕 · 옅은 색 바탕 · 다크 우선 · 선명한 두 색. "요즘 자주 보인다"는 조사한 통계가 아니라 Regula의 판단</td><td class="src-cell">Regula가 나눔 (출처 없음)</td></tr>
           <tr><td>띠 면적</td><td>바탕 46 · 면 24 · 글자 12 · 주 강조 10 · 보조 6 — 60-30-10을 역할에 나눈 근사</td><td class="src-cell">Regula가 정함 (출처 없음)</td></tr>
@@ -211,7 +212,7 @@ const total = palettes.reduce((n, p) => n + p.data.scales.reduce((m, s) => m + s
               </div>
             </div>
           ))}
-          <p class="src">{d.source}</p>
+          <p class="src"><Cite text={d.source} /></p>
         </div>
       );
     })}

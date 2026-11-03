@@ -6,6 +6,7 @@ import DarkCard from '../../components/DarkCard.astro';
 import Checkout from '../../demos/dark/Checkout.astro';
 import { patternGroups } from '../../lib/site';
 import { href } from '../../lib/url';
+import Cite from '../../components/Cite.astro';
 
 const group = patternGroups.find((g) => g.id === 'dark')!;
 const items = (await getCollection('darkpatterns')).sort((a, b) => a.data.order - b.data.order);
@@ -52,7 +53,7 @@ const rules = [
       <table>
         <thead><tr><th>대상</th><th>규칙</th><th>출처</th></tr></thead>
         <tbody>
-          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell">{r.src}</td></tr>)}
+          {rules.map((r) => <tr><td>{r.s}</td><td>{r.rule}</td><td class="src-cell"><Cite text={r.src} /></td></tr>)}
         </tbody>
       </table>
     </div>

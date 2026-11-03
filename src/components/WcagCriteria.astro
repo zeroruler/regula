@@ -2,6 +2,7 @@
 // WCAG 2.2 성공 기준 원문(W3C Document License). 문장은 고치거나 번역하지 않고 그대로 싣는다.
 // 스냅숏: src/imported/w3c/wcag22.json (npm run sync-wcag)
 import wcag from '../imported/w3c/wcag22.json';
+import { wcagAnchor as anchor, wcagCriteria as all } from '../lib/cite';
 
 export type WcagUse = { label: string; name: string; to: string; text: string };
 interface Props {
@@ -16,8 +17,6 @@ for (const u of uses) {
   const found = new Set([...u.text.matchAll(/(?<![\d.])([1-4]\.\d{1,2}\.\d{1,2})(?![\d.])/g)].map((m) => m[1]).filter((n) => nums.has(n)));
   for (const n of found) usedBy.set(n, [...(usedBy.get(n) ?? []), u]);
 }
-const all = wcag.principles.flatMap((p) => p.guidelines.flatMap((g) => g.criteria));
-const anchor = (num: string) => `sc-${num.replaceAll('.', '-')}`;
 const isNew = (v: string[]) => v.length === 1 && v[0] === '2.2';
 const removed = (c: { level: string }) => !c.level;
 ---

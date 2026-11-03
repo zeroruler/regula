@@ -104,6 +104,8 @@ const showFrame = Boolean(r.embed && r.url && !snapshot);
           </div>
           <div class="imported prose" set:html={prepareImported(snapshot.html, ['impFilter', 'impCount'])} />
         </div>
+      ) : r.url && r.noembed === 'terms' ? (
+        <p class="blocked">이 사이트는 이용 약관이 콘텐츠를 다른 곳에 옮기거나 보여 주는 것을 막고 있어, 미리보기 없이 링크만 둬요. <a href={r.url} target="_blank" rel="noopener">원본 새 탭에서 열기 ↗</a></p>
       ) : r.url ? (
         <p class="blocked">이 사이트는 다른 페이지 안에서 열리지 않도록 막아 두었어요. <a href={r.url} target="_blank" rel="noopener">원본 새 탭에서 열기 ↗</a></p>
       ) : (

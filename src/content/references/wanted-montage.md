@@ -5,7 +5,7 @@ group: "공개 디자인 시스템"
 order: 4
 summary: "피그마 커뮤니티에 무료 공개. 색을 투명도 단계로 쌓는 방식이 특징."
 url: "https://designcompass.org/2024/04/02/wanted-design-library/"
-embed: true
+noembed: "terms"
 ---
 
 ## 볼 것

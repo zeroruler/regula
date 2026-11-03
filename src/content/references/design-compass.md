@@ -5,7 +5,7 @@ group: "커뮤니티 · 글 · 디자이너"
 order: 4
 summary: "국내 디자인 시스템·브랜드 소식."
 url: "https://designcompass.org"
-embed: true
+noembed: "terms"
 ---
 
 ## 볼 것

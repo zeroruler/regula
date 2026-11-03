@@ -2,6 +2,14 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 23차: Material Design 3 원문은 가져오지 않음
+
+### 확인한 것
+
+- m3.material.io(가이드라인 사이트)를 브라우저로 열어 바닥글을 확인: Privacy Policy · Terms of Service(policies.google.com)만 있고 글의 라이선스는 밝히지 않음. 자유 라이선스가 아니므로 원문을 싣지 않고, 지금처럼 요약과 링크만 둔다
+- 대신 쓸 수 있는 것으로 material-components/material-web 저장소(Apache-2.0, 커밋 de5470f, 2026-10-29)의 docs/components/*.md가 있다. 하지만 이것은 웹 컴포넌트 사용법 · API 문서이고, Regula 공식 · 패턴 36개가 출처로 적은 M3 가이드라인(Gestures · Motion · Snackbar · Dialogs 등)과는 다른 문서다. 저장소도 "maintenance mode"라 이번에는 싣지 않음
+- m2.material.io(Material Design 2) 바닥글에는 "License" 링크가 Apache-2.0을 가리키지만, 글에 대한 것인지 코드에 대한 것인지 분명하지 않고 M3와 다른 판이라 이번 범위에서 뺌
+
 ## 2026-11-03 — 22차: Carbon · Primer 문서 원문 가져오기
 
 ### 원문을 읽고 확인

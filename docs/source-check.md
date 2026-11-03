@@ -2,26 +2,12 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
-## 2026-11-03 — 37차: UI 패턴 "영상과 소리" (WCAG 1.2.x · 1.4.2)
+## 2026-11-03 — 37차: 결정 — 영상 · 음성(WCAG 1.2.x)은 Regula 범위 밖
 
-### 읽은 원문
-
-- WCAG 2.2 성공 기준 원문(`src/imported/w3c/wcag22.json`): 1.2.1 · 1.2.2 · 1.2.3 · 1.2.4 · 1.2.5 · 1.4.2
-- Understanding(w3c/wcag main `understanding/20/`): Audio-only and Video-only (Prerecorded) · Captions (Prerecorded) · Audio Description or Media Alternative (Prerecorded) · Captions (Live) · Audio Description (Prerecorded) · Audio Control
-- Technique G170(소리를 끄는 조절을 페이지 앞쪽에)
-
-### 원문과 맞춘 것
-
-- 재생 조절: 3초 넘게 저절로 나는 소리는 멈추기 · 끄기나 기기 볼륨과 따로 줄이는 조절(1.4.2). 저절로 소리를 내는 것 자체를 권하지 않고 사용자가 눌러 재생하게 하라는 것, 화면 낭독기 사용자가 그 소리에 묻혀 멈춤을 찾기 어렵다는 것, 기기 볼륨 끄기는 멈춤이 아니라는 것은 Understanding Audio Control. 조절을 페이지 앞쪽에 두는 것은 G170
-- 자막: 말 · 말하는 사람 · 뜻이 있는 소리(Understanding Captions (Prerecorded)). 글로 이미 있는 내용을 영상으로 다시 보여 주는 것이고 그렇게 밝혀 두면 예외(1.2.2 원문)
-- 실시간 자막: 방송형 실시간 영상에 적용, 두 사람 이상의 영상 통화 앱 자체에는 요구하지 않음(Understanding Captions (Live))
-- 음성 해설: 대사가 쉬는 틈에 행동 · 인물 · 장면 바뀜 · 화면 속 글자, 소리로 이미 다 전달되면 필요 없음(Understanding Audio Description (Prerecorded))
-- 대본: 소리만 있는 것은 같은 내용의 글, 소리 없는 영상은 글이나 소리 트랙(1.2.1). 글은 눈 · 귀 · 손(점자) 어느 감각으로도 받을 수 있다(Understanding Audio-only and Video-only). 각본처럼 화면 · 소리를 모두 적고 웃음소리 · 화면 밖 목소리도 적는다(Understanding Audio Description or Media Alternative)
-
-### 쓰지 않은 것
-
-- 처음 쓴 문장 중 원문에서 찾지 못한 것은 뺌: 자막을 켜고 끌 수 있게(닫힌 자막을 요구하지 않음), 녹화본은 고친 자막으로 바꾸기, 대본을 찾기 쉬운 곳에 두기
-- 실습의 영상 "3단 우산 접는 법"은 Regula가 지은 대본이고, 놓친 정보 수는 그 대본의 7개 항목으로 센 것이다
+- WCAG 2.2 1.2.1–1.2.5(자막 · 실시간 자막 · 음성 해설 · 대본)를 다루려고 UI 패턴 "영상과 소리"를 만들었다가(zeroruler/regula#57) 되돌림
+- 이 기준들은 화면 설계가 아니라 영상 · 음성을 만드는 쪽(제작 · 편집)이 할 일이라, 웹디자인 아카이브인 Regula의 범위에 맞지 않는다는 사용자 판단
+- 자동 재생 소리를 멈출 수 있게 하는 1.4.2는 이미 랜딩 페이지 양식 규칙에 있어 그대로 다룸
+- 그래서 WCAG A · AA 55개 중 Regula가 다루는 것은 50개, 나머지 5개(1.2.1–1.2.5)는 범위 밖으로 둔다
 
 ## 2026-11-03 — 36차: 남은 WCAG A · AA 기준 7개 (흔들기 · 기울이기 패턴, 규칙 6줄)
 

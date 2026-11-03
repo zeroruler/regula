@@ -2,6 +2,27 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 36차: 남은 WCAG A · AA 기준 7개 (흔들기 · 기울이기 패턴, 규칙 6줄)
+
+### 읽은 원문
+
+- WCAG 2.2 성공 기준 원문(`src/imported/w3c/wcag22.json`): 1.3.2 · 1.3.3 · 1.3.4 · 1.4.5 · 2.2.1 · 2.5.3 · 2.5.4
+- Understanding(w3c/wcag main, 35차와 같은 이유로 저장소에서): Meaningful Sequence · Sensory Characteristics · Images of Text · Timing Adjustable(understanding/20), Orientation · Label in Name · Motion Actuation(understanding/21)
+
+### 원문과 맞춘 것
+
+- 흔들기 · 기울이기(제스처, 새 패턴): 움직임으로 하는 일은 화면의 부품으로도 할 수 있고, 움직임 반응을 끌 수 있어야 한다(2.5.4). 기기를 고정해 두었거나 그 동작을 하기 어려운 사람, 흔들면 실행 취소 대화 상자가 뜨고 옆에 같은 일을 하는 취소 버튼이 있는 예, QR 코드를 비추는 움직임 · 만보기는 해당하지 않음은 Understanding Motion Actuation
+- 시간 제한(입력 규칙): 끄기 · 10배 이상 늘리기 · 끝나기 전 알리고 간단한 동작으로 20초 이상 연장(열 번까지) 중 하나(2.2.1), 끄기 > 늘리기 > 연장 요청 순으로 낫다는 것은 Understanding Timing Adjustable
+- 모양 · 위치로만 안내하지 않기(문구 규칙): 1.3.3 원문의 "shape, color, size, visual location, orientation, or sound", "round button" · "button to the right" 예와, 모양 · 위치 단서 자체는 막지 않고 다른 방법으로도 알리면 된다는 것은 Understanding Sensory Characteristics
+- 보이는 글자와 이름(문구 규칙): 이름이 보이는 글자를 담아야 하고(2.5.3), 그 글자로 시작하는 것이 좋다(원문의 Note). 음성 입력 사용자가 보이는 글자를 말해서 고른다는 것은 Understanding Label in Name
+- 읽는 순서(화면 구성 규칙): 뜻이 통하는 순서 하나를 프로그램이 알 수 있어야 한다(1.3.2), 보조 기술이 잘못된 순서로 읽으면 헷갈린다는 것은 Understanding
+- 화면 방향(화면 구성 규칙): 한 방향으로 고정하지 않는다, 수표 · 피아노 앱 · 프로젝터 슬라이드 등은 예외(1.3.4 원문 Note), 휠체어 팔걸이에 기기를 고정한 사람은 Understanding Orientation
+- 글자 이미지(타이포그래피 규칙): 글자로 같은 모양을 낼 수 있으면 글자로, 로고는 예외(1.4.5 원문). 크기 · 색 · 서체 · 행간을 바꿔야 하는 사람은 Understanding Images of Text
+
+### 남은 것
+
+- WCAG A · AA 중 Regula가 다루지 않은 것은 1.2.1–1.2.5(영상 · 음성의 자막 · 대체 설명)뿐이다. Regula에 영상을 다루는 섹션이 없어 이번엔 두지 않음
+
 ## 2026-11-03 — 35차: UI 패턴 "키보드와 구조" (WCAG Understanding · Techniques · APG)
 
 ### 읽은 원문

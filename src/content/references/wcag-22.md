@@ -5,6 +5,7 @@ group: "공개 디자인 시스템"
 order: 9
 summary: "웹 접근성의 국제 표준. 성공 기준마다 번호와 수준(A · AA · AAA)이 있고, 대부분 숫자로 확인할 수 있다."
 url: "https://www.w3.org/TR/WCAG22/"
+imported: "wcag22"
 ---
 
 ## 읽는 법

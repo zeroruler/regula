@@ -199,7 +199,42 @@ nav.toc a[aria-current="page"]{color:var(--ink);border-left-color:var(--ink);fon
 .credit{margin:0 0 14px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
 .blocked{margin:0;padding:18px;border:1px dashed var(--rule);color:var(--ink-2)}
 .frame iframe{display:block;width:100%;height:min(78vh,900px);border:1px solid var(--rule);background:var(--surface)}
-.frame .credit{margin-top:10px}
+.frame .credit{margin:0 0 10px}
+.frame .frame-end{margin:10px 0 0}
+.frame[data-full] iframe{border-left:none;border-right:none}
+.frame:not([data-full]) .frame-end{display:none}
+.frame-toggle{margin-left:6px;font:inherit;color:var(--ink);background:none;border:1px solid var(--rule);padding:2px 8px;border-radius:2px;cursor:pointer}
+.frame-toggle[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* WCAG 성공 기준 원문 */
+.wcag{border-top:1px solid var(--rule);padding-top:18px;min-width:0}
+.wcag [hidden]{display:none}
+.wc-filter{flex-wrap:wrap;gap:10px 14px}
+.wc-principle{margin-top:28px}
+.wc-principle > h3{font-family:var(--display);font-size:24px;margin:0 0 6px}
+.wc-guideline{margin-top:22px}
+.wc-guideline > h4{font-family:var(--body);font-size:16px;font-weight:600;margin:0 0 4px}
+.wcag h3 .mono,.wcag h4 .mono{font-size:.8em;color:var(--ink-3);margin-right:4px}
+.wc-text{max-width:68ch;font-size:14.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.wc-text p{margin:0 0 8px}
+.wc-text dl{margin:0 0 8px}
+.wc-text dt{font-weight:600;color:var(--ink);margin-top:6px}
+.wc-text dd{margin:0 0 0 16px}
+.wc-text ul{padding-left:18px;margin:0 0 8px}
+.wc-text .note{margin:6px 0 8px;padding-left:12px;border-left:2px solid var(--rule);font-size:13.5px}
+.wc-text .note strong{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--ink-3)}
+.wc-text .note p{display:inline}
+.wc-sc{padding:14px 0 12px;border-bottom:1px solid var(--rule);scroll-margin-top:80px}
+.wc-sc:first-of-type{margin-top:10px;border-top:1px solid var(--rule)}
+.wc-sc:target{background:linear-gradient(var(--mark),var(--mark)) left top/4px 100% no-repeat;padding-left:14px}
+.wc-sc header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
+.wc-sc .num{font-size:13px;color:var(--ink-3);text-decoration:none}
+.wc-sc h5{margin:0;font-family:var(--body);font-size:15.5px;font-weight:600}
+.wc-sc .lv{font-size:11px;padding:1px 6px;border:1px solid var(--ink);border-radius:2px}
+.wc-sc .lv.new{border-color:var(--rule);color:var(--ink-2)}
+.wc-sc[data-level="removed"] h5{text-decoration:line-through;color:var(--ink-3)}
+.wc-links{display:flex;flex-wrap:wrap;gap:4px 16px;margin:6px 0 0;font-size:12px}
+.wc-used{display:flex;flex-wrap:wrap;gap:4px 12px;margin:8px 0 0;font-size:13.5px}
+.wc-used .mono{font-size:11.5px;color:var(--ink-3);padding-top:2px}
 .filter{margin-bottom:18px}
 .filter input{flex:1;max-width:320px}
 .filter .mono{font-size:12px;color:var(--ink-3)}
@@ -1318,3 +1353,45 @@ article.note .prose p:last-child{margin-bottom:0}
 .dm-yaml summary{cursor:pointer;font-family:var(--mono);font-size:13px}
 .dm-yaml pre{margin:10px 0 0;max-height:420px;overflow:auto;background:var(--surface);border:1px solid var(--rule);padding:12px 14px;font-size:12px;line-height:1.55}
 .dmdoc .imported pre{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);padding:12px 14px;font-size:12.5px}
+/* GOV.UK 안내 페이지 원문 */
+.govuk{border-top:1px solid var(--rule);padding-top:18px;min-width:0}
+.gv-group{margin-top:22px}
+.gv-group > h3.label{display:block;margin:0 0 8px}
+.gv-page{border-bottom:1px solid var(--rule);scroll-margin-top:80px}
+.gv-page:first-of-type{border-top:1px solid var(--rule)}
+.gv-page > summary{display:grid;gap:2px;padding:12px 0 12px 22px;cursor:pointer;list-style:none;position:relative}
+.gv-page > summary::-webkit-details-marker{display:none}
+.gv-page > summary::before{content:"+";position:absolute;left:2px;top:11px;font-family:var(--mono);color:var(--ink-3)}
+.gv-page[open] > summary::before{content:"−"}
+.gv-title{font-weight:600;font-size:16px}
+.gv-desc{font-size:13.5px;color:var(--ink-3)}
+.gv-body{padding:0 0 22px 22px;min-width:0}
+.gv-links{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0 0 12px;font-size:12px}
+.gv-used{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--ink-3)}
+.gv-text{max-width:68ch;font-size:14.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.gv-text h2{font-family:var(--body);font-size:16px;font-weight:600;color:var(--ink);margin:22px 0 6px;scroll-margin-top:80px}
+.gv-text h3{font-family:var(--body);font-size:14.5px;font-weight:600;color:var(--ink);margin:16px 0 4px;scroll-margin-top:80px}
+.gv-text h4{font-size:14px;margin:12px 0 4px}
+.gv-text p{margin:0 0 8px}
+.gv-text ul,.gv-text ol{padding-left:18px;margin:0 0 8px}
+.gv-text img{max-width:100%;height:auto;border:1px solid var(--rule)}
+.gv-text table{display:block;overflow-x:auto;min-width:0;max-width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 10px}
+.gv-text th,.gv-text td{border-bottom:1px solid var(--rule);padding:6px 10px 6px 0;text-align:left;vertical-align:top}
+.gv-text pre{overflow-x:auto;font-size:12.5px;padding:10px;background:var(--surface);border:1px solid var(--rule)}
+.gv-inset{margin:6px 0 10px;padding-left:12px;border-left:2px solid var(--rule)}
+.gv-example{font-family:var(--mono);font-size:12px;margin:4px 0 12px}
+.gv-example a::after{content:" ↗"}
+.gv-text :target{background:linear-gradient(var(--mark),var(--mark)) left bottom/100% 3px no-repeat}
+/* Carbon · Primer 문서 원문 (GOV.UK와 같은 접힘 목록을 쓴다) */
+.doc-archived{color:var(--ink-2)}
+.doc-license{margin:0 0 6px}
+.doc-license summary{font-size:12px;color:var(--ink-3);cursor:pointer}
+.doc-license pre{white-space:pre-wrap;font-size:11.5px;max-height:320px;overflow:auto;padding:10px;background:var(--surface);border:1px solid var(--rule)}
+.doc-text .doc-lead p{font-size:15.5px;color:var(--ink)}
+.doc-text .doc-note{margin:6px 0 10px;padding-left:12px;border-left:2px solid var(--rule)}
+.doc-text .doc-caption{font-size:12.5px;color:var(--ink-3)}
+.doc-text .doc-title{font-weight:600;color:var(--ink);margin-top:12px}
+.doc-text .doc-dd{margin:8px 0 12px;padding:8px 0 4px 12px;border-left:2px solid var(--ink)}
+.doc-text .doc-dont{border-left-style:dashed;border-left-color:var(--ink-3)}
+.doc-text .doc-dd-label{font-family:var(--mono);font-size:11.5px;margin:0 0 4px;color:var(--ink)}
+.doc-text td img{max-width:160px;border:none}

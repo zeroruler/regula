@@ -130,8 +130,14 @@ const references = defineCollection({
     // 사이트가 다른 페이지 안에서 실제로 열릴 때만 true. 헤더(X-Frame-Options, frame-ancestors)가 허용해도
     // 스크립트로 막는 곳이 있어(Material 3) iframe 화면을 직접 확인하고 켠다.
     embed: z.boolean().default(false),
+    // 기술적으로는 열려도 이용 약관이 콘텐츠의 복제 · 전시나 자동 접근을 막아 일부러 미리보기를 끈 곳(docs/source-check.md 33차)
+    noembed: z.literal('terms').optional(),
     // 자유 라이선스 저장소: scripts/sync-refs.mjs가 README를 src/imported/에 스냅숏으로 가져온다
     github: z.string().regex(/^[\w.-]+\/[\w.-]+$/).optional(),
+    // 저장소 README가 아닌 원문 스냅숏. wcag22: scripts/sync-wcag.mjs가 W3C의 성공 기준을 src/imported/w3c/에,
+    // govuk: scripts/sync-govuk.mjs가 Regula가 출처로 쓴 GOV.UK 안내 페이지를 src/imported/govuk/에,
+    // carbon · primer: scripts/sync-docs.mjs가 문서 저장소의 페이지를 src/imported/docs/에 가져온다
+    imported: z.enum(['wcag22', 'govuk', 'carbon', 'primer']).optional(),
   }),
 });
 

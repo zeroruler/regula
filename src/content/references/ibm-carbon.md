@@ -6,6 +6,7 @@ order: 5
 summary: "데이터가 많은 화면, 표, 폼 패턴이 강함."
 url: "https://carbondesignsystem.com"
 embed: true
+imported: "carbon"
 ---
 
 ## 볼 것

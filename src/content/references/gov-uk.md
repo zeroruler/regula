@@ -6,6 +6,7 @@ order: 6
 summary: "접근성과 쉬운 문구의 교과서."
 url: "https://design-system.service.gov.uk"
 embed: true
+imported: "govuk"
 ---
 
 ## 볼 것

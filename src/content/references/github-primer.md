@@ -6,6 +6,7 @@ order: 7
 summary: "개발 도구 UI, 밀도 높은 화면 참고."
 url: "https://primer.style"
 embed: true
+imported: "primer"
 ---
 
 ## 볼 것

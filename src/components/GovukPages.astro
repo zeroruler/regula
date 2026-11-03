@@ -1,0 +1,74 @@
+---
+// GOV.UK Design System 안내 페이지 원문(Open Government Licence v3.0). 글은 고치지 않고 그대로 싣는다.
+// 스냅숏: src/imported/govuk/pages.json (npm run sync-govuk)
+import govuk from '../imported/govuk/pages.json';
+
+export type GovukUse = { label: string; name: string; to: string; text: string };
+interface Props {
+  // 이 레퍼런스를 출처로 쓴 공식·패턴. 글에 적힌 "GOV.UK Design System <페이지 이름>"으로 각 페이지에 붙인다.
+  uses: GovukUse[];
+}
+const { uses } = Astro.props;
+
+const names = (text: string) =>
+  [...text.matchAll(/GOV\.UK Design System\s*「?([A-Z][A-Za-z' -]*?)\s*(?:」|"|\(|·|,|$)/gm)].map((m) => m[1].trim().toLowerCase());
+const matches = (p: (typeof govuk.pages)[number], name: string) =>
+  name === p.title.toLowerCase() || p.aliases.some((a) => name === a || name.startsWith(`${a} `));
+const usedBy = (p: (typeof govuk.pages)[number]) => uses.filter((u) => names(u.text).some((n) => matches(p, n)));
+const groups = [
+  { label: '컴포넌트', pages: govuk.pages.filter((p) => p.section === 'Component') },
+  { label: '패턴', pages: govuk.pages.filter((p) => p.section === 'Pattern') },
+];
+---
+<div class="govuk">
+  <p class="credit">
+    {govuk.attribution} ·
+    <a href={govuk.site} target="_blank" rel="noopener">GOV.UK Design System</a>에서 Regula가 출처로 쓴 페이지 {govuk.pages.length}개를 원문 그대로 실었어요
+    (<a href={govuk.licenseUrl} target="_blank" rel="noopener">{govuk.license}</a>, 사이트 코드는 MIT) ·
+    예시 화면은 원문 사이트로 연결돼요 · {`저장소 ${govuk.commit.slice(0, 7)}(${govuk.committed}) 기준`} ·
+    <code>npm run sync-govuk</code>로 갱신
+  </p>
+
+  {groups.map((g) => (
+    <section class="gv-group">
+      <h3 class="label">{g.label}</h3>
+      {g.pages.map((p) => {
+        const used = usedBy(p);
+        return (
+          <details class="gv-page" id={p.id}>
+            <summary>
+              <span class="gv-title">{p.title}</span>
+              <span class="gv-desc">{p.description}</span>
+            </summary>
+            <div class="gv-body">
+              <p class="gv-links mono">
+                <a href={p.url} target="_blank" rel="noopener">원문 페이지 ↗</a>
+                {used.length > 0 && (
+                  <span class="gv-used">
+                    Regula에서 {used.map((u) => <a href={u.to}>{u.name}</a>)}
+                  </span>
+                )}
+              </p>
+              <div class="gv-text" set:html={p.html} />
+            </div>
+          </details>
+        );
+      })}
+    </section>
+  ))}
+</div>
+
+<script>
+  // 주소의 #가 접힌 페이지 안을 가리키면 그 페이지를 펼치고 그 자리로 간다
+  const reveal = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id.startsWith('gv-')) return;
+    const el = document.getElementById(id);
+    const page = el?.closest<HTMLDetailsElement>('details.gv-page');
+    if (!el || !page) return;
+    page.open = true;
+    el.scrollIntoView();
+  };
+  window.addEventListener('hashchange', reveal);
+  reveal();
+</script>

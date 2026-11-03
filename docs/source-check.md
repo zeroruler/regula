@@ -2,6 +2,180 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-03 — 33차: 결정 — NC-ND 원문은 싣지 않고, 약관이 엄격한 곳은 미리보기를 끔
+
+- Laws of UX(25차) · Dieter Rams 10원칙(32차)은 CC BY-NC-ND 4.0이라 원문을 싣지 않기로 함. 지금처럼 Regula의 요약과 링크만 둔다
+- Apple HIG(24차) · 디자인 나침반 · Wanted Montage(31차)는 약관이 콘텐츠의 복제 · 전시와 자동 접근을 막으므로 iframe 미리보기를 끔(`noembed: "terms"`). 페이지에는 미리보기 대신 약관 때문에 링크만 둔다고 적는다
+
+## 2026-11-03 — 32차: 남은 레퍼런스 4곳 라이선스 확인
+
+### Microsoft HAX Guidelines (공식 · 패턴 8개가 출처로 씀)
+
+- 바닥글 "© Microsoft 2026" · Terms of use(microsoft.com/en-us/legal/terms-of-use). 약관: 따로 정하지 않으면 개인 · 비상업 용도이고, 서비스에서 얻은 정보를 수정 · 복제 · 배포 · 게시 · 2차 저작물로 만들 수 없다. 문서류도 고지문을 붙여 개인 · 비상업적으로만 쓰고 네트워크에 올리지 말 것
+- 원문을 싣지 않고 지금처럼 요약과 링크만 둔다
+
+### Dieter Rams 10원칙 · Vitsœ (공식 10개가 출처로 씀)
+
+- 페이지 본문: "These principles can be shared accurately and fairly under the Creative Commons CC-BY-NC-ND 4.0 licence." 바닥글 "© 2026 Vitsœ". 25차 Laws of UX와 같은 라이선스(비영리 · 변경 금지)
+- 영어 원문을 고치지 않고 출처를 밝혀 싣는 것은 비영리라면 가능하지만, CLAUDE.md의 자유 라이선스에는 들지 않는다 → Laws of UX와 함께 사용자 판단을 기다린다
+- Regula의 `/principles/rams/`에서 원칙을 UI 점검 질문으로 바꾼 것은 원문의 번역 · 각색이 아니라 Regula의 해석이며, 원문 문장을 옮겨 싣지 않았다
+
+### Learn UI Design (미리보기 켜짐, 높이 측정함)
+
+- 바닥글 "©2026 Kennedy Design, Inc."뿐, 라이선스 · 이용약관 링크 없음. 자유 라이선스가 아니므로 원문을 싣지 않는다
+- 자동 접근을 막는 약관을 찾지 못해(약관 페이지 자체가 없음) 미리보기 · 높이 측정은 그대로 둔다
+
+### 오빠두 디자인 시스템 갤러리 (미리보기 켜짐, 높이 측정함)
+
+- 바닥글 "Copyright 2026 오빠두엑셀 All rights reserved." · 이용약관(oppadu.com/terms/). 제23조: 회사가 만든 글 · 이미지 · 도구의 저작권은 회사에 있고, 허락 없이 복제 · 배포 등 영리 목적으로 쓸 수 없다. 금지 행위에 "자동화된 프로그램으로 서비스에 접속해 정보를 대량으로 모으거나 서버에 지나친 부담을 주는 행위"
+- 원문을 싣지 않는다. 높이 측정은 페이지 하나를 한 번 불러 창 크기만 바꾸는 것이라 "대량 수집 · 과부하"에 해당하지 않는다고 보고 그대로 둔다(24 · 31차처럼 자동 접근 자체를 막는 조항은 아님)
+
+### 확인하지 않은 것
+
+- Steve Schoger(X 계정): Regula에서 출처로 쓰는 곳이 없어 이번에 보지 않음
+- 책 9권: 판매 중인 책이라 원문을 싣지 않는 것이 분명해 따로 확인하지 않음. Pantone은 17차에서 색값 없이 두기로 함
+
+## 2026-11-03 — 31차: 디자인 나침반 원문은 가져오지 않음
+
+### 확인한 것
+
+- designcompass.org 바닥글: "© 2026 Design Compass All rights reserved." · 이용약관 · 개인정보취급방침. 자유 라이선스 표시 없음. Wanted Montage 소개 글의 그림에는 "©Wanted"가 붙어 있어 원티드의 권리도 얽혀 있다
+- 이용약관: 서비스와 관련된 이미지 · 디자인 · 정보 등의 지식재산권은 회사에 있고, 명시적 승인 없이 수정 · 배포 · 상업적 이용 등을 할 수 없다. 회원 금지 행위에 서비스의 콘텐츠를 아카이브 · 복제 · 공중송신 · 배포 · 전시하는 것과 "로봇, 스파이더, 스크레이퍼나 기타 자동화 수단"으로 서비스에 접근하는 것이 들어 있다
+- 그래서 원문을 싣지 않고, 레퍼런스 2개(디자인 나침반 · Wanted Montage)는 지금처럼 요약과 링크만 둔다
+- 금지 조항은 "회원"에게 적용되는 것이지만, 24차(Apple)와 같은 기준으로 `npm run measure-embeds`의 측정 대상에서 빼고(NO_ROBOTS) 잰 값도 지움 → 두 미리보기는 예전처럼 상자 안에서 스크롤
+- iframe 미리보기 자체는 그대로 둠(방문자 브라우저가 원본을 불러옴, 사이트가 다른 페이지 안에 띄우는 것을 막지 않음). 다만 약관이 콘텐츠 "전시"도 금지 행위로 적고 있어, 더 조심하려면 embed를 끄는 것도 방법이다
+
+## 2026-11-03 — 30차: 토스(TDS · 토스 기술 블로그) 원문은 가져오지 않음
+
+### 확인한 것
+
+- TDS 문서(tossmini-docs.toss.im/tds-mobile/): 페이지 안에 라이선스 · 저작권 표시가 없다. npm 패키지 @toss/tds-mobile(2.5.1)에도 license 필드가 없어, 코드조차 오픈소스 라이선스로 공개된 것이 아니다
+- 토스 기술 블로그(toss.tech): 바닥글은 ㈜비바리퍼블리카 회사 정보와 토스 앱 서비스 약관 · 개인정보 처리방침 목록뿐이다. 글에 대한 라이선스 표시는 없다
+- 라이선스를 밝히지 않은 글은 저작권법상 모든 권리가 저작자에게 있다. 그래서 원문을 싣지 않고, 지금처럼 Regula의 요약과 링크(정당한 범위의 인용)만 둔다
+- 두 곳 모두 iframe 미리보기는 그대로 둔다(방문자 브라우저가 원본을 불러옴). 높이 측정(measure-embeds)을 막는 약관 조항은 이번에 찾지 못했다 — 토스 약관은 금융 서비스용이라 웹사이트 자동 접근을 따로 다루지 않는 것으로 보이나, 약관 전문을 다 읽지는 않았다
+
+## 2026-11-03 — 29차: Mobbin 원문은 가져오지 않음
+
+### 확인한 것
+
+- mobbin.com 바닥글에 Terms · Copyright 링크. 자유 라이선스 표시 없음
+- Terms "10. Intellectual Property Rights": 서비스 안의 자료는 Mobbin이나 Mobbin에 라이선스를 준 쪽의 소유이고 저작권 · 상표권으로 보호된다. 유료 플랜 고객에게도 개인 · 비상업 · 일시적 사용만 허락한다
+- 같은 약관의 금지 사항: Mobbin에서 가져온 자료를 다른 웹사이트 · 서버에 모으거나 미러링 · 저장 · 재게시하는 것(서면 동의 없이), 상업적 이용, 허락되지 않은 scraper · robot 등으로 접근 · 복사하는 것. 검색 엔진 · 크롤러는 robots.txt를 따르는 조건으로 허용
+- 화면 캡처 자체가 각 앱 회사의 화면이라 제3자 권리도 얽혀 있다. 그래서 화면이나 목록을 싣지 않고 지금처럼 요약과 링크만 둔다(CLAUDE.md: 미니 목업은 흑백 와이어프레임, 특정 브랜드 화면을 옮기지 않음)
+- 응답 헤더 X-Frame-Options: SAMEORIGIN이라 iframe 미리보기도 열리지 않는다(embed 꺼진 그대로). Regula에서 mobbin을 출처로 쓴 공식 · 패턴은 없음
+
+## 2026-11-03 — 28차: Refactoring UI 원문은 가져오지 않음
+
+### 확인한 것
+
+- refactoringui.com은 218쪽 PDF 책을 파는 판매 페이지다(책 $99, 묶음 $149, 팀 할인 따로). 바닥글 "Copyright © 2026 The UI Company Inc.", 자유 라이선스 표시 없음
+- 사이트에 공개된 라이선스는 묶음 상품에 든 아이콘용("Refactoring UI Icon License", GitHub gist)뿐이다. 구매자가 자기 프로젝트에 쓰고 고칠 수는 있지만 재배포 · 재라이선스 · 재판매는 할 수 없다. 책 본문에 대한 라이선스가 아니며, Regula는 아이콘을 쓰지 않는다
+- 그래서 책 내용을 싣지 않고, 지금처럼 Regula의 요약(항목 4개)과 링크만 둔다
+- 응답 헤더 X-Frame-Options: deny라 iframe 미리보기도 열리지 않는다(embed 꺼진 그대로)
+
+## 2026-11-03 — 27차: Deceptive Patterns 원문은 가져오지 않음
+
+### 확인한 것
+
+- deceptive.design(www.deceptive.design에서 옮겨 감) 바닥글: "©2026 Testimonium Ltd." · Terms and Conditions · Privacy Policy. 자유 라이선스 표시 없음
+- Terms and Conditions "Intellectual Property": 서비스와 그 원래 콘텐츠는 회사와 라이선스 제공자의 독점 재산이며 저작권 · 상표법으로 보호된다. 복제나 재게시를 허락하는 조항은 없음
+- robots.txt와 llms.txt는 인용과 색인을 환영한다고 적고, "How to cite this website" 페이지에서 인용 형식(APA · BibTeX 등)을 안내한다. 인용 · 링크를 권하는 것이지 글을 옮겨 실어도 된다는 허락은 아님
+- 그래서 원문을 싣지 않고, 지금처럼 Regula의 요약(다크 패턴 9개 항목)과 링크만 둔다
+- 응답 헤더에 X-Frame-Options · frame-ancestors가 없어 iframe 미리보기는 될 수도 있으나, 실제로 열리는지는 확인하지 않음(embed는 꺼 둔 그대로)
+
+## 2026-11-03 — 26차: Nielsen Norman Group 원문은 가져오지 않음
+
+### 확인한 것
+
+- 글 바닥글: "Copyright © 1998-2026 Nielsen Norman Group, All Rights Reserved." · Terms & Conditions · Copyright & Reprint Policy
+- Copyright and Reprint Information(nngroup.com/copyright-and-reprint-info/): 다른 웹사이트가 글을 옮겨 싣는 것은 허락하지 않고, 글마다 250달러 라이선스 비용을 내야 한다. 링크는 얼마든지 걸어도 된다. 몇 단어나 몇 줄 인용은 따로 허락 없이 할 수 있다(원문 링크를 붙이길 권함). 번역도 유료(글당 250달러 또는 연 1만 달러). 그림은 따로 허락이 필요하다. 무료 종이 인쇄 허락은 온라인판에는 적용되지 않는다
+- 그래서 원문을 싣지 않고, 지금처럼 Regula의 요약 · 짧은 인용과 원문 링크만 둔다. Regula에서 nngroup을 출처로 쓴 항목 41개도 이 범위(요약과 링크) 안에 있다
+- 사이트가 다른 페이지 안에 띄우는 것을 막고 있어(embed 꺼짐) 미리보기도 없다
+
+## 2026-11-03 — 25차: Laws of UX 라이선스 확인 (원문은 아직 싣지 않음)
+
+### 확인한 것
+
+- lawsofux.com 바닥글(첫 페이지와 법칙 페이지 모두): "Laws of UX © Jon Yablonski 2026" · License 링크가 CC BY-NC-ND 4.0(creativecommons.org/licenses/by-nc-nd/4.0/)을 가리킴
+- CC BY-NC-ND 4.0 법률 원문: 비영리 목적이면 전부나 일부를 복제 · 공유할 수 있다(출처 표시 조건). "Adapted Material"(번역 · 변경 · 재배열 등)은 만들 수는 있어도 공유할 수 없다. 비영리는 "주로 상업적 이익이나 금전 보상을 위한 것이 아닌" 것
+- 즉 영어 원문을 고치지 않고 출처를 밝혀 싣는 것은 비영리 사이트라면 가능하지만, 번역해 싣는 것은 안 된다. CLAUDE.md가 원문 전체를 실어도 된다고 한 퍼블릭 도메인 · CC0 · MIT 같은 자유 라이선스에는 들지 않는다(비영리 · 변경 금지 조건)
+- 그래서 싣지 않고 사용자 판단을 기다린다. Regula의 해당 공식 23개는 7차에서 사이트 요약이 아니라 원래 논문 · 글로 확인해 옮겼다
+
+## 2026-11-03 — 24차: Apple Human Interface Guidelines 원문은 가져오지 않음
+
+### 확인한 것
+
+- HIG 페이지(developer.apple.com/design/human-interface-guidelines/…) 바닥글: "Copyright © 2026 Apple Inc. All rights reserved." · Terms of Use(apple.com/legal/internet-services/terms/site.html) · Agreements and Guidelines. 자유 라이선스 없음
+- Terms of Use "Content": 사이트의 글 · 그림 · 화면 등 모든 콘텐츠는 Apple 소유이며, 약관이 따로 허락한 경우 말고는 Apple의 서면 동의 없이 복제 · 재게시 · 번역 · 배포(미러링 포함)할 수 없다. 내려받기용 자료도 개인 · 비상업 용도로만, 네트워크에 올리지 말 것
+- 그래서 원문을 싣지 않고 지금처럼 요약과 링크만 둔다
+- 같은 약관 "Your Use of the Site"는 robot · spider 등 자동 프로그램으로 사이트에 접근 · 수집 · 감시하는 것을 막는다. 20차의 `npm run measure-embeds`가 헤드리스 브라우저로 HIG 높이를 쟀으므로, 측정 대상에서 빼고(NO_ROBOTS) 잰 값도 지움 → HIG 미리보기는 예전처럼 상자 안에서 스크롤
+- 미리보기 iframe은 방문자의 브라우저가 Apple 페이지를 그대로 불러오는 것이라 그대로 둠(사이트가 다른 페이지 안에 띄우는 것을 막지 않음). 약관이 iframe 삽입을 따로 다루지는 않는다
+
+## 2026-11-03 — 23차: Material Design 3 원문은 가져오지 않음
+
+### 확인한 것
+
+- m3.material.io(가이드라인 사이트)를 브라우저로 열어 바닥글을 확인: Privacy Policy · Terms of Service(policies.google.com)만 있고 글의 라이선스는 밝히지 않음. 자유 라이선스가 아니므로 원문을 싣지 않고, 지금처럼 요약과 링크만 둔다
+- 대신 쓸 수 있는 것으로 material-components/material-web 저장소(Apache-2.0, 커밋 de5470f, 2026-10-29)의 docs/components/*.md가 있다. 하지만 이것은 웹 컴포넌트 사용법 · API 문서이고, Regula 공식 · 패턴 36개가 출처로 적은 M3 가이드라인(Gestures · Motion · Snackbar · Dialogs 등)과는 다른 문서다. 저장소도 "maintenance mode"라 이번에는 싣지 않음
+- m2.material.io(Material Design 2) 바닥글에는 "License" 링크가 Apache-2.0을 가리키지만, 글에 대한 것인지 코드에 대한 것인지 분명하지 않고 M3와 다른 판이라 이번 범위에서 뺌
+
+## 2026-11-03 — 22차: Carbon · Primer 문서 원문 가져오기
+
+### 원문을 읽고 확인
+
+- Carbon: 문서 저장소 carbon-design-system/carbon-website의 LICENSE가 Apache License 2.0(부록 예시 문구 "Copyright 2018 IBM Corp."). 그런데 README 맨 위에 "The Carbon website has moved to PayloadCMS. This version of the website is now archived."라고 적혀 있고 마지막 커밋이 "chore: archive website repo"(5e9cd1d, 2026-09-30). 지금 carbondesignsystem.com은 Next.js로 새로 만들어졌고 바닥글에 "Copyright © 2026 IBM"만 있어 라이선스를 따로 밝히지 않음 → 라이선스가 분명한 보관본을 가져옴
+- Primer: 문서 저장소 primer/design의 LICENSE가 MIT(Copyright (c) GitHub, Inc.). 마지막 커밋 87f799f(2025-07-01). 지금 primer.style은 Next.js로 바뀌어 이 저장소에서 나오지 않음 → 저장소 판본을 가져옴
+- 두 곳 모두 "지금 사이트와 다를 수 있다"고 화면에 적고, 라이선스 전문(MIT는 고지와 허락 문구를 모든 사본에 넣어야 함)을 접어서 함께 실음
+- Apache-2.0 4(b)(바꾼 파일에는 바꿨다는 표시): 화면용 MDX 컴포넌트(배치 Row · Column · Box, 목차 AnchorLinks, 데모 StorybookDemo · StorybookEmbed 등)를 걷어 낸 것, Do · Don't 설명(caption)을 본문으로 옮긴 것, 데모를 Storybook 링크로 바꾼 것을 화면에 적음. 글 자체는 고치지 않음
+- 이미지는 저장소의 그 커밋에서 불러옴(raw.githubusercontent.com). Carbon 문서의 "/images/…"는 사이트 뿌리가 아니라 페이지 폴더의 images/라서(gatsby-remark-images) 그렇게 고쳐 연결. 이미지 107개 중 106개가 열림, Primer의 github.com/user-attachments 이미지 하나는 로그인하지 않은 요청에 403
+
+### 가져온 페이지
+
+- Carbon 6쪽: Spacing(공식 8pt 그리드 · 간격 스케일 · 간격의 위계가 출처로 씀), Notification(패턴 토스트), Progress indicator(패턴 단계 표시), 정리의 "볼 것"인 Data table · Forms · Notifications 패턴
+- Primer 2쪽: 정리의 "볼 것"(정보 밀도가 높은 화면의 간격과 타이포그래피)에 맞춰 Layout · Typography. Primer를 출처로 쓴 공식 · 패턴은 아직 없음
+
+### 주의
+
+- 페이지 안 링크는 지금 사이트 주소로 연결하는데, 사이트가 새로 만들어지며 주소가 바뀐 곳은 열리지 않을 수 있음
+
+## 2026-11-03 — 21차: GOV.UK Design System 원문 가져오기
+
+### 원문을 읽고 확인
+
+- 사이트(https://design-system.service.gov.uk) 바닥글: "All content is available under the Open Government Licence v3.0, except where otherwise stated". 저장소 alphagov/govuk-design-system의 LICENSE 파일: MIT License, Copyright (c) 2017 Crown Copyright (Government Digital Service)
+- OGL v3.0 원문(National Archives)을 읽음: 복제 · 배포 · 고치기 · 상업적 이용 허용. 조건은 정보 제공자가 정한 출처 표시를 넣거나 링크하고, 가능하면 라이선스에 링크할 것. 따로 정한 문구가 없으면 "Contains public sector information licensed under the Open Government Licence v3.0."를 쓴다 → 페이지에 이 문구와 라이선스 링크를 함께 보임
+- 가져온 페이지 13개: Regula 공식 · 패턴 14개가 source에 적은 GOV.UK 페이지 10개(Button · Checkboxes · Error message · File upload · Pagination · Radios · Select · Text input · Textarea · Phone numbers)와 레퍼런스 정리의 "볼 것" 3개(Error summary · Recover from validation errors · Question pages). 기준 커밋 1403d1b(2026-11-02)
+- 글은 고치지 않음. 바꾼 것은 Nunjucks 템플릿 문법을 걷어 낸 것, 예시 화면을 원문 사이트의 예시 페이지 링크로 바꾼 것, 사이트 안 링크를 절대 주소로(함께 가져온 페이지면 이 페이지 안으로) 바꾼 것, 이미지를 원문 사이트에서 불러오게 한 것
+- postels-law의 source에 적힌 「Telephone numbers」는 지금 페이지 제목이 "Phone numbers"(별칭: phone numbers, telephone)라 별칭으로 연결됨
+- 갱신은 `npm run sync-govuk`. 바닥글의 OGL 문구나 저장소 LICENSE(MIT)가 바뀌면 멈춤
+
+### 가져오지 않은 것
+
+- 나머지 컴포넌트 · 패턴 페이지(Regula가 출처로 쓰지 않은 것). 쓰게 되면 source에 페이지 이름을 적고 다시 가져온다
+
+## 2026-11-02 — 20차: 레퍼런스 원문 가져오기 (WCAG 2.2) · 펼친 미리보기
+
+### 원문을 읽고 확인
+
+- WCAG 2.2 TR 문서(https://www.w3.org/TR/WCAG22/)의 저작권 줄이 "document use" 규칙으로 W3C Document License(https://www.w3.org/copyright/document-license/)를 가리키는 것을 확인. 2023판 원문을 읽음: 어떤 매체로든 복제 · 배포 허용, 조건은 ① 원문 링크 ② 저작권 고지 "Copyright © [문서 연도] World Wide Web Consortium." ③ 문서 상태(STATUS). 고치거나 파생물을 만드는 권리는 주지 않음(소프트웨어 문서에 딸린 경우만 예외)
+- 그래서 성공 기준 87개(원칙 4 · 지침 13 포함)를 W3C가 공개한 https://www.w3.org/WAI/WCAG22/wcag.json에서 원문 그대로 가져옴. 번역 · 요약으로 바꿔 싣지 않음. 바꾼 건 표시용 마크업뿐(자동 id 삭제, 링크를 절대 주소 · 새 탭으로, 노트 제목 꼬리표). 문서 상태 "W3C Recommendation 12 December 2024"는 TR 문서의 w3c-state에서 읽음
+- 페이지에 원문 링크 · 고지 · 상태 · 라이선스 링크를 함께 보임. 4.1.1 Parsing은 원문대로 "삭제됨"으로 둠(수준 없음)
+- 갱신은 `npm run sync-wcag`. TR 문서의 저작권 줄에서 Document License 링크가 사라지면 멈춤
+
+### Regula가 정한 것 (출처 없음)
+
+- 기준마다 붙인 "Regula에서" 연결: wcag-22를 refs에 넣은 공식 · 패턴의 글에서 기준 번호(1.4.3 꼴)를 찾아 붙임. 번호를 적지 않은 항목은 연결되지 않음
+- "2.2에서 새로" 표시는 wcag.json의 versions가 2.2 하나뿐인 기준
+
+### 가져오지 않은 것
+
+- GOV.UK(OGL v3 · MIT), Carbon(Apache-2.0로 알려짐), Primer는 아직 라이선스 원문을 확인하지 않아 이번에 가져오지 않음. 책과 저작권이 있는 사이트(Apple HIG · NN/g · Laws of UX 등)는 지금처럼 요약과 링크만 둠
+
+### 펼친 미리보기 (embed)
+
+- 사이트 내용을 저장하지 않는다. `npm run measure-embeds`가 헤드리스 브라우저에서 레퍼런스 페이지와 같은 sandbox iframe에 사이트를 띄워 폭 320–960px(40px 간격, 높이가 25% 넘게 뛰는 브레이크포인트는 1px 앞뒤까지)에서 문서 높이만 재고, 페이지의 iframe은 늘 원본 사이트를 직접 불러와 그 높이만큼 펼친다(사이는 직선 보간)
+- 창을 키우면 따라 길어지는(100vh 구조) 폭과 안쪽 영역만 스크롤되는 사이트는 펼치지 않고 예전처럼 상자 안에서 스크롤
+
 ## 2026-11-02 — 19차: 사이트 DESIGN.md (/design-md/)
 
 ### 원문을 읽고 확인

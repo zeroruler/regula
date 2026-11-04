@@ -2,6 +2,34 @@
 
 사이트의 출처를 원문(또는 원문을 옮긴 믿을 만한 기록)과 대조한 결과. 새로 확인할 때마다 위에 덧붙인다.
 
+## 2026-11-04 — 38차: 인디케이터 이름 9가지 (로딩 › 인디케이터 이름)
+
+### 읽은 원문
+
+- Apple HIG Progress indicators · Page controls(developer.apple.com의 문서 JSON), Apple UIKit `prefersHomeIndicatorAutoHidden` 문서
+- Material Web 저장소(material-components/material-web main) `docs/components/progress.md` · `tabs.md`
+- W3C WAI-ARIA 1.2(w3c/aria main `index.html`)의 aria-current, W3C APG(w3c/aria-practices main) Carousel Pattern · Meter Pattern
+- OWASP Cheat Sheet Series「Authentication Cheat Sheet」, MDN(mdn/content main) `env()` · `scroll()`
+- IBM Carbon Progress indicator는 22차에 실은 원문(`src/imported/docs/carbon.json`)
+- 모두 글을 옮기지 않고 이름과 요지만 적음
+
+### 원문과 맞춘 것
+
+- 프로그레스 바: Apple HIG의 이름이 Progress bar, 끝을 모르면 indeterminate. Material은 linear · circular progress indicator 두 갈래
+- 원형 진행률: Material의 circular progress. 끝을 모르고 도는 원은 Apple HIG에서 activity indicator(Regula의 스피너)
+- 스텝 인디케이터: aria-current 값에 step("과정 안의 지금 단계")이 있음. Carbon은 Progress indicator라 부름
+- 페이지 인디케이터: Apple HIG Page control("한 줄의 표시 그림, 하나가 한 페이지"), 너무 많이 두지 말 것. APG는 slide picker controls("대개 작은 점"), tab이나 button으로 만든다
+- 강도 표시기: OWASP가 password strength meter를 권함. APG Meter Pattern은 정해진 범위의 값을 보이는 것이고, 로딩 · 완료율 같은 진행에는 쓰지 말고 progressbar를 쓰라고 함 → 섹션에서 "진행률 / 값"을 나눈 근거
+- 탭 인디케이터: Material Tabs의 토큰 이름이 active indicator
+- 홈 인디케이터: UIKit 문서가 "홈 화면으로 돌아가는 시각 표시"라 적음. 웹에서는 MDN env()의 safe-area-inset-bottom으로 아래 고정 요소를 띄움
+- 스토리 바의 "저절로 넘어가면 멈출 수 있게"는 WCAG 2.2.2, 강도 표시기의 "색만이 아니라 글자로도"는 1.4.1
+
+### 확인하지 못한 것
+
+- 스토리 바(Story progress): 공개 디자인 시스템 문서에서 같은 이름을 찾지 못함. 릴스의 이름 그대로 두고 "출처 미확인" 표시
+- 스크롤 진행 바(Scroll progress): MDN은 스크롤 위치로 움직이는 CSS 타임라인을 scroll progress timeline이라 부를 뿐, 막대 자체의 이름은 아님. "출처 미확인" 표시
+- NIST SP 800-63B(pages.nist.gov)는 이 작업 환경에서 열리지 않아 강도 표시기 출처로 쓰지 않음
+
 ## 2026-11-03 — 37차: 결정 — 영상 · 음성(WCAG 1.2.x)은 Regula 범위 밖
 
 - WCAG 2.2 1.2.1–1.2.5(자막 · 실시간 자막 · 음성 해설 · 대본)를 다루려고 UI 패턴 "영상과 소리"를 만들었다가(zeroruler/regula#57) 되돌림

@@ -1,0 +1,144 @@
+---
+// 인디케이터 이름 9가지. 로딩 막대처럼 생겼어도 말하는 것(진행률 · 위치 · 값 · 손짓)이 달라 마크업이 갈린다.
+// 그림은 Regula가 그린 흑백 도형이고 특정 앱 화면을 옮기지 않았다.
+// ok: 이름을 릴스 밖의 출처에서 확인했는지 (출처 38차)
+import { href } from '../../lib/url';
+
+const says = {
+  progress: '얼마나 됐나',
+  where: '지금 어디인가',
+  value: '값이 얼마인가',
+  gesture: '어떻게 움직이나',
+} as const;
+
+const items: {
+  no: string; ko: string; en: string; says: keyof typeof says; tells: string; code: string;
+  here?: { label: string; path: string }; note: string; ok: boolean; svg: string;
+}[] = [
+  {
+    no: '01', ko: '프로그레스 바', en: 'Progress bar', says: 'progress', ok: true,
+    tells: '작업이 얼마나 됐는지를 막대 길이로. 끝을 모르면 채우지 말고 움직이는 막대(indeterminate)로.',
+    code: '<progress> · role="progressbar"',
+    here: { label: '로딩 › 진행 막대', path: 'patterns/states/#loading' },
+    note: 'Apple HIG는 Progress bar, Material 3는 linear progress indicator',
+    svg: '<rect class="o" x="10" y="20" width="100" height="8"/><rect class="k" x="10" y="20" width="70" height="8"/>',
+  },
+  {
+    no: '02', ko: '스텝 인디케이터', en: 'Step indicator', says: 'where', ok: true,
+    tells: '여러 단계 중 지금 몇 번째인지. 양이 아니라 순서와 지금 위치를 말한다.',
+    code: 'aria-current="step"',
+    here: { label: '로딩 › 단계 표시', path: 'patterns/states/#loading' },
+    note: 'IBM Carbon은 Progress indicator라 부름. ARIA의 aria-current에 step 값이 따로 있다',
+    svg: '<rect class="k" x="20" y="23" width="40" height="2"/><rect class="r" x="60" y="23" width="40" height="2"/><circle class="k" cx="20" cy="24" r="7"/><circle class="k" cx="47" cy="24" r="7"/><circle class="o now" cx="74" cy="24" r="7"/><circle class="o" cx="101" cy="24" r="7"/>',
+  },
+  {
+    no: '03', ko: '페이지 인디케이터', en: 'Page indicator', says: 'where', ok: true,
+    tells: '옆으로 넘겨 보는 화면 중 지금 몇 번째인지 점으로. 점이 많으면 세지 못한다.',
+    code: '점을 눌러 고를 수 있으면 tab이나 button',
+    here: { label: '화면 구성 › 캐러셀', path: 'patterns/layout/#layout' },
+    note: 'Apple HIG는 Page control, W3C APG는 slide picker controls("대개 작은 점")',
+    svg: '<rect class="o" x="30" y="4" width="60" height="28" rx="3"/><circle class="r" cx="44" cy="41" r="3"/><circle class="r" cx="54" cy="41" r="3"/><circle class="r" cx="64" cy="41" r="3"/><rect class="k" x="71" y="38" width="14" height="6" rx="3"/>',
+  },
+  {
+    no: '04', ko: '스토리 바', en: 'Story progress', says: 'progress', ok: false,
+    tells: '저절로 넘어가는 장면마다 칸 하나. 지금 칸은 남은 시간만큼 찬다.',
+    code: '5초 넘게 저절로 넘어가면 멈출 수 있게(WCAG 2.2.2)',
+    here: { label: '화면 구성 › 캐러셀(자동 넘김)', path: 'patterns/layout/#layout' },
+    note: '이름은 릴스에서만 봄. 공개 디자인 시스템에서 같은 이름을 찾지 못함',
+    svg: '<rect class="o" x="34" y="2" width="52" height="44" rx="4"/><rect class="k" x="38" y="6" width="9" height="2"/><rect class="k" x="49" y="6" width="9" height="2"/><rect class="r" x="60" y="6" width="9" height="2"/><rect class="k" x="60" y="6" width="5" height="2"/><rect class="r" x="71" y="6" width="11" height="2"/>',
+  },
+  {
+    no: '05', ko: '스크롤 진행 바', en: 'Scroll progress', says: 'progress', ok: false,
+    tells: '긴 글을 얼마나 읽었는지 화면 위 얇은 막대로. 기다림이 아니라 읽은 양을 말한다.',
+    code: 'CSS animation-timeline: scroll()',
+    note: 'MDN은 스크롤 위치로 움직이는 CSS 타임라인을 scroll progress timeline이라 부름. 막대 이름 자체는 릴스에서만 봄',
+    svg: '<rect class="o" x="26" y="4" width="68" height="40" rx="2"/><rect class="k" x="26" y="4" width="40" height="3"/><rect class="r" x="33" y="14" width="54" height="3"/><rect class="r" x="33" y="21" width="46" height="3"/><rect class="r" x="33" y="28" width="54" height="3"/><rect class="r" x="33" y="35" width="38" height="3"/>',
+  },
+  {
+    no: '06', ko: '원형 진행률', en: 'Progress ring', says: 'progress', ok: true,
+    tells: '프로그레스 바를 원으로. 막대를 놓을 가로 자리가 없을 때. 끝을 모르고 도는 원은 스피너다.',
+    code: 'role="progressbar" 그대로',
+    here: { label: '로딩 › 진행 링', path: 'patterns/states/#loading' },
+    note: 'Material 3는 circular progress indicator. 도는 원은 Apple HIG에서 activity indicator',
+    svg: '<circle class="ring r" cx="60" cy="24" r="17"/><circle class="ring k" cx="60" cy="24" r="17" pathLength="100" stroke-dasharray="75 100" transform="rotate(-90 60 24)"/>',
+  },
+  {
+    no: '07', ko: '강도 표시기', en: 'Strength meter', says: 'value', ok: true,
+    tells: '진행이 아니라 지금 값이 어느 정도인지. 비밀번호가 얼마나 강한지 칸과 말로.',
+    code: 'role="meter" · 색만이 아니라 글자로도(WCAG 1.4.1)',
+    here: { label: '양식 › 회원가입', path: 'templates/signup/' },
+    note: 'OWASP Authentication Cheat Sheet가 password strength meter를 권함. W3C APG는 진행률에 meter를 쓰지 말라고 함',
+    svg: '<rect class="o" x="20" y="8" width="80" height="16" rx="2"/><circle class="k" cx="30" cy="16" r="1.6"/><circle class="k" cx="37" cy="16" r="1.6"/><circle class="k" cx="44" cy="16" r="1.6"/><circle class="k" cx="51" cy="16" r="1.6"/><circle class="k" cx="58" cy="16" r="1.6"/><circle class="k" cx="65" cy="16" r="1.6"/><rect class="k" x="20" y="31" width="18" height="3" rx="1.5"/><rect class="k" x="41" y="31" width="18" height="3" rx="1.5"/><rect class="k" x="62" y="31" width="18" height="3" rx="1.5"/><rect class="r" x="83" y="31" width="17" height="3" rx="1.5"/><rect class="r" x="20" y="39" width="30" height="3"/>',
+  },
+  {
+    no: '08', ko: '탭 인디케이터', en: 'Tab indicator', says: 'where', ok: true,
+    tells: '탭 가운데 지금 열린 것 아래의 밑줄.',
+    code: 'aria-selected="true"',
+    here: { label: '내비게이션 › 탭', path: 'patterns/navigation/#navigation' },
+    note: 'Material 3 Tabs는 active indicator라 부름',
+    svg: '<rect class="k" x="16" y="17" width="22" height="5"/><rect class="r" x="49" y="17" width="22" height="5"/><rect class="r" x="82" y="17" width="22" height="5"/><rect class="r" x="10" y="31" width="100" height="1"/><rect class="k" x="12" y="29" width="30" height="3"/>',
+  },
+  {
+    no: '09', ko: '홈 인디케이터', en: 'Home indicator', says: 'gesture', ok: true,
+    tells: '화면 아래의 짧은 막대. 밀어 올리면 홈으로 간다는 표시이고, 웹 페이지가 아니라 OS가 그린다.',
+    code: '아래 고정 요소는 env(safe-area-inset-bottom)만큼 띄움',
+    here: { label: '제스처 › 가장자리 스와이프', path: 'patterns/gestures/#gestures' },
+    note: 'Apple UIKit prefersHomeIndicatorAutoHidden: "홈 화면으로 돌아가는 시각 표시"',
+    svg: '<rect class="o" x="44" y="2" width="32" height="44" rx="6"/><rect class="k" x="52" y="40" width="16" height="2.4" rx="1.2"/>',
+  },
+];
+---
+<ul class="ind-says">
+  {Object.values(says).map((s, i) => (
+    <li><b>{s}</b> {[
+      '진행률 — progressbar',
+      '순서 · 지금 위치 — aria-current · aria-selected',
+      '정해진 범위의 값 — meter',
+      '손짓을 알려 줌 — OS가 그림',
+    ][i]}</li>
+  ))}
+</ul>
+
+<div class="ind-grid">
+  {items.map((i) => (
+    <article class="ind">
+      <div class="ind-art"><svg viewBox="0 0 120 48" aria-hidden="true" set:html={i.svg} /></div>
+      <h3><span class="ind-no">{i.no}</span>{i.ko}</h3>
+      <p class="ind-en">{i.en}{!i.ok && <span class="ind-tag">출처 미확인</span>}</p>
+      <p class="ind-says1"><span>{says[i.says]}</span></p>
+      <p class="ind-tells">{i.tells}</p>
+      <p class="ind-code"><code>{i.code}</code></p>
+      {i.here && <p class="ind-here"><a href={href(i.here.path)}>{i.here.label}</a></p>}
+      <p class="ind-note">{i.note}</p>
+    </article>
+  ))}
+</div>
+
+<style>
+  .ind-says{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;font-size:13px;line-height:1.5}
+  @media (max-width:640px){.ind-says{grid-template-columns:minmax(0,1fr)}}
+  .ind-says li{color:var(--ink-2);overflow-wrap:anywhere}
+  .ind-says b{color:var(--ink);font-weight:600;margin-right:4px}
+  .ind-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:20px;border:1px solid var(--rule);background:var(--rule)}
+  @media (max-width:640px){.ind-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ind:last-child{grid-column:1/-1}}
+  .ind{background:var(--surface);padding:16px;min-width:0}
+  .ind-art{display:grid;place-items:center;height:72px;border:1px solid var(--rule);background:var(--paper);margin-bottom:12px;color:var(--ink)}
+  .ind-art svg{width:120px;max-width:100%;height:48px}
+  .ind-art :global(.k){fill:currentColor}
+  .ind-art :global(.r){fill:var(--rule)}
+  .ind-art :global(.o){fill:var(--paper);stroke:currentColor;stroke-width:1.5}
+  .ind-art :global(.o.now){stroke-width:3}
+  .ind-art :global(.ring){fill:none;stroke-width:5}
+  .ind-art :global(.ring.r){stroke:var(--rule)}
+  .ind-art :global(.ring.k){stroke:currentColor}
+  .ind h3{font-size:16px;margin:0;display:flex;gap:8px;align-items:baseline}
+  .ind-no{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+  .ind p{margin:4px 0 0;font-size:13px;line-height:1.5}
+  .ind-en{color:var(--ink-3)}
+  .ind-tag{font-family:var(--mono);font-size:10.5px;margin-left:6px;padding:0 4px;white-space:nowrap;border:1px solid var(--rule)}
+  .ind-says1 span{font-family:var(--mono);font-size:11px;padding:0 4px;border:1px solid var(--ink)}
+  .ind-tells{color:var(--ink)}
+  .ind-code code{font-family:var(--mono);font-size:11.5px;overflow-wrap:anywhere}
+  .ind-here a{font-size:12.5px}
+  .ind-note{color:var(--ink-3);font-size:12px}
+</style>

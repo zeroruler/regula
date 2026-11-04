@@ -4,6 +4,7 @@ import PatternSection from '../../components/PatternSection.astro';
 import PatternSubnav from '../../components/PatternSubnav.astro';
 import Wait from '../../demos/states/Wait.astro';
 import Empty from '../../demos/states/Empty.astro';
+import Indicators from '../../demos/states/Indicators.astro';
 import { patternsByGroup } from '../../lib/patterns';
 import { href } from '../../lib/url';
 import Cite from '../../components/Cite.astro';
@@ -35,7 +36,17 @@ const { rules } = rulesOf('states');
 
   <section>
     <header>
-      <span class="label">2 · 빈 상태</span>
+      <span class="label">2 · 인디케이터 이름</span>
+      <h2>막대처럼 생겨도 말하는 것이 다르다</h2>
+      <p>로딩 막대처럼 보이는 것 9가지에도 각자 이름이 있습니다. 이름을 알면 회의나 AI 요청에서 정확히 짚을 수 있어요. 그리고 기다림을 말하는 것은 절반쯤이고, 나머지는 지금 위치 · 값 · 손짓을 말합니다. 무엇을 말하느냐에 따라 화면 낭독기에 알리는 방법(마크업)도 갈려요.</p>
+    </header>
+    <Indicators />
+    <p style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.6">출처: <Cite text="Instagram @uxwoodytips 릴스(9가지 이름) · Apple HIG Progress indicators · Page controls · Apple UIKit prefersHomeIndicatorAutoHidden · Material Design 3 Progress indicators · Tabs · IBM Carbon Progress indicator · W3C WAI-ARIA 1.2 aria-current · W3C APG Carousel Pattern · Meter Pattern · OWASP Authentication Cheat Sheet · MDN env() · scroll() · WCAG 2.2 2.2.2 Pause, Stop, Hide · 1.4.1 Use of Color" />. 스토리 바 · 스크롤 진행 바는 릴스 밖에서 그 이름을 확인하지 못했습니다. 그림은 Regula가 다시 그린 흑백 도형입니다.</p>
+  </section>
+
+  <section>
+    <header>
+      <span class="label">3 · 빈 상태</span>
       <h2>왜 비었고, 이제 뭘 하나</h2>
       <p>같은 "없음"이라도 다 끝낸 것, 아직 시작 안 한 것, 찾는 게 없는 것, 불러오지 못한 것은 전혀 다른 말을 해야 합니다.</p>
     </header>
